@@ -1,6 +1,9 @@
 # ccd3
 Revitalização do imageador CCD3
 
+* http://www.animatics.com/products/software/animatics/code-dev-software-obs/smiengine.html
+* IntegMotorInterface.dll
+
 
 ## License
 
