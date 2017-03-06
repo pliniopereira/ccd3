@@ -1,7 +1,6 @@
 from time import sleep
 
 import comtypes.client as cc
-from tkinter import *
 
 smi = cc.CreateObject('SMIEngine.SMIHost')
 #print(dir(smi))
@@ -9,91 +8,101 @@ cc.GetModule('IntegMotorInterface.dll')
 
 import comtypes.gen.INTEGMOTORINTERFACELib
 
-smiCom = smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
-#print(dir(smiCom))
-smiCom.BaudRate = 9600
+CommInterface = smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
+#print(dir(CommInterface))
+CommInterface.BaudRate = 9600
+CommInterface.OpenPort("Com2")
+CommInterface.AddressMotorChain()
+Motor = CommInterface.GetMotor(1)
+CommInterface.WriteCommand("UBO")  #Make sure USER Bit B is output bit (UBO)
+CommInterface.WriteCommand("UB=0") #Make sure shutter is in the closed state
+#CommInterface.WriteCommand("UB=1") #Make sure shutter is in the closed state
 
-try:
-    smiCom.OpenPort("Com2")
-except Exception as e:
-    print(e)
 
-#smiCom.AddressMotorChain
+#Home Reset
+def home_reset():
+    try:
+        CommInterface.DefaultMotor = 1
+        CommInterface.WriteCommand("DOUTA0,b=7")
+        CommInterface.WriteCommand("DOUTA0,b=3")
+        CommInterface.WriteCommand("DOUTA0,b=7")
+        CommInterface.WriteCommand("WAIT=500")
 
-#['AddNetMotor', 'AddRef', 'AddressMotorChain', 'AddressServos', 'BaudRate', 'BytesAvailable', 'CharDelay', 'ClearBuffer',
+        # Initializa SMARTMOTOR variables
+        CommInterface.WriteCommand("AMPS=100")
+        CommInterface.WriteCommand("MP")
+        CommInterface.WriteCommand("KGON")
+        CommInterface.WriteCommand("KGOFF")
+        CommInterface.WriteCommand("KP175")
+        CommInterface.WriteCommand("KI=60")
+        CommInterface.WriteCommand("F")
+
+        #Sets velocity and acceleration of the motor
+
+        CommInterface.WriteCommand("A=250")
+        CommInterface.WriteCommand("V=25000")
+        command = "a=UAI Ra"
+        i = CommInterface.GetResponseOf(command)
+        if i == 0:
+
+            CommInterface.WriteCommand("i=@P-500")
+            CommInterface.WriteCommand("P=i")
+            CommInterface.WriteCommand("MP")
+            CommInterface.WriteCommand("G") #Make the filter move to next position
+            Motor.WaitForStop()
+
+        CommInterface.WriteCommand("MV")
+        CommInterface.WriteCommand("UAI")
+        CommInterface.WriteCommand("G")         #Make the filter move to next position
+
+        command = "a=UAI Ra"
+        i = CommInterface.GetResponseOf(command)
+
+        while i == 1:
+            command = "a=UAI Ra"
+            i = CommInterface.GetResponseOf(command)
+        while i == 0:
+            command = "a=UAI Ra"
+            i = CommInterface.GetResponseOf(command)
+
+        CommInterface.WriteCommand("A=200")
+        CommInterface.WriteCommand("V=-750")
+        CommInterface.WriteCommand("G") #Make the filter move to position
+
+        while i == 1:
+            command = "a=UAI Ra"
+            i = CommInterface.GetResponseOf(command)
+
+        CommInterface.WriteCommand("A=2000")
+        CommInterface.WriteCommand("X")
+        #Call
+        Motor.WaitForStop()
+        CommInterface.WriteCommand("WAIT=400")
+        CommInterface.WriteCommand("O=1798")
+        CommInterface.WriteCommand("MP")
+
+        CommInterface.WriteCommand("A=250")
+        CommInterface.WriteCommand("V=400000")
+        CommInterface.WriteCommand("P=3333")
+        CommInterface.WriteCommand("G") #Make the filter move to position
+        #Call
+        Motor.WaitForStop()
+        CommInterface.WriteCommand("WAIT=500")
+        CommInterface.WriteCommand("h=1")
+        CommInterface.WriteCommand("RETURN")
+        hPosition = 1
+
+    except Exception as e:
+        print(e)
+
+
+home_reset()
+
+
+        #['AddNetMotor', 'AddRef', 'AddressMotorChain', 'AddressServos', 'BaudRate', 'BytesAvailable', 'CharDelay', 'ClearBuffer',
 #  'ClearEEPROM', 'ClosePort', 'DefaultMotor', 'DetectNetMotors', 'DetectRS232', 'DetectRS485', 'DetectUSBMotors',
 #  'Download', 'Echo', 'EchoTimeoutConst', 'EchoTimeoutMul', 'EngineVersion', 'EstablishChain', 'ForceUpload',
 #  'GetIDsOfNames', 'GetMotor','GetResponseOf', 'GetTypeInfo', 'GetTypeInfoCount', 'InitEthernet', 'InitRS485', 'InitUSB',
 #  'InitializeNotification', 'Invoke', 'IsRS485', 'LogFileName', 'LogFlags', 'MaxMotors', 'NoOfMotors', 'OpenPort',
 #  'Parity', 'PortHandle', 'PortName', 'QueryInterface', 'ReadResponse', 'ReadString', 'Release', 'ReorderMotors',
 #  'Timeout', 'TxMaxRetry', 'TxTimeoutConst', 'TxTimeoutMul', 'Upload', 'Wait', 'WriteCmd', 'WriteCommand', 'WriteString',
-'''
-try:
-    smiCom.WriteCommand(u"UB=1")
-except Exception as e:
-    print(e)
-finally:
-    sleep(1)
-    smiCom.WriteCommand(u"UB=0")
-'''
-
-
-def rojo():
-    try:
-        smiCom.WriteCommand(u"UB=1")
-        sleep(1)
-    except Exception as e:
-        print(e)
-
-
-def azul():
-    try:
-        smiCom.WriteCommand(u"UB=0")
-        sleep(1)
-    except Exception as e:
-        print(e)
-
-
-def verde():
-    pass
-
-
-def uno():
-    pass
-
-
-janela = Tk()
-
-'''
-root.title = "Interfaz comunicacion serial"
-
-rojo = Tk.Button(root, text="Abrir", command=rojo, bg="red")
-rojo.pack()
-azul = Tk.Button(root, text="Fechar", command=azul, bg="blue")
-azul.pack()
-verde = Tk.Button(root, text="NULL", command=verde, bg="green")
-verde.pack()
-num1 = Tk.Button(root, text="NULL", command=uno)
-num1.pack()
-'''
-
-bt1 = Button(janela, text="Abrir", command=rojo, bg="red")
-#bt1.place(x=100, y=100)
-bt1.pack()
-
-bt2 = Button(janela, text="Fechar", command=azul, bg="blue")
-#bt2.place(x=100, y=100)
-bt2.pack()
-
-bt3 = Button(janela, text="NULL", command=verde, bg="green")
-#bt3.place(x=100, y=100)
-bt3.pack()
-
-bt4 = Button(janela, text="NULL", command=uno)
-#bt4.place(x=100, y=100)
-bt4.pack()
-
-# wxh+4+t
-janela.geometry("300x300+200+200")
-
-janela.mainloop()
