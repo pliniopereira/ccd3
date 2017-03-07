@@ -2,25 +2,28 @@ from time import sleep
 
 import comtypes.client as cc
 
+#Create SMIHost object and interface
 smi = cc.CreateObject('SMIEngine.SMIHost')
-#print(dir(smi))
 cc.GetModule('IntegMotorInterface.dll')
 
 import comtypes.gen.INTEGMOTORINTERFACELib
 
 CommInterface = smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
-#print(dir(CommInterface))
 CommInterface.BaudRate = 9600
 CommInterface.OpenPort("Com2")
-CommInterface.AddressMotorChain()
+CommInterface.AddressMotorChain() #Address SmartMotors in the RS232 daisy chain
+#Make an SMIMotor object
 Motor = CommInterface.GetMotor(1)
+#Send command to close shutter  'GOSUB 1 - SMARTMOTOR
 CommInterface.WriteCommand("UBO")  #Make sure USER Bit B is output bit (UBO)
 CommInterface.WriteCommand("UB=0") #Make sure shutter is in the closed state
-#CommInterface.WriteCommand("UB=1") #Make sure shutter is in the closed state
+#CommInterface.WriteCommand("UB=1")
 
 
-#Home Reset
 def home_reset():
+    '''
+    GOSUB5 - SMARTMOTOR
+    '''
     try:
         CommInterface.DefaultMotor = 1
         CommInterface.WriteCommand("DOUTA0,b=7")
@@ -91,14 +94,31 @@ def home_reset():
         CommInterface.WriteCommand("h=1")
         CommInterface.WriteCommand("RETURN")
         hPosition = 1
+        CommInterface.WriteCommand("g=-1")
+
+        return hPosition
 
     except Exception as e:
         print(e)
 
 
-home_reset()
+hPosition_var = home_reset()
+print(hPosition_var)
 
-def FilterWheel_Control(FilterNumber):
+
+def get_filtro_atual():
+    CommInterface.WriteCommand("RSP")
+    resp = CommInterface.ReadResponse()
+    return resp
+
+
+def FilterWheel_Control(FilterNumber, hPosition):
+    '''
+    :param FilterNumber:
+    :return:
+    '''
+
+    get_filtro_atual()
     if FilterNumber == 1:
         command = "g=1"
     if FilterNumber == 2:
@@ -113,7 +133,6 @@ def FilterWheel_Control(FilterNumber):
         command = "g=6"
 
     CommInterface.WriteCommand(command)       #Send filter position
-    hPosition = 1
     g = FilterNumber                            #Filter position
     h = hPosition                               #Present position
 
@@ -160,6 +179,10 @@ def FilterWheel_Control(FilterNumber):
     CommInterface.WriteCommand("O=h*3333") #And reset the present origin
     CommInterface.WriteCommand("END")
     hPosition = FilterNumber #h receive g for VB use
+    return FilterNumber
 
+hPosition_var = FilterWheel_Control(4, hPosition_var)
+print(hPosition_var)
+hPosition_var = FilterWheel_Control(2, hPosition_var)
+print(hPosition_var)
 
-FilterWheel_Control(1)
