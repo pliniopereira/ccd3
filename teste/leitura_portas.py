@@ -1,6 +1,5 @@
 import glob
 import sys
-from datetime import datetime
 
 import comtypes.client as cc
 import serial
@@ -60,6 +59,4 @@ if __name__ == '__main__':
                 break
         except Exception as e:
             print(serial_var[count] + " - Cannot establish a link to Motors")
-
-    print(datetime.now())
 
