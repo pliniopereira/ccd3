@@ -1,5 +1,8 @@
-import sys
 import glob
+import sys
+from datetime import datetime
+
+import comtypes.client as cc
 import serial
 
 
@@ -33,4 +36,30 @@ def serial_ports():
 
 
 if __name__ == '__main__':
-    print(serial_ports())
+    serial_var = serial_ports()
+    count_aux = int(len(serial_var))
+    smi = cc.CreateObject('SMIEngine.SMIHost')
+    cc.GetModule('IntegMotorInterface.dll')
+
+    import comtypes.gen.INTEGMOTORINTERFACELib
+
+    CommInterface = smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
+    CommInterface.BaudRate = 9600
+    resposta = ''
+    count = 0
+    for count in range(0, count_aux):
+        print("Search for " + serial_var[count] + " link to Motors!")
+        try:
+            CommInterface.OpenPort(serial_var[count])
+            CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
+            CommInterface.WriteCommand("UBO")  # Make sure USER Bit B is output bit (UBO)
+            CommInterface.WriteCommand("d=-1 GOSUB1")
+            resposta = CommInterface.ReadResponse()
+            if resposta == 'SHTR:???':
+                print(serial_var[count] + " - Established a link to Motors!")
+                break
+        except Exception as e:
+            print(serial_var[count] + " - Cannot establish a link to Motors")
+
+    print(datetime.now())
+
