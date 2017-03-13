@@ -16,8 +16,16 @@ CommInterface.AddressMotorChain() #Address SmartMotors in the RS232 daisy chain
 Motor = CommInterface.GetMotor(1)
 #Send command to close shutter  'GOSUB 1 - SMARTMOTOR
 CommInterface.WriteCommand("UBO")  #Make sure USER Bit B is output bit (UBO)
-CommInterface.WriteCommand("UB=0") #Make sure shutter is in the closed state
-#CommInterface.WriteCommand("UB=1")
+#CommInterface.WriteCommand("UB=0") #Make sure shutter is in the closed state
+CommInterface.WriteCommand("UB=1") #Make sure shutter is in the open state
+
+
+def open_shutter():
+    CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
+
+
+def close_shutter():
+    CommInterface.WriteCommand("UB=0")
 
 
 def home_reset():
@@ -106,6 +114,7 @@ hPosition_var = home_reset()
 print(hPosition_var)
 
 
+
 def get_filtro_atual():
     CommInterface.WriteCommand("RSP")
     resp = CommInterface.ReadResponse()
@@ -181,8 +190,25 @@ def FilterWheel_Control(FilterNumber, hPosition):
     hPosition = FilterNumber #h receive g for VB use
     return FilterNumber
 
+
+'''
+open_shutter()
+close_shutter()
 hPosition_var = FilterWheel_Control(4, hPosition_var)
 print(hPosition_var)
 hPosition_var = FilterWheel_Control(2, hPosition_var)
 print(hPosition_var)
+close_shutter()
+open_shutter()
 
+hPosition_var = FilterWheel_Control(3, hPosition_var)
+print(hPosition_var)
+hPosition_var = FilterWheel_Control(5, hPosition_var)
+print(hPosition_var)
+hPosition_var = FilterWheel_Control(6, hPosition_var)
+print(hPosition_var)
+hPosition_var = FilterWheel_Control(1, hPosition_var)
+print(hPosition_var)
+hPosition_var = FilterWheel_Control(6, hPosition_var)
+print(hPosition_var)
+'''
