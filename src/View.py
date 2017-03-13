@@ -87,10 +87,11 @@ def F6():
     except Exception as e:
         print(e)
 
+
 def get_filter():
     try:
         resp = Main.get_filtro_atual()
-        lb["text"] = resp
+        lb["text"] = "              " + str(resp)
         sleep(1)
     except Exception as e:
         print(e)
