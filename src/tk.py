@@ -1,20 +1,7 @@
 from time import sleep
 from tkinter import *
 
-import comtypes.client as cc
-
 from src import Main
-
-#Create SMIHost object and interface
-smi = cc.CreateObject('SMIEngine.SMIHost')
-cc.GetModule('IntegMotorInterface.dll')
-
-import comtypes.gen.INTEGMOTORINTERFACELib
-
-CommInterface = smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
-CommInterface.BaudRate = 9600
-
-Main.home_reset()
 
 
 def ABRIR():
@@ -40,7 +27,7 @@ def HOME_RESET():
     try:
         hPosition_var = Main.home_reset()
         print(hPosition_var)
-        lb["text"] = hPosition_var
+        lb["text"] = "              " + str(hPosition_var)
 
         sleep(1)
     except Exception as e:
@@ -49,8 +36,8 @@ def HOME_RESET():
 
 def F1():
     try:
-        hPosition_var = Main.FilterWheel_Control(1, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(1)
+        lb["text"] = "              " + str(hPosition_var)
         sleep(1)
     except Exception as e:
         print(e)
@@ -58,8 +45,8 @@ def F1():
 
 def F2():
     try:
-        hPosition_var = Main.FilterWheel_Control(2, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(2)
+        lb["text"] = "              " + str(hPosition_var)
         sleep(1)
     except Exception as e:
         print(e)
@@ -67,8 +54,8 @@ def F2():
 
 def F3():
     try:
-        hPosition_var = Main.FilterWheel_Control(3, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(3)
+        lb["text"] = "              " + str(hPosition_var)
         sleep(1)
     except Exception as e:
         print(e)
@@ -76,8 +63,8 @@ def F3():
 
 def F4():
     try:
-        hPosition_var = Main.FilterWheel_Control(4, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(4)
+        lb["text"] = "              " + str(hPosition_var)
         sleep(1)
     except Exception as e:
         print(e)
@@ -85,8 +72,8 @@ def F4():
 
 def F5():
     try:
-        hPosition_var = Main.FilterWheel_Control(5, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(5)
+        lb["text"] = "              " + str(hPosition_var)
         sleep(1)
     except Exception as e:
         print(e)
@@ -94,8 +81,16 @@ def F5():
 
 def F6():
     try:
-        hPosition_var = Main.FilterWheel_Control(6, Main.hPosition_var)
-        lb["text"] = hPosition_var
+        hPosition_var = Main.FilterWheel_Control(6)
+        lb["text"] = "              " + str(hPosition_var)
+        sleep(1)
+    except Exception as e:
+        print(e)
+
+def get_filter():
+    try:
+        resp = Main.get_filtro_atual()
+        lb["text"] = resp
         sleep(1)
     except Exception as e:
         print(e)
@@ -141,8 +136,12 @@ bt8 = Button(janela, text="F6", command=F6, bg="blue")
 #bt4.place(x=100, y=100)
 bt8.pack()
 
+bt9 = Button(janela, text="GET FILTER", command=get_filter, bg="red")
+#bt4.place(x=100, y=100)
+bt9.pack()
+
 lb = Label(janela)
-lb.place(x=100, y=250)
+lb.place(x=100, y=260)
 
 # wxh+4+t
 janela.geometry("300x300+200+200")
