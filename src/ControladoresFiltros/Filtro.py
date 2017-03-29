@@ -1,5 +1,6 @@
 from time import sleep
 
+
 def get_filtro_atual():
     sleep(2)
     CommInterface.WriteCommand("g=-1 GOSUB4")

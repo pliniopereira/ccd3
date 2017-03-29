@@ -1,3 +1,5 @@
 from src import CommInterface
 
-CommInterface()
+CommInterface.create_object()
+
+
