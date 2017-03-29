@@ -9,7 +9,7 @@ def create_object():
     sleep(10)
     #Create SMIHost object and interface
     smi = cc.CreateObject('SMIEngine.SMIHost')
-    cc.GetModule('IntegMotorInterface.dll')
+    cc.GetModule("IntegMotorInterface.dll")
 
     import comtypes.gen.INTEGMOTORINTERFACELib
 

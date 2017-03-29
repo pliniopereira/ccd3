@@ -1,7 +1,7 @@
 from time import sleep
 
 
-def get_filtro_atual():
+def get_filtro_atual(objeto):
     sleep(2)
     CommInterface.WriteCommand("g=-1 GOSUB4")
     resposta = CommInterface.ReadResponse()

@@ -1,10 +1,11 @@
 from time import sleep
 
 
-def home_reset():
+def home_reset(objeto, motor):
     '''
     GOSUB5 - SMARTMOTOR
     '''
+    objeto = CommInterface
     try:
         CommInterface.DefaultMotor = 1
         CommInterface.WriteCommand("DOUTA0,b=7")
