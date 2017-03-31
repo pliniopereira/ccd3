@@ -22,7 +22,7 @@ def create_object():
     for count in range(0, count_aux):
         print("Search for " + serial_var[count] + " link to Motors!")
         try:
-            CommInterface.OpenPort(serial_var[count])
+            CommInterface.OpenPort('COM2')
             CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
             CommInterface.WriteCommand("UBO")  # Make sure USER Bit B is output bit (UBO)
             CommInterface.WriteCommand("d=-1 GOSUB1")
