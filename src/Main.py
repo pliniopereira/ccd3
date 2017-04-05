@@ -2,8 +2,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.getcwd()))
 
-from PyQt5 import QtWidgets
-
+from PyQt5 import QtWidgets #works for pyqt5
 from src.ui.mainWindow.main import Main
 
 
