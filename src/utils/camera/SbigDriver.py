@@ -485,8 +485,17 @@ def draw_image(name_png):
 
     img = Image.open(name_png)
 
-    fontsFolder = '/usr/share/fonts/truetype'
-    times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'Times_New_Roman_Bold.ttf'), 16)
+    try:
+        if sys.platform.startswith("linux"):
+            fontsFolder = '/usr/share/fonts/truetype'
+            times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'Times_New_Roman_Bold.ttf'), 16)
+        elif sys.platform.startswith("win"):
+            fontsFolder = 'C:\Windows\Fonts'
+            times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'timesbd.ttf'), 16)
+    except Exception as e:
+        print(e)
+
+
 
     draw = ImageDraw.Draw(img)
     draw.text((10, 10), observatory_img, fill='white', font=times_nr_Font)
