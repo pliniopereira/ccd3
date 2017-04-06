@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import (QMessageBox, QAction, qApp)
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
@@ -24,7 +24,6 @@ class Main(QtWidgets.QMainWindow):
         self.init_widgets()
         self.init_user_interface()
         self.createToolBars()
-
 
     def init_user_interface(self):
         self.cont = conts(self)
@@ -51,7 +50,7 @@ class Main(QtWidgets.QMainWindow):
 
     def init_window_geometry(self):
         self.setGeometry(300, 100, 800, 700)
-        self.setWindowTitle("CCD Controller 1.0.0")
+        self.setWindowTitle("CCD Controller 3")
         self.show()
 
     def closeEvent(self, event):
@@ -64,20 +63,6 @@ class Main(QtWidgets.QMainWindow):
             event.accept()
         else:
             event.ignore()
-
-    def createToolBars(self):
-
-        self.fileToolBar = self.addToolBar("File")
-
-        '''
-        self.fileToolBar.addAction(self.action_close)
-        self.fileToolBar.addAction(self.action_close)
-
-        self.editToolBar = self.addToolBar("Edit")
-        self.editToolBar.addAction(self.action_close)
-        self.editToolBar.addAction(self.action_close)
-        self.editToolBar.addAction(self.action_close)
-        '''
 
     # Creating menubar
 
@@ -180,4 +165,13 @@ class Main(QtWidgets.QMainWindow):
             m.addAction(w)
 
         return m
+
+    def createToolBars(self):
+        exitAction = QAction(QIcon('exit24.png'), 'Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.triggered.connect(qApp.quit)
+
+        self.toolbar = self.addToolBar('Exit')
+        self.toolbar.addAction(exitAction)
+
 
