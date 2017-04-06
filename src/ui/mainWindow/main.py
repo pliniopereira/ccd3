@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMessageBox
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
@@ -22,6 +23,8 @@ class Main(QtWidgets.QMainWindow):
         # Init Layouts
         self.init_widgets()
         self.init_user_interface()
+        self.createToolBars()
+
 
     def init_user_interface(self):
         self.cont = conts(self)
@@ -50,6 +53,31 @@ class Main(QtWidgets.QMainWindow):
         self.setGeometry(300, 100, 800, 700)
         self.setWindowTitle("CCD Controller 1.0.0")
         self.show()
+
+    def closeEvent(self, event):
+
+        reply = QMessageBox.question(self, 'Message',
+                                     "Are you sure to quit?", QMessageBox.Yes |
+                                     QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+    def createToolBars(self):
+
+        self.fileToolBar = self.addToolBar("File")
+
+        '''
+        self.fileToolBar.addAction(self.action_close)
+        self.fileToolBar.addAction(self.action_close)
+
+        self.editToolBar = self.addToolBar("Edit")
+        self.editToolBar.addAction(self.action_close)
+        self.editToolBar.addAction(self.action_close)
+        self.editToolBar.addAction(self.action_close)
+        '''
 
     # Creating menubar
 
