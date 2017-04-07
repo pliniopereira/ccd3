@@ -11,6 +11,7 @@ from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
+from src.utils.camera.SbigDriver import getlinkstatus
 
 
 class Main(QtWidgets.QMainWindow):
@@ -154,15 +155,21 @@ class Main(QtWidgets.QMainWindow):
     def createToolBars(self):
         connectAction = QAction(QIcon('icons/Connect.png'), 'Connect', self)
         connectAction.triggered.connect(self.cam.connect)
+        connectAction.setCheckable(True)
+        connectAction.setChecked(True)
 
         disconnectAction = QAction(QIcon('icons/Disconnect.png'), 'Disconnect', self)
         disconnectAction.triggered.connect(self.cam.disconnect)
 
         automaticAction = QAction(QIcon('icons/Run_Automatic.png'), 'Run Automatic', self)
         automaticAction.triggered.connect(self.cam.start_ephemeris_shooter)
+        automaticAction.setCheckable(True)
+        automaticAction.setChecked(True)
 
         manualAction = QAction(QIcon('icons/Run_Manual.png'), 'Run Manual', self)
         manualAction.triggered.connect(self.cam.start_taking_photo)
+        manualAction.setCheckable(True)
+        automaticAction.setChecked(True)
 
         stopAction = QAction(QIcon('icons/Stop.png'), 'Stop', self)
         try:
@@ -173,11 +180,14 @@ class Main(QtWidgets.QMainWindow):
         self.toolbar = self.addToolBar('Close Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(70, 70))
         self.toolbar.addAction(connectAction)
-
         self.toolbar.addAction(disconnectAction)
+        self.toolbar.addSeparator()
         self.toolbar.addAction(automaticAction)
         self.toolbar.addAction(manualAction)
+        self.toolbar.addSeparator()
         self.toolbar.addAction(stopAction)
+        self.toolbar.addSeparator()
+
 
 
 
