@@ -17,8 +17,8 @@ class ConfigSystem:
     def save_settings(self):
         self._settings.sync()
 
-    def set_site_settings(self, GNU_linux_startup, log_path, image_path):
-        self._settings.setValue(s.STARTUP, GNU_linux_startup)
+    def set_site_settings(self, Windows_startup, log_path, image_path):
+        self._settings.setValue(s.STARTUP, Windows_startup)
         self._settings.setValue(s.LOG_PATH, log_path)
         self._settings.setValue(s.IMAGES_PATH, image_path)
 
