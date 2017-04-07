@@ -49,7 +49,7 @@ class Main(QtWidgets.QMainWindow):
         self.setCentralWidget(a)
 
     def init_window_geometry(self):
-        self.setGeometry(300, 100, 800, 700)
+        self.setGeometry(300, 100, 800, 780)
         #self.showMaximized()
         self.setWindowTitle("CCD Controller 3")
         self.show()
