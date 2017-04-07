@@ -1,6 +1,6 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QMessageBox, QAction, qApp)
+from PyQt5.QtWidgets import (QMessageBox, QAction)
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
@@ -50,6 +50,7 @@ class Main(QtWidgets.QMainWindow):
 
     def init_window_geometry(self):
         self.setGeometry(300, 100, 800, 700)
+        #self.showMaximized()
         self.setWindowTitle("CCD Controller 3")
         self.show()
 
@@ -167,11 +168,31 @@ class Main(QtWidgets.QMainWindow):
         return m
 
     def createToolBars(self):
-        exitAction = QAction(QIcon('exit24.png'), 'Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.triggered.connect(qApp.quit)
+        connectAction = QAction(QIcon('icons/Connect.png'), 'Connect', self)
+        connectAction.triggered.connect(self.cam.connect)
 
-        self.toolbar = self.addToolBar('Exit')
-        self.toolbar.addAction(exitAction)
+        disconnectAction = QAction(QIcon('icons/Disconnect.png'), 'Disconnect', self)
+        disconnectAction.triggered.connect(self.cam.disconnect)
+
+        automaticAction = QAction(QIcon('icons/Run_Automatic.png'), 'Run Automatic', self)
+        automaticAction.triggered.connect(self.cam.start_ephemeris_shooter)
+
+        manualAction = QAction(QIcon('icons/Run_Manual.png'), 'Run Manual', self)
+        manualAction.triggered.connect(self.cam.start_taking_photo)
+
+        stopAction = QAction(QIcon('icons/Stop.png'), 'Stop', self)
+        try:
+            stopAction.triggered.connect(self.cam.stop_ephemeris_shooter)
+        except:
+            stopAction.triggered.connect(self.cam.stop_taking_photo)
+
+        self.toolbar = self.addToolBar('Close Toolbar')
+        self.toolbar.setIconSize(QtCore.QSize(70, 70))
+        self.toolbar.addAction(connectAction)
+        self.toolbar.addAction(disconnectAction)
+        self.toolbar.addAction(automaticAction)
+        self.toolbar.addAction(manualAction)
+        self.toolbar.addAction(stopAction)
+
 
 
