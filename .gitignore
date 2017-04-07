@@ -139,3 +139,6 @@ $RECYCLE.BIN/
 *.lnk
 
 /old
+/src/config
+/src/system
+/src/camera
