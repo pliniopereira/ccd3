@@ -50,7 +50,6 @@ class Main(QtWidgets.QMainWindow):
 
     def init_window_geometry(self):
         self.setGeometry(300, 100, 800, 780)
-        #self.showMaximized()
         self.setWindowTitle("CCD Controller 3")
         self.show()
 
@@ -73,8 +72,6 @@ class Main(QtWidgets.QMainWindow):
         """
         menubar = self.menuBar()
 
-        a1 = self.action_close()
-        self.add_to_menu(menubar, a1[1], a1[0])
         a3 = self.action_connect_disconnect()
         self.add_to_menu(menubar, a3[0], a3[1], a3[2])
         a4 = self.action_continuous_shooter()
@@ -87,19 +84,6 @@ class Main(QtWidgets.QMainWindow):
 
         # add_to_menu(menubar, open_settings_system(self))
 
-    # All actions needs return a QAction and a menuType, line '&File'
-    def action_close(self):
-        """
-        Creating the button to close the application
-        """
-        aexit = QtWidgets.QAction(QIcon('\icons\exit.png'), "&Exit", self)
-        aexit.setShortcut("Ctrl+Q")
-        aexit.setStatusTip("Exit Application")
-
-        # noinspection PyUnresolvedReferences
-        aexit.triggered.connect(QtWidgets.qApp.exit)
-
-        return aexit, "&File"
 
     def action_continuous_shooter(self):
         """
@@ -189,6 +173,7 @@ class Main(QtWidgets.QMainWindow):
         self.toolbar = self.addToolBar('Close Toolbar')
         self.toolbar.setIconSize(QtCore.QSize(70, 70))
         self.toolbar.addAction(connectAction)
+
         self.toolbar.addAction(disconnectAction)
         self.toolbar.addAction(automaticAction)
         self.toolbar.addAction(manualAction)
