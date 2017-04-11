@@ -39,7 +39,9 @@ class WidgetsGeography(QtWidgets.QWidget):
                         set_hbox(self.lElev, self.eElev),
                         set_hbox(self.lPres, self.ePres),
                         set_hbox(self.lTemp, self.eTemp))
-
+        '''
+        teste
+        '''
         self.setLayout(vbox)
 
     def get_geography(self):
