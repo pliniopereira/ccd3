@@ -16,20 +16,19 @@ class WidgetsGeography(QtWidgets.QWidget):
 
         # Creating Input Fields
         self.eLat = QtWidgets.QLineEdit(self)
-        self.eLat.setMaximumWidth(120)
+        self.eLat.setMaximumWidth(60)
 
         self.eLon = QtWidgets.QLineEdit(self)
-        self.eLon.setMaximumWidth(120)
+        self.eLon.setMaximumWidth(60)
 
         self.eElev = QtWidgets.QLineEdit(self)
-        self.eElev.setMaximumWidth(120)
+        self.eElev.setMaximumWidth(60)
 
         self.ePres = QtWidgets.QLineEdit(self)
-        self.ePres.setMaximumWidth(120)
+        self.ePres.setMaximumWidth(60)
 
         self.eTemp = QtWidgets.QLineEdit(self)
-        self.eTemp.setMaximumWidth(120)
-
+        self.eTemp.setMaximumWidth(60)
 
         self.setting_up()
 

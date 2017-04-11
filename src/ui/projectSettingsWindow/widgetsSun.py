@@ -14,15 +14,15 @@ class WidgetsSun(QtWidgets.QWidget):
 
         # Creating Input Line
         self.emse = QtWidgets.QLineEdit(self)
-        self.emse.setMaximumWidth(120)
+        self.emse.setMaximumWidth(60)
 
         self.eilp = QtWidgets.QCheckBox('Ignore Lunar Position', self)
 
         self.emle = QtWidgets.QLineEdit(self)
-        self.emle.setMaximumWidth(120)
+        self.emle.setMaximumWidth(60)
 
         self.emlp = QtWidgets.QLineEdit(self)
-        self.emlp.setMaximumWidth(120)
+        self.emlp.setMaximumWidth(60)
 
         self.setting_up()
 
