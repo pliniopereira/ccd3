@@ -11,6 +11,8 @@ class WidgetsPath(QtWidgets.QWidget):
 
         self.lLog = QtWidgets.QLabel('Log Path:', self)
         self.eLog = QtWidgets.QLineEdit(self)
+        self.eLog.setMinimumWidth(300)
+
         self.pbutton = QtWidgets.QPushButton("Select Folder", self)
 
 
@@ -20,6 +22,8 @@ class WidgetsPath(QtWidgets.QWidget):
 
         self.lImagesPath = QtWidgets.QLabel('Images Path:')
         self.eImagesPath = QtWidgets.QLineEdit(self)
+        self.eImagesPath.setMinimumWidth(300)
+
         self.ibutton = QtWidgets.QPushButton('Select Folder', self)
 
         self.filename = ""

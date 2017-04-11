@@ -14,8 +14,14 @@ class WidgetsSite(QtWidgets.QWidget):
 
         # Creating Input Line
         self.ePName = QtWidgets.QLineEdit(self)
+        self.ePName.setMaximumWidth(120)
+
         self.eSite = QtWidgets.QLineEdit(self)
+        self.eSite.setMaximumWidth(120)
+
         self.eImager = QtWidgets.QLineEdit(self)
+        self.eImager.setMaximumWidth(120)
+
 
         self.setting_up()
 

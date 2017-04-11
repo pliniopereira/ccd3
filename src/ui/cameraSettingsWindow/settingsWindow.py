@@ -121,7 +121,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.expl = QtWidgets.QLineEdit(self)
         self.expl.setMaximumWidth(60)
 
-
         self.binning = QtWidgets.QLabel("Binning:", self)
         self.combo = QtWidgets.QComboBox(self)
         self.combo.setMaximumWidth(60)
@@ -136,17 +135,14 @@ class SettingsWindow(QtWidgets.QWidget):
         self.tempo_fotos = QtWidgets.QLineEdit(self)
         self.tempo_fotos.setMaximumWidth(60)
 
-
         self.time_colling_label = QtWidgets.QLabel("CCD Cooling Time (s):", self)
         self.time_colling = QtWidgets.QLineEdit(self)
         self.time_colling.setMaximumWidth(60)
-
 
         self.contrast_msg = QtWidgets.QLabel("Image Contrast:", self)
         self.getlevel1 = QtWidgets.QLabel("Bottom Level:", self)
         self.getlevel1l = QtWidgets.QLineEdit(self)
         self.getlevel1l.setMaximumWidth(50)
-
 
         self.getlevel2 = QtWidgets.QLabel("Top Level:", self)
         self.getlevel2l = QtWidgets.QLineEdit(self)
@@ -158,7 +154,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.crop_xi = QtWidgets.QLabel("Width: Wi:", self)
         self.getcropxi_l = QtWidgets.QLineEdit(self)
         self.getcropxi_l.setMaximumWidth(50)
-
 
         self.crop_xf = QtWidgets.QLabel("Wf:", self)
         self.getcropxf_l = QtWidgets.QLineEdit(self)
