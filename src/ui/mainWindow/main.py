@@ -72,19 +72,10 @@ class Main(QtWidgets.QMainWindow):
         Creating the Menu Bar
         """
         menubar = self.menuBar()
-
-        a3 = self.action_connect_disconnect()
-        self.add_to_menu(menubar, a3[0], a3[1], a3[2])
-        a4 = self.action_continuous_shooter()
-        a5 = self.action_ephemeris_shooter()
-        m = self.add_to_menu(menubar, 'Operation Mode')
-        self.add_to_menu(m, 'Manual', a4[0], a4[1])
-        self.add_to_menu(m, 'Automatic', a5[0], a5[1])
         a2 = self.open_settings()
-        self.add_to_menu(menubar, a2[1], self.open_settings_system()[0], a2[0], self.open_settings_camera()[0])
-
-        # add_to_menu(menubar, open_settings_system(self))
-
+        self.add_to_menu(menubar, "System Settings", self.open_settings_system()[0])
+        self.add_to_menu(menubar, "Project Settings", a2[0])
+        self.add_to_menu(menubar, "Camera Settings", self.open_settings_camera()[0])
 
     def action_continuous_shooter(self):
         """
@@ -183,7 +174,6 @@ class Main(QtWidgets.QMainWindow):
         except Exception as e:
             self.stopAction.triggered.connect(self.cam.stop_taking_photo)
             print(e)
-
 
     def createToolBars(self):
         self.toolbar = self.addToolBar('Close Toolbar')
