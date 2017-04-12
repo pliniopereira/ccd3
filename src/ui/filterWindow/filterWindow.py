@@ -14,6 +14,7 @@ class FilterWindow(QtWidgets.QWidget):
         self.create_filters_widgets()
         self.var_save_ini_filters = SettingsFilters()
 
+
         self.setLayout(set_lvbox(set_hbox(self.setField_temperature_label, self.setField_temperature),
                                  set_hbox(self.pre, self.prel),
                                  set_hbox(self.exp, self.expl),
@@ -34,7 +35,8 @@ class FilterWindow(QtWidgets.QWidget):
 
     def setting_values(self):
         info = self.get_values()
-        self.set_values(info[0])
+        self.set_values(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9],\
+                        info[10], info[11], info[12], info[13])
 
     def set_values(self, temperature_camera, prefixo, exposicao, binning, tempo_entre_fotos, time_colling, get_level1,\
                    get_level2, dark_photo, crop_xi, crop_xf, crop_yi, crop_yf, ignore_crop):
