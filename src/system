@@ -1,4 +1,4 @@
 [General]
 log_path=C:/Users/imageador/Documents/CCD3-logpath
 images_path=C:/Users/imageador/Documents/CCD3-images
-Windows_startup=true
+Windows_startup=false

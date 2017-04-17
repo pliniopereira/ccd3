@@ -2,7 +2,7 @@ from time import sleep
 
 import comtypes.client as cc
 
-from src import Leitura_portas
+from src.utils.rodafiltros import Leitura_portas
 
 
 def create_object():
