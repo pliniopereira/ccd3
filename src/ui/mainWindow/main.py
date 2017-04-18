@@ -7,6 +7,7 @@ from src.controller.camera import Camera
 from src.ui.cameraSettingsWindow.main import Main as csw
 from src.ui.ephemerisShooterWindow.main import Main as eph
 from src.ui.filterWindow.main import Main as filters
+from src.ui.imagerWindow.main import Main as imag_menu
 from src.ui.mainWindow.mainWindow import MainWindow
 from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
@@ -33,6 +34,7 @@ class Main(QtWidgets.QMainWindow):
         self.a = sw(self)
         self.b = mw(self)
         self.c = csw(self)
+        self.imager_menu = imag_menu(self)
         self.cam = Camera()
         self.filters_menu = filters(self)
         self.init_menu()
@@ -43,7 +45,7 @@ class Main(QtWidgets.QMainWindow):
         info = self.cs.get_site_settings()
 
         # Connect Camera
-        if info[0] == True:
+        if info[0]:
             self.cam.connect()
             self.cam.start_ephemeris_shooter()
 
@@ -79,6 +81,7 @@ class Main(QtWidgets.QMainWindow):
         self.add_to_menu(menubar, "Project Settings", a2[0])
         self.add_to_menu(menubar, "Camera Settings", self.open_settings_camera()[0])
         self.add_to_menu(menubar, "Filters Settings", self.open_settings_filters()[0])
+        self.add_to_menu(menubar, "Imager Settings", self.open_settings_imager()[0])
 
     def action_continuous_shooter(self):
         """
@@ -139,6 +142,14 @@ class Main(QtWidgets.QMainWindow):
             print(e)
 
         return setF, "&Options"
+
+    def open_settings_imager(self):
+        setIm = QtWidgets.QAction('Imager Settings', self)
+        setIm.setShortcut('Ctrl+I')
+
+        setIm.triggered.connect(self.imager_menu.show)
+
+        return setIm, "&Options"
 
     def action_connect_disconnect(self):
         setAC = QtWidgets.QAction('Connect', self)
