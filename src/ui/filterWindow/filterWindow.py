@@ -187,7 +187,6 @@ class FilterWindow(QtWidgets.QWidget):
             binning_filter = int(binning_var)
         except:
             binning_filter = 0
-        print(binning_filter)
         return binning_filter
 
     def button_ok_func(self):
