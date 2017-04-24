@@ -1,7 +1,6 @@
-from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QCheckBox, QGridLayout, QGroupBox,
-                             QMenu, QPushButton, QRadioButton, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox,
+                             QMenu, QPushButton, QVBoxLayout, QWidget)
 
 from src.utils.camera.SbigDriver import (ccdinfo)
 
