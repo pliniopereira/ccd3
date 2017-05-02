@@ -10,6 +10,13 @@ from src.controller.fan import Fan
 from src.ui.commons.layout import set_lvbox, set_hbox
 from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QVBoxLayout, QWidget)
+
+from src.ui.commons.layout import set_lvbox, set_hbox
+from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
+
 
 class SettingsImageWindow(QtWidgets.QWidget):
     '''
@@ -20,31 +27,20 @@ class SettingsImageWindow(QtWidgets.QWidget):
         self.cam = SettingsCamera()
         self.camera = Camera()
         self.console = ConsoleThreadOutput()
-        self.create_cam_widgets()
         self.p = parent
-        self.fan = Fan(self.fanButton)
 
         self.lock = Locker()
 
-        self.setting_values()
-
         self.one_photo = SThread()
 
-        self.setLayout(set_lvbox(set_hbox(self.setField_temperature_label, self.setField_temperature),
-                                 set_hbox(self.pre, self.prel),
-                                 set_hbox(self.exp, self.expl),
-                                 set_hbox(self.binning, self.combo),
-                                 set_hbox(self.dark, self.close_open),
-                                 set_hbox(self.tempo_fotos_label, self.tempo_fotos),
-                                 set_hbox(self.time_colling_label, self.time_colling),
-                                 set_hbox(self.contrast_msg),
-                                 set_hbox(self.getlevel1, self.getlevel1l, self.getlevel2, self.getlevel2l),
-                                 set_hbox(self.ignore_crop_l),
-                                 set_hbox(self.crop_msg),
-                                 set_hbox(self.crop_xi, self.getcropxi_l, self.crop_xf, self.getcropxf_l),
-                                 set_hbox(self.crop_yi, self.getcropyi_l, self.crop_yf, self.getcropyf_l),
-                                 set_hbox(self.btn_one_photo, self.tempButton, self.fanButton, stretch2=1),
-                                 set_hbox(self.buttonok, self.button_clear, self.buttoncancel, stretch2=1)))
+        grid = QGridLayout()
+        grid.addWidget(self.createImageContrastGroup(), 2, 0)
+        grid.addWidget(self.createCropGroup(), 3, 0)
+        grid.addWidget(self.createTypeImageGroup(), 4, 0)
+        grid.addWidget(self.createPushButtonGroup(), 5, 0)
+        self.setLayout(grid)
+
+        self.setWindowTitle("Imager Box")
 
     def get_camera_settings(self):
         settings = SettingsCamera()
@@ -70,91 +66,12 @@ class SettingsImageWindow(QtWidgets.QWidget):
             self.lock.set_release()
         return ret
 
-    def get_values(self):
-        return self.cam.get_camera_settings()
 
-    def setting_values(self):
-        info = self.get_values()
-        self.set_values(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9],\
-                        info[10], info[11], info[12], info[13])
+    def createImageContrastGroup(self):
+        groupBox = QGroupBox("&Image Contrast:")
+        groupBox.setCheckable(True)
+        groupBox.setChecked(True)
 
-    def set_values(self, temperature_camera, prefixo, exposicao, binning, tempo_entre_fotos, time_colling, get_level1,\
-                   get_level2, dark_photo, crop_xi, crop_xf, crop_yi, crop_yf, ignore_crop):
-        self.setField_temperature.setText(temperature_camera)
-        self.prel.setText(prefixo)
-        self.expl.setText(exposicao)
-
-        try:
-            b = int(binning)
-        except:
-            b = 0
-
-        try:
-            open_or_close = int(dark_photo)
-        except:
-            open_or_close = 0
-
-        self.tempo_fotos.setText(tempo_entre_fotos)
-        self.time_colling.setText(time_colling)
-        self.combo.setCurrentIndex(b)
-        self.close_open.setCurrentIndex(open_or_close)
-
-        self.getlevel1l.setText(get_level1)
-        self.getlevel2l.setText(get_level2)
-
-        self.getcropxi_l.setText(crop_xi)
-        self.getcropxf_l.setText(crop_xf)
-        self.getcropyi_l.setText(crop_yi)
-        self.getcropyf_l.setText(crop_yf)
-
-        self.ignore_crop_l.setChecked(ignore_crop)
-
-    def create_cam_widgets(self):
-        self.setField_temperature_label = QtWidgets.QLabel("CCD Temperature(°C):", self)
-        self.setField_temperature_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.setField_temperature = QtWidgets.QLineEdit(self)
-        self.setField_temperature.setMaximumWidth(100)
-
-        self.pre = QtWidgets.QLabel("Filter Name:", self)
-        self.pre.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.prel = QtWidgets.QLineEdit(self)
-        self.prel.setMaximumWidth(100)
-
-        self.exp = QtWidgets.QLabel("Exposure time (s):", self)
-        self.exp.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.expl = QtWidgets.QLineEdit(self)
-        self.expl.setMaximumWidth(100)
-
-        self.binning = QtWidgets.QLabel("Binning:", self)
-        self.binning.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.combo = QtWidgets.QComboBox(self)
-        self.combo.setMaximumWidth(100)
-        self.fill_combo()
-
-        self.dark = QtWidgets.QLabel("Shutter:", self)
-        self.dark.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.close_open = QtWidgets.QComboBox(self)
-        self.close_open.setMaximumWidth(100)
-        self.fill_combo_close_open()
-
-        self.tempo_fotos_label = QtWidgets.QLabel("Time Between Images (s):", self)
-        self.tempo_fotos_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.tempo_fotos = QtWidgets.QLineEdit(self)
-        self.tempo_fotos.setMaximumWidth(100)
-
-        self.time_colling_label = QtWidgets.QLabel("CCD Cooling Time (s):", self)
-        self.time_colling_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-
-        self.time_colling = QtWidgets.QLineEdit(self)
-        self.time_colling.setMaximumWidth(100)
-
-        self.contrast_msg = QtWidgets.QLabel("Image Contrast:", self)
         self.getlevel1 = QtWidgets.QLabel("Bottom Level:", self)
         self.getlevel1.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
@@ -166,6 +83,15 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
         self.getlevel2l = QtWidgets.QLineEdit(self)
         self.getlevel2l.setMaximumWidth(50)
+
+        groupBox.setLayout(set_lvbox(set_hbox(self.getlevel1, self.getlevel1l, self.getlevel2, self.getlevel2l)))
+
+        return groupBox
+
+    def createCropGroup(self):
+        groupBox = QGroupBox("&Crop")
+        groupBox.setCheckable(True)
+        groupBox.setChecked(False)
 
         self.ignore_crop_l = QtWidgets.QCheckBox('Ignore Crop Image', self)
 
@@ -194,23 +120,36 @@ class SettingsImageWindow(QtWidgets.QWidget):
         self.getcropyf_l = QtWidgets.QLineEdit(self)
         self.getcropyf_l.setMaximumWidth(50)
 
-        self.button_clear = QtWidgets.QPushButton('Clear', self)
-        self.button_clear.clicked.connect(self.clear_all)
+        groupBox.setLayout(set_lvbox(set_hbox(self.ignore_crop_l),
+                                     set_hbox(self.crop_msg),
+                                     set_hbox(self.crop_xi, self.getcropxi_l, self.crop_xf, self.getcropxf_l),
+                                     set_hbox(self.crop_yi, self.getcropyi_l, self.crop_yf, self.getcropyf_l)))
 
-        self.btn_one_photo = QtWidgets.QPushButton('Take Photo', self)
-        self.btn_one_photo.clicked.connect(self.camera.start_one_photo)
+        return groupBox
 
-        self.tempButton = QtWidgets.QPushButton("Set Temp", self)
-        self.tempButton.clicked.connect(self.btn_temperature)
 
-        self.fanButton = QtWidgets.QPushButton("Fan (On/Off)")
-        self.fanButton.clicked.connect(self.button_fan_func)
+    def createTypeImageGroup(self):
+        groupBox = QGroupBox("&File to save")
+        groupBox.setCheckable(True)
+        groupBox.setChecked(True)
 
-        self.buttonok = QtWidgets.QPushButton("Save", self)
-        self.buttonok.clicked.connect(self.button_ok_func)
+        self.image_tif_l = QtWidgets.QCheckBox('Image .tif', self)
+        self.image_fit_l = QtWidgets.QCheckBox('Image .fit', self)
 
-        self.buttoncancel = QtWidgets.QPushButton("Cancel", self)
-        self.buttoncancel.clicked.connect(self.func_cancel)
+        groupBox.setLayout(set_lvbox(set_hbox(self.image_tif_l),
+                                     set_hbox(self.image_fit_l)))
+
+        return groupBox
+
+    def createPushButtonGroup(self):
+        groupBox = QGroupBox()
+        self.saveButton = QPushButton("Save")
+        self.cancelButton = QPushButton("Cancel")
+        self.clearButton = QPushButton("Clear")
+
+        groupBox.setLayout(set_lvbox(set_hbox(self.saveButton, self.clearButton, self.cancelButton)))
+
+        return groupBox
 
     def button_ok_func(self):
         try:

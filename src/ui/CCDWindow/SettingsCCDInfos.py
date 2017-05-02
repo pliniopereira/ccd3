@@ -11,16 +11,67 @@ class SettingsCCDInfos(QWidget):
         super(SettingsCCDInfos, self).__init__(parent)
 
         grid = QGridLayout()
-        grid.addWidget(self.createFilterWheelGroup(), 0, 0)
-        grid.addWidget(self.createCCDCameraGroup(), 1, 0)
-        grid.addWidget(self.createPushButtonGroup(), 2, 0)
+        grid.addWidget(self.createFilterWheelInfoGroup(), 0, 0)
+        grid.addWidget(self.createFilterWheelGroup(), 1, 0)
+        grid.addWidget(self.createCCDInfoGroup(), 2, 0)
+        grid.addWidget(self.createCCDCameraGroup(), 3, 0)
+        grid.addWidget(self.createPushButtonGroup(), 4, 0)
         self.setLayout(grid)
 
         self.setWindowTitle("Imager Box")
         self.resize(500, 340)
 
+    def createFilterWheelInfoGroup(self):
+        groupBox = QGroupBox("&Filter Weel Info")
+        radio1 = QtWidgets.QLabel("Serial Port COM1", self)
+        radio1.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+
+        radio2 = QtWidgets.QLabel("Filter Slot: 6", self)
+        radio2.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+
+        radio3 = QtWidgets.QLabel("Filter Temperature:  25 °C", self)
+        radio3.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(radio1)
+        vbox.addWidget(radio2)
+        vbox.addWidget(radio3)
+        vbox.addStretch(1)
+        groupBox.setLayout(vbox)
+
+        return groupBox
+
     def createFilterWheelGroup(self):
-        groupBox = QGroupBox("INFOS")
+        groupBox = QGroupBox("&Filter Weel Control")
+        groupBox.setCheckable(True)
+        groupBox.setChecked(False)
+
+        self.shutter_l = QtWidgets.QLabel("Shutter:", self)
+        self.shutter_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        self.close_open_filter_wheel = QtWidgets.QComboBox(self)
+        self.close_open_filter_wheel.setMaximumWidth(100)
+        self.fill_combo_close_open_filter_wheel_shutter()
+
+        self.btn_get_filter = QtWidgets.QPushButton('Get filter', self)
+        self.filter_position = QtWidgets.QLineEdit(self)
+        self.filter_position.setMaximumWidth(100)
+
+        self.btn_set_filter = QtWidgets.QPushButton('Set filter', self)
+        self.set_filter_position = QtWidgets.QComboBox(self)
+        self.set_filter_position.setMaximumWidth(100)
+        self.fill_combo_filter_position()
+
+        self.btn_home_position_filter = QtWidgets.QPushButton('Home Reset', self)
+
+        groupBox.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel),
+                                     set_hbox(self.btn_get_filter, self.filter_position, stretch2=1),
+                                     set_hbox(self.btn_set_filter, self.set_filter_position),
+                                     set_hbox(self.btn_home_position_filter)))
+        return groupBox
+
+    def createCCDInfoGroup(self):
+        groupBox = QGroupBox("Info CCD")
 
         radio1 = QtWidgets.QLabel("Camera Port COM1", self)
         radio1.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
@@ -49,9 +100,9 @@ class SettingsCCDInfos(QWidget):
         self.shutter_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.close_open = QtWidgets.QComboBox(self)
         self.close_open.setMaximumWidth(100)
-        self.fill_combo_close_open()
+        self.fill_combo_close_open_ccd_shutter()
 
-        self.temp_setpoint_l = QtWidgets.QLabel("CCD Temp Set Point:", self)
+        self.temp_setpoint_l = QtWidgets.QLabel("CCD Temp Set Point (°C):", self)
         self.temp_setpoint_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_setpoint_f = QtWidgets.QLineEdit(self)
         self.temp_setpoint_f.setMaximumWidth(100)
@@ -101,9 +152,21 @@ class SettingsCCDInfos(QWidget):
             self.lock.set_release()
         return ret
 
-    def fill_combo_close_open(self):
+    def fill_combo_close_open_ccd_shutter(self):
         self.close_open.addItem("Open", 0)
         self.close_open.addItem("Close", 1)
+
+    def fill_combo_close_open_filter_wheel_shutter(self):
+        self.close_open_filter_wheel.addItem("Open", 0)
+        self.close_open_filter_wheel.addItem("Close", 1)
+
+    def fill_combo_filter_position(self):
+            self.set_filter_position.addItem("1", 0)
+            self.set_filter_position.addItem("2", 1)
+            self.set_filter_position.addItem("3", 2)
+            self.set_filter_position.addItem("4", 3)
+            self.set_filter_position.addItem("5", 4)
+            self.set_filter_position.addItem("6", 5)
 
     def teste(self):
         pass
