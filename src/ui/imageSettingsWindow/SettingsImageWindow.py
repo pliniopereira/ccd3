@@ -11,12 +11,12 @@ from src.ui.commons.layout import set_lvbox, set_hbox
 from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 
 
-class SettingsWindow(QtWidgets.QWidget):
+class SettingsImageWindow(QtWidgets.QWidget):
     '''
     Cria os campos e espaços no menu settings window
     '''
     def __init__(self, parent=None):
-        super(SettingsWindow, self).__init__(parent)
+        super(SettingsImageWindow, self).__init__(parent)
         self.cam = SettingsCamera()
         self.camera = Camera()
         self.console = ConsoleThreadOutput()

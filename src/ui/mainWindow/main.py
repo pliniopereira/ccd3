@@ -4,10 +4,10 @@ from PyQt5.QtWidgets import (QMessageBox, QAction, )
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
-from src.ui.cameraSettingsWindow.main import Main as csw
+from src.ui.imageSettingsWindow.main import Main as imag_menu
 from src.ui.ephemerisShooterWindow.main import Main as eph
 from src.ui.filterWindow.main import Main as filters
-from src.ui.imagerWindow.main import Main as imag_menu
+from src.ui.CCDWindow.main import Main as CCD_menu
 from src.ui.mainWindow.mainWindow import MainWindow
 from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
@@ -33,8 +33,8 @@ class Main(QtWidgets.QMainWindow):
         self.ephem = eph(self)
         self.a = sw(self)
         self.b = mw(self)
-        self.c = csw(self)
-        self.imager_menu = imag_menu(self)
+        self.imag = imag_menu(self)
+        self.CCD_menu = CCD_menu(self)
         self.cam = Camera()
         self.filters_menu = filters(self)
         self.init_menu()
@@ -79,9 +79,9 @@ class Main(QtWidgets.QMainWindow):
         a2 = self.open_settings()
         self.add_to_menu(menubar, "System Settings", self.open_settings_system()[0])
         self.add_to_menu(menubar, "Project Settings", a2[0])
-        self.add_to_menu(menubar, "Camera Settings", self.open_settings_camera()[0])
+        self.add_to_menu(menubar, "Image Settings", self.open_settings_image()[0])
         self.add_to_menu(menubar, "Filters Settings", self.open_settings_filters()[0])
-        self.add_to_menu(menubar, "Imager Settings", self.open_settings_imager()[0])
+        self.add_to_menu(menubar, "CCD Settings", self.open_settings_CCD()[0])
 
     def action_continuous_shooter(self):
         """
@@ -124,13 +124,13 @@ class Main(QtWidgets.QMainWindow):
 
         return setS, "&Options"
 
-    def open_settings_camera(self):
-        setC = QtWidgets.QAction('Camera Settings', self)
-        setC.setShortcut("Ctrl+C")
+    def open_settings_image(self):
+        setI = QtWidgets.QAction('Image Settings', self)
+        setI.setShortcut("Ctrl+i")
 
-        setC.triggered.connect(self.c.show)
+        setI.triggered.connect(self.imag.show)
 
-        return setC, "&Options"
+        return setI, "&Options"
 
     def open_settings_filters(self):
         setF = QtWidgets.QAction('Filters Settings', self)
@@ -143,13 +143,12 @@ class Main(QtWidgets.QMainWindow):
 
         return setF, "&Options"
 
-    def open_settings_imager(self):
-        setIm = QtWidgets.QAction('Imager Settings', self)
-        setIm.setShortcut('Ctrl+I')
+    def open_settings_CCD(self):
+        setCCD = QtWidgets.QAction('CCD Settings', self)
 
-        setIm.triggered.connect(self.imager_menu.show)
+        setCCD.triggered.connect(self.CCD_menu.show)
 
-        return setIm, "&Options"
+        return setCCD, "&Options"
 
     def action_connect_disconnect(self):
         setAC = QtWidgets.QAction('Connect', self)
