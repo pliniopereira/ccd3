@@ -1,6 +1,6 @@
+from PyQt5 import QtGui
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox,
-                             QMenu, QPushButton, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QMenu, QPushButton, QVBoxLayout, QWidget)
 
 from src.utils.camera.SbigDriver import (ccdinfo)
 
@@ -12,11 +12,11 @@ class SettingsImager(QWidget):
         grid = QGridLayout()
         grid.addWidget(self.createFilterWheelGroup(), 0, 0)
         grid.addWidget(self.createCCDCameraGroup(), 1, 0)
-        grid.addWidget(self.createPushButtonGroup(), 1, 1)
+        grid.addWidget(self.createPushButtonGroup(), 2, 0)
         self.setLayout(grid)
 
         self.setWindowTitle("Imager Box")
-        self.resize(480, 320)
+        self.resize(500, 340)
 
     def createFilterWheelGroup(self):
         groupBox = QGroupBox("FILTERWHEEL")
@@ -54,6 +54,11 @@ class SettingsImager(QWidget):
         radio4 = QtWidgets.QLabel("Temp Set Point", self)
         radio5 = QtWidgets.QLabel("Shutter:", self)
         radio6 = QtWidgets.QLabel("Tempo para iniciar:", self)
+        label = QtWidgets.QLabel("     Label Text Value: ", self)
+        label.setFixedWidth(200)
+
+        textEdit = QtWidgets.QTextEdit(self)
+        textEdit.setMaximumHeight(55)
 
         vbox = QVBoxLayout()
         vbox.addWidget(radio1)
