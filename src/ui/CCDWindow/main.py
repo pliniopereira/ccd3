@@ -10,4 +10,4 @@ class Main(QtWidgets.QMainWindow):
         self.ima = SettingsCCDInfos(self)
         self.setCentralWidget(self.ima)
 
-        self.setWindowTitle("CCD Settings")
+        self.setWindowTitle("Imager Settings")

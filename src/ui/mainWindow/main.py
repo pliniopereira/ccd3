@@ -81,7 +81,7 @@ class Main(QtWidgets.QMainWindow):
         self.add_to_menu(menubar, "Project Settings", a2[0])
         self.add_to_menu(menubar, "Image Settings", self.open_settings_image()[0])
         self.add_to_menu(menubar, "Filters Settings", self.open_settings_filters()[0])
-        self.add_to_menu(menubar, "CCD Settings", self.open_settings_CCD()[0])
+        self.add_to_menu(menubar, "Imager Settings", self.open_settings_CCD()[0])
 
     def action_continuous_shooter(self):
         """
@@ -144,7 +144,7 @@ class Main(QtWidgets.QMainWindow):
         return setF, "&Options"
 
     def open_settings_CCD(self):
-        setCCD = QtWidgets.QAction('CCD Settings', self)
+        setCCD = QtWidgets.QAction('Imager Settings', self)
 
         setCCD.triggered.connect(self.CCD_menu.show)
 
