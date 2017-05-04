@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QVBoxLayout, QWidget)
+from src.controller.camera import Camera
 
 from src.ui.commons.layout import set_hbox, set_lvbox
 from src.utils.camera.SbigDriver import (ccdinfo)
@@ -10,15 +11,27 @@ class SettingsCCDInfos(QWidget):
     def __init__(self, parent=None):
         super(SettingsCCDInfos, self).__init__(parent)
 
-        self.roda_filtros = FilterControl()
-        self.roda_filtros.home_reset()
+        self.cam = Camera()
+
+        try:
+            self.roda_filtros = FilterControl()
+            self.roda_filtros.home_reset()
+        except Exception as e:
+            print(e)
+
+        try:
+            self.firmware, self.model, self.y_pixels, self.x_pixels = self.cam.get_firmware_and_model_and_pixels()
+        except Exception as e:
+            print(e)
+            self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????",\
+                                                                      "????", "????"
 
         grid = QGridLayout()
         grid.addWidget(self.createFilterWheelInfoGroup(), 0, 0)
         grid.addWidget(self.createFilterWheelGroup(), 1, 0)
-        grid.addWidget(self.createCCDInfoGroup(), 2, 0)
-        grid.addWidget(self.createCCDCameraGroup(), 3, 0)
-        grid.addWidget(self.createPushButtonGroup(), 4, 0)
+        grid.addWidget(self.createCCDInfoGroup(), 0, 1)
+        grid.addWidget(self.createCCDCameraGroup(), 1, 1)
+        grid.addWidget(self.createPushButtonGroup(), 2, 1)
         self.setLayout(grid)
 
         self.button_settings()
@@ -27,22 +40,31 @@ class SettingsCCDInfos(QWidget):
         self.resize(500, 340)
 
     def createFilterWheelInfoGroup(self):
-        groupBox = QGroupBox("&Filter Weel Info")
-        radio1 = QtWidgets.QLabel("Serial Port = " + self.roda_filtros.motor_door, self)
-        radio1.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        groupBox = QGroupBox("&Filter Wheel Info")
 
-        radio2 = QtWidgets.QLabel("Filter Slot: 6", self)
-        radio2.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.serial_filter_wheel_info_l = QtWidgets.QLabel("Serial Port: ", self)
+        self.serial_filter_wheel_info_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        try:
+            motor_door_aux = str(self.roda_filtros.motor_door)
+        except Exception as e:
+            print(e)
+            motor_door_aux = "???"
+        self.serial_filter_wheel_info_f = QtWidgets.QLabel(motor_door_aux, self)
+        self.serial_filter_wheel_info_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        radio3 = QtWidgets.QLabel("Filter Temperature:  25 °C", self)
-        radio3.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.slots_filter_wheel_info_l = QtWidgets.QLabel("Filter Slot: ", self)
+        self.slots_filter_wheel_info_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.slots_filter_wheel_info_f = QtWidgets.QLabel("6", self)
+        self.slots_filter_wheel_info_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        vbox = QVBoxLayout()
-        vbox.addWidget(radio1)
-        vbox.addWidget(radio2)
-        vbox.addWidget(radio3)
-        vbox.addStretch(1)
-        groupBox.setLayout(vbox)
+        self.tempt_filter_wheel_info_l = QtWidgets.QLabel("Filter Temperature: ", self)
+        self.tempt_filter_wheel_info_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.tempt_filter_wheel_info_f = QtWidgets.QLabel("25 °C", self)
+        self.tempt_filter_wheel_info_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+
+        groupBox.setLayout(set_lvbox(set_hbox(self.serial_filter_wheel_info_l, self.serial_filter_wheel_info_f),
+                                     set_hbox(self.slots_filter_wheel_info_l, self.slots_filter_wheel_info_f),
+                                     set_hbox(self.tempt_filter_wheel_info_l, self.tempt_filter_wheel_info_f)))
 
         return groupBox
 
@@ -59,8 +81,9 @@ class SettingsCCDInfos(QWidget):
         self.fill_combo_close_open_filter_wheel_shutter()
 
         self.btn_get_filter = QtWidgets.QPushButton('Get filter', self)
-        self.filter_position = QtWidgets.QLineEdit(self.roda_filtros.get_filtro_atual())
-        self.filter_position.setMaximumWidth(100)
+        self.filter_position = QtWidgets.QLabel(self.roda_filtros.get_filtro_atual())
+        self.filter_position.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.filter_position.setMinimumWidth(60)
 
         self.btn_set_filter = QtWidgets.QPushButton('Set filter', self)
         self.set_filter_position = QtWidgets.QComboBox(self)
@@ -78,22 +101,24 @@ class SettingsCCDInfos(QWidget):
     def createCCDInfoGroup(self):
         groupBox = QGroupBox("Info CCD")
 
-        radio1 = QtWidgets.QLabel("Camera Port COM1", self)
-        radio1.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.info_port_ccd_l = QtWidgets.QLabel("Camera Firmware: ", self)
+        self.info_port_ccd_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.info_port_ccd_f = QtWidgets.QLabel(self.firmware)
+        self.info_port_ccd_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        radio2 = QtWidgets.QLabel("Camera model: 6", self)
-        radio2.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.info_camera_model_l = QtWidgets.QLabel("Camera Model: ", self)
+        self.info_camera_model_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.info_camera_model_f = QtWidgets.QLabel(self.model)
+        self.info_camera_model_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        radio3 = QtWidgets.QLabel("Pixel array:  TESTETE", self)
-        radio3.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.info_pixel_array_l = QtWidgets.QLabel("Pixel array: ", self)
+        self.info_pixel_array_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.info_pixel_array_f = QtWidgets.QLabel(self.x_pixels + " X " + self.y_pixels + " Pixels")
+        self.info_pixel_array_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        vbox = QVBoxLayout()
-        vbox.addWidget(radio1)
-        vbox.addWidget(radio2)
-        vbox.addWidget(radio3)
-        vbox.addStretch(1)
-        groupBox.setLayout(vbox)
-
+        groupBox.setLayout(set_lvbox(set_hbox(self.info_port_ccd_l, self.info_port_ccd_f),
+                                     set_hbox(self.info_camera_model_l, self.info_camera_model_f),
+                                     set_hbox(self.info_pixel_array_l, self.info_pixel_array_f)))
         return groupBox
 
     def createCCDCameraGroup(self):
