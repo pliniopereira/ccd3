@@ -7,10 +7,10 @@ from PyQt5 import QtCore
 from src.utils.rodafiltros import Leitura_portas
 
 
-class Filter_control(QtCore.QThread):
+class FilterControl(QtCore.QThread):
 
     def __init__(self, parent=None):
-        super(Filter_control, self).__init__(parent)
+        super(FilterControl, self).__init__(parent)
         self.smi = cc.CreateObject('SMIEngine.SMIHost')
         cc.GetModule('IntegMotorInterface.dll')
         self.CommInterface = self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
