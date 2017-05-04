@@ -12,6 +12,8 @@ Revitalização do imageador CCD3
   * [PyFits](#pyfits)
   * [PyEphem](#pyephem)
   * [SciPy](#scipy)
+  * [Pyserial](#Pyserial)
+
 
 ## License
 

@@ -1,7 +1,7 @@
 from time import sleep
 from tkinter import *
 
-from src import Main
+from old import Main
 
 
 def ABRIR():
