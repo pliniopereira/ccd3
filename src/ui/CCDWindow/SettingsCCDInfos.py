@@ -1,14 +1,17 @@
-from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QVBoxLayout, QWidget)
 
-from src.ui.commons.layout import set_lvbox, set_hbox
-from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
+from src.ui.commons.layout import set_hbox, set_lvbox
+from src.utils.camera.SbigDriver import (ccdinfo)
+from src.utils.rodafiltros.FilterControl import *
 
 
 class SettingsCCDInfos(QWidget):
     def __init__(self, parent=None):
         super(SettingsCCDInfos, self).__init__(parent)
+
+        self.roda_filtros = FilterControl()
+        self.roda_filtros.home_reset()
 
         grid = QGridLayout()
         grid.addWidget(self.createFilterWheelInfoGroup(), 0, 0)
@@ -18,12 +21,14 @@ class SettingsCCDInfos(QWidget):
         grid.addWidget(self.createPushButtonGroup(), 4, 0)
         self.setLayout(grid)
 
+        self.button_settings()
+
         self.setWindowTitle("Imager Box")
         self.resize(500, 340)
 
     def createFilterWheelInfoGroup(self):
         groupBox = QGroupBox("&Filter Weel Info")
-        radio1 = QtWidgets.QLabel("Serial Port COM1", self)
+        radio1 = QtWidgets.QLabel("Serial Port = " + self.roda_filtros.motor_door, self)
         radio1.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
 
         radio2 = QtWidgets.QLabel("Filter Slot: 6", self)
@@ -54,7 +59,7 @@ class SettingsCCDInfos(QWidget):
         self.fill_combo_close_open_filter_wheel_shutter()
 
         self.btn_get_filter = QtWidgets.QPushButton('Get filter', self)
-        self.filter_position = QtWidgets.QLineEdit(self)
+        self.filter_position = QtWidgets.QLineEdit(self.roda_filtros.get_filtro_atual())
         self.filter_position.setMaximumWidth(100)
 
         self.btn_set_filter = QtWidgets.QPushButton('Set filter', self)
@@ -168,5 +173,36 @@ class SettingsCCDInfos(QWidget):
             self.set_filter_position.addItem("5", 4)
             self.set_filter_position.addItem("6", 5)
 
-    def teste(self):
-        pass
+    def button_settings(self):
+        self.btn_get_filter.clicked.connect(self.func_get_filter)
+        self.btn_set_filter.clicked.connect(self.func_filter_position)
+        self.btn_home_position_filter.clicked.connect(self.func_home_position)
+
+    def func_get_filter(self):
+        try:
+            sleep(2)
+            filter_position_aux = self.roda_filtros.get_filtro_atual()
+            self.filter_position.setText(filter_position_aux)
+            sleep(3)
+
+        except Exception as e:
+            print(e)
+
+    def func_filter_position(self):
+        try:
+            sleep(1)
+            self.roda_filtros.get_filtro_atual()
+            sleep(1)
+
+        except Exception as e:
+            print(e)
+
+    def func_home_position(self):
+        try:
+            sleep(1)
+            print("func_home_position")
+            self.roda_filtros.home_reset()
+            sleep(1)
+
+        except Exception as e:
+            print(e)

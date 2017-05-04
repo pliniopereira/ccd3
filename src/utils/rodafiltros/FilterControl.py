@@ -15,6 +15,7 @@ class FilterControl(QtCore.QThread):
         cc.GetModule('IntegMotorInterface.dll')
         self.CommInterface = self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
         self.create_object()
+        self.motor_door
 
     def create_object(self):
         sleep(10)
@@ -36,6 +37,7 @@ class FilterControl(QtCore.QThread):
                 resposta = CommInterface.ReadResponse()
                 if resposta == 'SHTR:???':
                     print(serial_var[count] + " - Established a link to Motors!")
+                    self.motor_door = serial_var[count]
                     break
             except Exception as e:
                 print(serial_var[count] + " - Cannot establish a link to Motors")
@@ -155,6 +157,8 @@ class FilterControl(QtCore.QThread):
 
     def get_filtro_atual(self):
         CommInterface = self.CommInterface
+
+        CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
 
         sleep(2)
         CommInterface.WriteCommand("g=-1 GOSUB4")
