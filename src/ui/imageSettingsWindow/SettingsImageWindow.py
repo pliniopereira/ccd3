@@ -1,6 +1,3 @@
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.SThread import SThread
@@ -65,7 +62,6 @@ class SettingsImageWindow(QtWidgets.QWidget):
         finally:
             self.lock.set_release()
         return ret
-
 
     def createImageContrastGroup(self):
         groupBox = QGroupBox("&Image Contrast:")

@@ -1,18 +1,20 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QMessageBox, QAction, )
+from PyQt5.QtWidgets import (QMessageBox, QAction)
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
-from src.ui.imageSettingsWindow.main import Main as imag_menu
+from src.ui.CCDWindow.main import Main as CCD_menu
 from src.ui.ephemerisShooterWindow.main import Main as eph
 from src.ui.filterWindow.main import Main as filters
-from src.ui.CCDWindow.main import Main as CCD_menu
+from src.ui.imageSettingsWindow.main import Main as imag_menu
 from src.ui.mainWindow.mainWindow import MainWindow
 from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
+from src.utils.rodafiltros.FilterControl import FilterControl
 
 
 class Main(QtWidgets.QMainWindow):
@@ -27,6 +29,7 @@ class Main(QtWidgets.QMainWindow):
         self.init_user_interface()
         self.createActions()
         self.createToolBars()
+        self.auto_connect_filter_and_camera()
 
     def init_user_interface(self):
         self.cont = conts(self)
@@ -36,6 +39,10 @@ class Main(QtWidgets.QMainWindow):
         self.imag = imag_menu(self)
         self.CCD_menu = CCD_menu(self)
         self.cam = Camera()
+        try:
+            self.roda_filtros = FilterControl()
+        except Exception as e:
+            print("roda_filtros --------> " + e)
         self.filters_menu = filters(self)
         self.init_menu()
         self.init_window_geometry()
@@ -154,7 +161,7 @@ class Main(QtWidgets.QMainWindow):
         setAC = QtWidgets.QAction('Connect', self)
         setAD = QtWidgets.QAction('Disconnect', self)
 
-        setAC.triggered.connect(self.cam.connect)
+        setAC.triggered.connect(self.auto_connect_filter_and_camera())
 
         setAD.triggered.connect(self.cam.disconnect)
 
@@ -210,6 +217,10 @@ class Main(QtWidgets.QMainWindow):
         self.toolbar.addSeparator()
         self.toolbar.addAction(self.stopAction)
         self.toolbar.addSeparator()
+
+    def auto_connect_filter_and_camera(self):
+        self.roda_filtros.create_object()
+        self.cam.connect
 
 
 

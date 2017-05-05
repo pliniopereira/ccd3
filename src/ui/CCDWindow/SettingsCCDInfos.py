@@ -1,7 +1,8 @@
+from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QVBoxLayout, QWidget)
-from src.controller.camera import Camera
+from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 
+from src.controller.camera import Camera
 from src.ui.commons.layout import set_hbox, set_lvbox
 from src.utils.camera.SbigDriver import (ccdinfo)
 from src.utils.rodafiltros.FilterControl import *
@@ -12,15 +13,11 @@ class SettingsCCDInfos(QWidget):
         super(SettingsCCDInfos, self).__init__(parent)
 
         self.cam = Camera()
+        self.roda_filtros = FilterControl()
 
         try:
-            self.roda_filtros = FilterControl()
-            self.roda_filtros.home_reset()
-        except Exception as e:
-            print(e)
-
-        try:
-            self.firmware, self.model, self.y_pixels, self.x_pixels = self.cam.get_firmware_and_model_and_pixels()
+            self.firmware, self.model, self.y_pixels, self.x_pixels =\
+                self.cam.get_firmware_and_model_and_pixels()
         except Exception as e:
             print(e)
             self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????",\
@@ -156,8 +153,8 @@ class SettingsCCDInfos(QWidget):
 
     def createPushButtonGroup(self):
         groupBox = QGroupBox("&Push Buttons")
-        groupBox.setCheckable(True)
-        groupBox.setChecked(True)
+        #groupBox.setCheckable(True)
+        #groupBox.setChecked(True)
 
         self.saveButton = QPushButton("Save")
         self.cancelButton = QPushButton("Cancel")
