@@ -14,7 +14,6 @@ from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
-from src.utils.rodafiltros.FilterControl import FilterControl
 
 
 class Main(QtWidgets.QMainWindow):
@@ -39,10 +38,6 @@ class Main(QtWidgets.QMainWindow):
         self.imag = imag_menu(self)
         self.CCD_menu = CCD_menu(self)
         self.cam = Camera()
-        try:
-            self.roda_filtros = FilterControl()
-        except Exception as e:
-            print("roda_filtros --------> " + e)
         self.filters_menu = filters(self)
         self.init_menu()
         self.init_window_geometry()
@@ -219,7 +214,6 @@ class Main(QtWidgets.QMainWindow):
         self.toolbar.addSeparator()
 
     def auto_connect_filter_and_camera(self):
-        self.roda_filtros.create_object()
         self.cam.connect
 
 
