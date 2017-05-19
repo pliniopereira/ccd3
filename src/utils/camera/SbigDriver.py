@@ -177,7 +177,7 @@ def getlinkstatus():
     udrv.SBIGUnivDrvCommand.argtypes = [c_ushort, POINTER(cin), POINTER(cout)]
     cout = cout()
     ret = udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_GET_LINK_STATUS.value, cin, byref(cout))
-    #print(ret, cout.linkEstablished, cout.baseAddress, cout.cameraType, cout.comTotal, cout.comFailed)
+    # print(ret, cout.linkEstablished, cout.baseAddress, cout.cameraType, cout.comTotal, cout.comFailed)
     return cout.linkEstablished == 1
 
 
@@ -398,7 +398,7 @@ def ccdinfo():
 def set_path(pre):
     '''
     :param pre:
-    :return: gera nome da pasta e consequente do arquivo fit e png.
+    :return: gera nome da pasta e consequente do arquivo fit e tif.
     '''
     tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
 
@@ -529,17 +529,20 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
 
     try:
         if dark_photo == 1:
-            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
-                      openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value, readoutMode=v_read, top=0, left=0,
-                      height=v_h, width=v_w)
+            try:
+                cin = cin(openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value)
+            except Exception as e:
+                print("Close SHUTTER_COMMAND ERROR ->" + str(e))
+            finally:
+                cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
+                          openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value, readoutMode=v_read,
+                          top=0, left=0, height=v_h, width=v_w)
         else:
             cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
                       openShutter=SbigLib.SHUTTER_COMMAND.SC_OPEN_SHUTTER.value, readoutMode=v_read, top=0, left=0,
                       height=v_h, width=v_w)
-    except Exception:
-        cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
-                  openShutter=SbigLib.SHUTTER_COMMAND.SC_OPEN_SHUTTER.value, readoutMode=v_read, top=0, left=0,
-                  height=v_h, width=v_w)
+    except Exception as e:
+        print("Open/Close shutter error ->" + str(e))
 
     print("Readout Height: " + str(v_h))
     print("Readout Width: " + str(v_w))
@@ -612,8 +615,6 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
     if dark_photo == 1:
         fn = pre + "-DARK" + "_" + site_id_name + "_" + tempo
         name = path + fn
-        pngname = name + '.png'
-        pngname_final = fn + '.png'
         tifname = name + '.tif'
         tifname_final = fn + '.tif'
         fitname = name + '.fit'
@@ -621,8 +622,6 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
     else:
         fn = pre + "_" + site_id_name + "_" + tempo
         name = path + fn
-        pngname = name + '.png'
-        pngname_final = fn + '.png'
         tifname = name + '.tif'
         tifname_final = fn + '.tif'
         fitname = name + '.fit'
@@ -661,13 +660,19 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
     # cmd(SbigLib.PAR_COMMAND.CC_CLOSE_DRIVER.value, None, None)
 
     img_to_tif = img
-    img_to_png = img
     img_to_fit = img
 
     try:
         if image_tif:
             print("Call set_tif")
             Image_Processing.save_tif(img_to_tif, tifname)
+            if dark_photo == 1:
+                fn = pre + "-DARK" + "_" + site_id_name + "_" + tempo
+                nameimage_final = fn + '.tif'
+            else:
+                fn = pre + "_" + site_id_name + "_" + tempo
+                nameimage_final = fn + '.tif'
+
     except Exception as e:
         print("Image .tif ERROR -> {}".format(e))
 
@@ -676,12 +681,19 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
             fits.writeto(fitname, img_to_fit)
             print("Call set_header")
             Image_Processing.set_header(fitname)
+            if dark_photo == 1:
+                fn = pre + "-DARK" + "_" + site_id_name + "_" + tempo
+                nameimage_final = fn + '.fit'
+            else:
+                fn = pre + "_" + site_id_name + "_" + tempo
+                nameimage_final = fn + '.fit'
+
     except Exception as e:
         print("Image .fit ERROR -> {}".format(e))
 
-    print("Call set_png")
-    Image_Processing.save_png(img_to_png, pngname, get_level1, get_level2)
+    # print("Call set_png")
+    # Image_Processing.save_png(img_to_png, pngname, get_level1, get_level2)
 
     data, hora = Image_Processing.get_date_hour(tempo)
     print("End of process")
-    return path, pngname_final, tifname_final, fitname_final, data, hora
+    return path, nameimage_final, tifname_final, fitname_final, data, hora
