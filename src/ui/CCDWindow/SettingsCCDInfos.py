@@ -41,11 +41,13 @@ class SettingsCCDInfos(QWidget):
 
         self.serial_filter_wheel_info_l = QtWidgets.QLabel("Serial Port: ", self)
         self.serial_filter_wheel_info_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
         try:
             motor_door_aux = str(self.roda_filtros.motor_door)
         except Exception as e:
             print(e)
             motor_door_aux = "???"
+
         self.serial_filter_wheel_info_f = QtWidgets.QLabel(motor_door_aux, self)
         self.serial_filter_wheel_info_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 

@@ -10,37 +10,40 @@ from src.utils.singleton import Singleton
 class FilterControl(metaclass=Singleton):
 
     def __init__(self):
+        self.smi = None
+        self.CommInterface = None
+        self.motor_door = None
+        self.connect_state = False
+        self.connect()
+
+    def connect(self):
         self.smi = cc.CreateObject('SMIEngine.SMIHost')
         cc.GetModule('IntegMotorInterface.dll')
         self.CommInterface = self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
-        self.create_object()
         self.motor_door = None
+        self.estabilish_link()
 
-    def create_object(self):
+    def estabilish_link(self):
         sleep(10)
-        smi = self.smi
-
         self.CommInterface.BaudRate = 9600
-
-        serial_var = Leitura_portas.serial_ports()
-        count_aux = int(len(serial_var))
-
+        serial_list = Leitura_portas.serial_ports()
+        count_aux = int(len(serial_list))
         for count in range(0, count_aux):
-            print("Search for " + serial_var[count] + " link to Motors!")
+            print("Search for " + serial_list[count] + " link to Motors!")
             try:
-                self.CommInterface.OpenPort(serial_var[count])
+                self.CommInterface.OpenPort(serial_list[count])
                 self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
                 self.CommInterface.WriteCommand("UBO")  # Make sure USER Bit B is output bit (UBO)
                 self.CommInterface.WriteCommand("d=-1 GOSUB1")
                 resposta = self.CommInterface.ReadResponse()
                 if resposta == 'SHTR:???':
-                    print(serial_var[count] + " - Established a link to Motors!")
-                    self.motor_door = serial_var[count]
+                    # print(serial_list[count] + " - Established a link to Motors!")
+                    self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
+                    self.connect_state = True
+                    self.motor_door = serial_list[count]
                     break
-            except Exception as e:
-                print(serial_var[count] + " - Cannot establish a link to Motors")
-
-        return smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
+            except Exception:
+                print(serial_list[count] + " - Cannot establish a link to Motors")
 
     def open_shutter(self):
         try:
@@ -148,14 +151,17 @@ class FilterControl(metaclass=Singleton):
             print(hPosition)
 
     def get_filtro_atual(self):
-        self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
+        if self.connect_state:
+            self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
 
-        sleep(2)
-        self.CommInterface.WriteCommand("g=-1 GOSUB4")
-        resposta = self.CommInterface.ReadResponse()
-        sleep(2)
+            sleep(2)
+            self.CommInterface.WriteCommand("g=-1 GOSUB4")
+            resposta = self.CommInterface.ReadResponse()
+            sleep(2)
 
-        return resposta[-1]
+            return resposta[-1]
+        else:
+            return "None"
 
     def clear_buffer(self):
         self.CommInterface.ClearBuffer()

@@ -14,6 +14,7 @@ from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
+from src.utils.rodafiltros.FilterControl import *
 
 
 class Main(QtWidgets.QMainWindow):
@@ -48,6 +49,7 @@ class Main(QtWidgets.QMainWindow):
 
         # Connect Camera
         if info[0]:
+            # self.roda_filtros = FilterControl()
             self.cam.connect()
             self.cam.start_ephemeris_shooter()
 
