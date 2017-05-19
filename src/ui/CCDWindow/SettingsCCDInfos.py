@@ -190,12 +190,12 @@ class SettingsCCDInfos(QWidget):
         self.close_open_filter_wheel.addItem("Close", 1)
 
     def fill_combo_filter_position(self):
-            self.set_filter_position.addItem("1", 0)
-            self.set_filter_position.addItem("2", 1)
-            self.set_filter_position.addItem("3", 2)
-            self.set_filter_position.addItem("4", 3)
-            self.set_filter_position.addItem("5", 4)
-            self.set_filter_position.addItem("6", 5)
+            self.set_filter_position.addItem("1", 1)
+            self.set_filter_position.addItem("2", 2)
+            self.set_filter_position.addItem("3", 3)
+            self.set_filter_position.addItem("4", 4)
+            self.set_filter_position.addItem("5", 5)
+            self.set_filter_position.addItem("6", 6)
 
     def button_settings(self):
         self.btn_get_filter.clicked.connect(self.func_get_filter)
@@ -215,7 +215,7 @@ class SettingsCCDInfos(QWidget):
     def func_filter_position(self):
         try:
             sleep(1)
-            self.roda_filtros.get_filtro_atual()
+            self.roda_filtros.FilterWheel_Control(self.set_filter_position.currentIndex() + 1)
             sleep(1)
 
         except Exception as e:

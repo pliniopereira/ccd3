@@ -41,6 +41,7 @@ class FilterControl(metaclass=Singleton):
                     self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
                     self.connect_state = True
                     self.motor_door = serial_list[count]
+                    self.home_reset()
                     break
             except Exception:
                 print(serial_list[count] + " - Cannot establish a link to Motors")
