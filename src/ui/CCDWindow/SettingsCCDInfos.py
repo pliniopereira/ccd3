@@ -79,7 +79,7 @@ class SettingsCCDInfos(QWidget):
         self.close_open_filter_wheel.setMaximumWidth(100)
         self.fill_combo_close_open_filter_wheel_shutter()
 
-        self.btn_get_filter = QtWidgets.QPushButton('Get filter', self)
+        self.get_filter_l = QtWidgets.QLabel('Current filter:', self)
         self.filter_position = QtWidgets.QLabel(self.roda_filtros.get_filtro_atual())
         self.filter_position.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.filter_position.setMinimumWidth(60)
@@ -92,7 +92,7 @@ class SettingsCCDInfos(QWidget):
         self.btn_home_position_filter = QtWidgets.QPushButton('Home Reset', self)
 
         groupBox.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel),
-                                     set_hbox(self.btn_get_filter, self.filter_position, stretch2=1),
+                                     set_hbox(self.get_filter_l, self.filter_position, stretch2=1),
                                      set_hbox(self.btn_set_filter, self.set_filter_position),
                                      set_hbox(self.btn_home_position_filter)))
         return groupBox
@@ -186,8 +186,15 @@ class SettingsCCDInfos(QWidget):
         self.close_open.addItem("Close", 1)
 
     def fill_combo_close_open_filter_wheel_shutter(self):
-        self.close_open_filter_wheel.addItem("Open", 0)
-        self.close_open_filter_wheel.addItem("Close", 1)
+        self.close_open_filter_wheel.addItem("Open", 1)
+        self.close_open_filter_wheel.addItem("Close", 2)
+        self.close_open_filter_wheel.currentIndexChanged[str].connect(self.my_slot_close_open_shutter)
+
+    def my_slot_close_open_shutter(self, item):
+        if item == "Close":
+            self.roda_filtros.close_shutter()
+        else:
+            self.roda_filtros.open_shutter()
 
     def fill_combo_filter_position(self):
             self.set_filter_position.addItem("1", 1)
@@ -197,29 +204,20 @@ class SettingsCCDInfos(QWidget):
             self.set_filter_position.addItem("5", 5)
             self.set_filter_position.addItem("6", 6)
 
-    def button_settings(self):
-        self.btn_get_filter.clicked.connect(self.func_get_filter)
-        self.btn_set_filter.clicked.connect(self.func_filter_position)
-        self.btn_home_position_filter.clicked.connect(self.func_home_position)
-
-    def func_get_filter(self):
-        try:
-            sleep(2)
-            filter_position_aux = self.roda_filtros.get_filtro_atual()
-            self.filter_position.setText(filter_position_aux)
-            sleep(3)
-
-        except Exception as e:
-            print(e)
-
     def func_filter_position(self):
         try:
             sleep(1)
-            self.roda_filtros.FilterWheel_Control(self.set_filter_position.currentIndex() + 1)
+            wish_filter_int = self.set_filter_position.currentIndex() + 1
+            self.roda_filtros.FilterWheel_Control(wish_filter_int)
             sleep(1)
-
         except Exception as e:
             print(e)
+        finally:
+            self.filter_position.setText(str(wish_filter_int))
+
+    def button_settings(self):
+        self.btn_set_filter.clicked.connect(self.func_filter_position)
+        self.btn_home_position_filter.clicked.connect(self.func_home_position)
 
     def func_home_position(self):
         try:
@@ -227,6 +225,8 @@ class SettingsCCDInfos(QWidget):
             print("func_home_position")
             self.roda_filtros.home_reset()
             sleep(1)
-
+            self.func_get_filter()
         except Exception as e:
             print(e)
+        finally:
+            self.filter_position.setText("1")
