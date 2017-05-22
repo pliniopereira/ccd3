@@ -24,7 +24,7 @@ class FilterControl(metaclass=Singleton):
         self.estabilish_link()
 
     def estabilish_link(self):
-        sleep(10)
+        sleep(1)
         self.CommInterface.BaudRate = 9600
         serial_list = Leitura_portas.serial_ports()
         count_aux = int(len(serial_list))
