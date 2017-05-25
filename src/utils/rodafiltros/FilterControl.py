@@ -91,7 +91,7 @@ class FilterControl(metaclass=Singleton):
             self.CommInterface.WriteCommand("V=25000")
             command = "a=UAI Ra"
             i = self.CommInterface.GetResponseOf(command)
-            if i == 0:
+            if i == '0':
                 self.CommInterface.WriteCommand("i=@P-500")
                 self.CommInterface.WriteCommand("P=i")
                 self.CommInterface.WriteCommand("MP")
@@ -105,10 +105,10 @@ class FilterControl(metaclass=Singleton):
             command = "a=UAI Ra"
             i = self.CommInterface.GetResponseOf(command)
 
-            while i == 1:
+            while i == '1':
                 command = "a=UAI Ra"
                 i = self.CommInterface.GetResponseOf(command)
-            while i == 0:
+            while i == '0':
                 command = "a=UAI Ra"
                 i = self.CommInterface.GetResponseOf(command)
 
@@ -116,7 +116,7 @@ class FilterControl(metaclass=Singleton):
             self.CommInterface.WriteCommand("V=-750")
             self.CommInterface.WriteCommand("G")  # Make the filter move to position
 
-            while i == 1:
+            while i == '1':
                 command = "a=UAI Ra"
                 i = self.CommInterface.GetResponseOf(command)
 
@@ -140,7 +140,6 @@ class FilterControl(metaclass=Singleton):
             hPosition = 1
             self.CommInterface.WriteCommand("g=-1")
             sleep(5)
-
             return hPosition
 
         except Exception as e:
@@ -155,10 +154,10 @@ class FilterControl(metaclass=Singleton):
         if self.connect_state:
             self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
 
-            sleep(2)
+            sleep(0.5)
             self.CommInterface.WriteCommand("g=-1 GOSUB4")
             resposta = self.CommInterface.ReadResponse()
-            sleep(2)
+            sleep(0.5)
 
             return resposta[-1]
         else:
