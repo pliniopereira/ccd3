@@ -219,7 +219,3 @@ class Main(QtWidgets.QMainWindow):
 
     def auto_connect_filter_and_camera(self):
         self.cam.connect
-
-
-
-

@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 
 from src.ui.CCDWindow.SettingsCCDInfos import SettingsCCDInfos
 
@@ -11,3 +12,5 @@ class Main(QtWidgets.QMainWindow):
         self.setCentralWidget(self.ima)
 
         self.setWindowTitle("Imager Settings")
+
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)

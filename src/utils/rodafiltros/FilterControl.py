@@ -150,10 +150,10 @@ class FilterControl(metaclass=Singleton):
             print("Home reset ERROR -> {}".format(e))
             print("------------------------------------")
         finally:
+            QGuiApplication.restoreOverrideCursor()
             print("----------------------------------------------------")
             print("Filter position: " + str(hPosition))
             print("----------------------------------------------------\n")
-            QGuiApplication.restoreOverrideCursor()
 
     def get_filtro_atual(self):
         if self.connect_state:
