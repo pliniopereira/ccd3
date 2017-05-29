@@ -16,6 +16,8 @@ class SettingsCCDInfos(QWidget):
     def __init__(self, parent=None):
         super(SettingsCCDInfos, self).__init__(parent)
 
+        self.imager_window = parent
+
         self.cam = Camera()
 
         self.roda_filtros = FilterControl()
@@ -211,11 +213,10 @@ class SettingsCCDInfos(QWidget):
         self.saveButton.clicked.connect(self.button_ok_func)
 
         self.cancelButton = QPushButton("Cancel")
-        self.cancelButton.clicked.connect(self.button_ok_func)
+        self.cancelButton.clicked.connect(self.func_cancel)
 
         self.clearButton = QPushButton("Clear")
-        self.clearButton.clicked.connect(self.button_ok_func)
-
+        self.clearButton.clicked.connect(self.clear_all)
 
         group_box.setLayout(set_lvbox(set_hbox(self.saveButton, self.clearButton, self.cancelButton)))
 
@@ -315,3 +316,10 @@ class SettingsCCDInfos(QWidget):
 
         except Exception as e:
             print(e)
+
+    def clear_all(self):
+        self.temp_set_point_f.clear()
+        self.temp_init_f.clear()
+
+    def func_cancel(self):
+        self.imager_window.close()
