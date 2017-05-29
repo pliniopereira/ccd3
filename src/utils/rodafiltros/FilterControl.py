@@ -146,14 +146,10 @@ class FilterControl(metaclass=Singleton):
             return hPosition
 
         except Exception as e:
-            print("------------------------------------")
             print("Home reset ERROR -> {}".format(e))
-            print("------------------------------------")
         finally:
             QGuiApplication.restoreOverrideCursor()
-            print("----------------------------------------------------")
             print("Filter position: " + str(hPosition))
-            print("----------------------------------------------------\n")
 
     def get_filtro_atual(self):
         if self.connect_state:
@@ -250,9 +246,7 @@ class FilterControl(metaclass=Singleton):
         self.CommInterface.WriteCommand("END")
         hPosition = FilterNumber  # h receive g for VB use
 
-        print("----------------------------------------------------")
         print("Filter position: " + str(FilterNumber))
-        print("----------------------------------------------------\n")
 
         QGuiApplication.restoreOverrideCursor()
 
