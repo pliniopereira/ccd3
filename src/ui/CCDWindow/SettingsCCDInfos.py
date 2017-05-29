@@ -1,3 +1,5 @@
+from time import sleep
+
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
@@ -5,7 +7,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 from src.controller.camera import Camera
 from src.ui.commons.layout import set_hbox, set_lvbox
 from src.utils.camera.SbigDriver import (ccdinfo)
-from src.utils.rodafiltros.FilterControl import *
+from src.utils.rodafiltros.FilterControl import FilterControl
 
 
 class SettingsCCDInfos(QWidget):
