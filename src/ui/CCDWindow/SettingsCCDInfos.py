@@ -198,6 +198,8 @@ class SettingsCCDInfos(QWidget):
 
         self.fanButton = QtWidgets.QPushButton("Fan (On/Off)")
 
+        self.setting_values()
+
         group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open),
                                       set_hbox(self.temp_set_point_l, self.temp_set_point_f),
                                       set_hbox(self.temp_init_l, self.temp_init_f),
@@ -285,13 +287,8 @@ class SettingsCCDInfos(QWidget):
         finally:
             self.filter_position.setText("1")
 
-    def get_camera_settings(self):
-        settings = SettingsCamera()
-        info = settings.get_camera_settings()
-        return info
-
     def get_values(self):
-        return self.cam.get_camera_settings()
+        return self.var_save_ini_camera.get_camera_settings()
 
     def setting_values(self):
         info = self.get_values()

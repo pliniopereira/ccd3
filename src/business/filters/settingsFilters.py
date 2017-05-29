@@ -24,6 +24,7 @@ class SettingsFilters:
                              label_filter4, wavelength_filter4, exposure_filter4, binning_filter4, ccdgain_filter4,
                              label_filter5, wavelength_filter5, exposure_filter5, binning_filter5, ccdgain_filter5,
                              label_filter6, wavelength_filter6, exposure_filter6, binning_filter6, ccdgain_filter6):
+
         self._settings.setValue(f.LABEL_FILTER1, label_filter1)
         self._settings.setValue(f.WAVELENGTH_FILTER1, wavelength_filter1)
         self._settings.setValue(f.EXPOSURE_FILTER1, exposure_filter1)

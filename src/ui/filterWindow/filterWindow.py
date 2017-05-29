@@ -183,7 +183,7 @@ class FilterWindow(QtWidgets.QWidget):
     def erro_binning(self, binning_var):
         try:
             binning_filter = int(binning_var)
-        except:
+        except TypeError:
             binning_filter = 0
         return binning_filter
 
