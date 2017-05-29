@@ -6,9 +6,7 @@ from src.ui.commons.layout import set_lvbox, set_hbox
 
 
 class FilterWindow(QtWidgets.QWidget):
-    '''
-    Cria os campos e espaços no menu filter window
-    '''
+    # Cria os campos e espaços no menu filter window
 
     def __init__(self, parent=None):
         super(FilterWindow, self).__init__(parent)
@@ -248,6 +246,7 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_exposure_filter4.clear()
         self.setField_exposure_filter5.clear()
         self.setField_exposure_filter6.clear()
+
 
         self.setField_ccdgain_filter1.clear()
         self.setField_ccdgain_filter2.clear()

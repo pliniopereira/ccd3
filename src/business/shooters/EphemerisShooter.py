@@ -23,33 +23,35 @@ class EphemerisShooter(QtCore.QThread):
     def __init__(self):
 
         super(EphemerisShooter, self).__init__()
-        self.camconfig = SettingsCamera()
-        self.camconfig.setup_settings()
-        infocam = self.camconfig.get_camera_settings()
+        self.cam_config = SettingsCamera()
+        self.cam_config.setup_settings()
+        info_cam = self.cam_config.get_camera_settings()
 
         self.ObserverFactory = EphemObserverFactory()
-        self.continuousShooterThread = ContinuousShooterThread(int(infocam[4]))
+        # self.continuousShooterThread = ContinuousShooterThread(int(info_cam[4]))
+        self.continuousShooterThread = ContinuousShooterThread(0)
         self.console = ConsoleThreadOutput()
         self.config = ConfigProject()
 
         info = self.config.get_geographic_settings()
-        infosun = self.config.get_moonsun_settings()
+        info_sun = self.config.get_moonsun_settings()
 
         self.latitude = info[0]  # '-45.51'
         self.longitude = info[1]  # '-23.12'
         self.elevation = info[2]  # 350
 
-        self.max_solar_elevation = infosun[0]  # -12
-        self.ignore_lunar_position = infosun[1]
-        self.max_lunar_elevation = infosun[2]  # 8
-        self.max_lunar_phase = infosun[3]  # 1
+        self.max_solar_elevation = info_sun[0]  # -12
+        self.ignore_lunar_position = info_sun[1]
+        self.max_lunar_elevation = info_sun[2]  # 8
+        self.max_lunar_phase = info_sun[3]  # 1
         self.wait_temperature = False
 
-        print(int(infocam[4]))
+        # print(int(info_cam[4]))
         try:
-            self.s = int(infocam[4])
+            # self.s = int(info_cam[4])
+            self.s = 0
             self.continuousShooterThread.set_sleep_time(self.s)
-        except Exception as e:
+        except Exception:
             self.s = 5
 
         self.shootOn = False
@@ -63,11 +65,11 @@ class EphemerisShooter(QtCore.QThread):
             self.longitude = info[1]  # '-23.12'
             self.elevation = info[2]  # 350
 
-            infosun = self.config.get_moonsun_settings()
-            self.max_solar_elevation = float(infosun[0])  # -12
-            self.ignore_lunar_position = infosun[1]
-            self.max_lunar_elevation = float(infosun[2])  # 8
-            self.max_lunar_phase = float(infosun[3])  # 1
+            info_sun = self.config.get_moonsun_settings()
+            self.max_solar_elevation = float(info_sun[0])  # -12
+            self.ignore_lunar_position = info_sun[1]
+            self.max_lunar_elevation = float(info_sun[2])  # 8
+            self.max_lunar_phase = float(info_sun[3])  # 1
 
         except Exception as e:
             self.console.raise_text("Exception thrown to acquire information\n"
@@ -79,12 +81,13 @@ class EphemerisShooter(QtCore.QThread):
             self.max_lunar_elevation = 0
             self.max_lunar_phase = 0
 
-        infocam = self.camconfig.get_camera_settings()
+        info_cam = self.cam_config.get_camera_settings()
 
-        try:
-            self.s = int(infocam[4])
-        except Exception as e:
-            self.s = 0
+        # try:
+        #     self.s = int(info_cam[4])
+        # except Exception as e:
+        #     self.s = 0
+        self.s = 0
 
     def calculate_moon(self, obs):
         aux = obs

@@ -16,9 +16,7 @@ from src.utils.singleton import Singleton
 
 
 class Camera(metaclass=Singleton):
-    '''
-        classe de controle que faz comunicao com a camera fisica.
-    '''
+    # classe de controle que faz comunicao com a camera fisica.
 
     def __init__(self):
         self.lock = Locker()
@@ -36,35 +34,34 @@ class Camera(metaclass=Singleton):
         self.main = Status()
         self.now_plus_10 = datetime.now()
         self.settedhour = datetime.now()
-        """
-        executa o modo manual continuousShooterThread
-        """
-        self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[4]))
-        """
-        executa o modo automatico ephemerisShooterThread
-        """
-        self.ephemerisShooterThread = EphemerisShooter()
+
+        # self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[0]))  # executa o
+        #  modo manual continuousShooterThread
+        self.continuousShooterThread = ContinuousShooterThread('0')
+        self.ephemerisShooterThread = EphemerisShooter()  # executa o modo automatico ephemerisShooterThread
 
         self.sthread = SThread()
 
         self.commands = CameraQThread(self)
         self.shooting = False
-        # Initiating the Slots
-        self.init_slots()
+
+        self.init_slots()  # Initiating the Slots
 
         self.info_ini = []
 
         info_ini = self.get_camera_settings_ini()
-        self.aux_temperature = int(info_ini[0])
+
+        try:
+            self.aux_temperature = int(info_ini[0])
+        except TypeError:
+            self.aux_temperature = 10
 
         self.temp = 0
         self.temp_contador = 0
         self.temp_contador_manual = 0
 
     def init_slots(self):
-        """
-        Ephemeris Shooter Slots
-        """
+        # Ephemeris Shooter Slots
         self.ephemerisShooterThread.started.connect(self.eshooter_started)
         self.ephemerisShooterThread.finished.connect(self.eshooter_finished)
         self.ephemerisShooterThread.signal_started_shooting.connect(self.shooter_mode)
@@ -73,9 +70,8 @@ class Camera(metaclass=Singleton):
 
         self.ephemerisShooterThread.continuousShooterThread.started.connect(self.eshooter_observation_started)
         self.ephemerisShooterThread.continuousShooterThread.finished.connect(self.eshooter_observation_finished)
-        """
-        Criando connect da temperatura
-        """
+
+        # Criando connect da temperatura
         # self.ephemerisShooterThread.continuousShooterThread.signalAfterShooting.connect()
         self.continuousShooterThread.signal_temp.connect(self.check_temp_manual)
         self.continuousShooterThread.finished.connect(self.standby_mode)
@@ -105,10 +101,9 @@ class Camera(metaclass=Singleton):
         self.model_field.setText("Camera: ")
 
     def get_info(self):
-        '''
-        Function to get the CCD Info
-        This function will return [CameraFirmware, CameraType, CameraName, Pixels]
-        '''
+        # Function to get the CCD Info
+        # This function will return [CameraFirmware, CameraType, CameraName, Pixels]
+
         ret = None
         self.lock.set_acquire()
         try:
@@ -130,10 +125,7 @@ class Camera(metaclass=Singleton):
                 self.console.raise_text("Successfully connected!", 2)
                 self.set_firmware_and_model_values()
 
-                '''
-                Fan Field sera atualizado automaticamente
-                atualizado pela thread de refresh temp.
-                '''
+                # Fan Field sera atualizado automaticamente atualizado pela thread de refresh temp.
                 # self.fan.refresh_fan_status()
                 return True
             else:
@@ -257,7 +249,6 @@ class Camera(metaclass=Singleton):
             self.console.raise_text("The camera is not connected!", 3)
 
     # All PyQt Slots
-
     def eshooter_started(self):
         self.console.raise_text("Shooter Ephemeris Started!", 1)
         self.standby_mode()
@@ -281,9 +272,7 @@ class Camera(metaclass=Singleton):
 
     # Commands Slots
     def check_temp_manual(self):
-        '''
-        funcao que espera temperatura setada ou tempo pre-determinado
-        '''
+        # funcao que espera temperatura setada ou tempo pre-determinado
         try:
             now = datetime.now()
             if self.temp_contador_manual == 0:
@@ -299,9 +288,7 @@ class Camera(metaclass=Singleton):
             print(e)
 
     def check_temp(self):
-        '''
-        funcao que espera temperatura setada ou tempo pre-determinado
-        '''
+        # funcao que espera temperatura setada ou tempo pre-determinado
         try:
             now = datetime.now()
             if self.temp_contador == 0:

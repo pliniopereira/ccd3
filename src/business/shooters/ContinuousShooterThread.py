@@ -7,21 +7,17 @@ from src.business.shooters.SThread import SThread
 
 
 class ContinuousShooterThread(QtCore.QThread):
-    '''
-    classe para modo manual
-    '''
+    # classe para modo manual
 
     signalAfterShooting = QtCore.pyqtSignal(name="signalAfterShooting")
     signal_temp = QtCore.pyqtSignal(name="signalTemp")
 
-    def __init__(self, timeSleep):
+    def __init__(self, time_sleep):
         super(ContinuousShooterThread, self).__init__()
         self.continuous = True
-        self.s = timeSleep
+        self.s = time_sleep
 
-        '''
-        SThread manda para o Sbigdriver as informações para se tirar a foto em si.
-        '''
+        # SThread manda para o Sbigdriver as informações para se tirar a foto em si.
 
         self.ss = SThread()
         self.ss.started.connect(self.thread_iniciada)
