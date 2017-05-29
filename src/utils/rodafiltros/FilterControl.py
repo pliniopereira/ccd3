@@ -41,6 +41,7 @@ class FilterControl(metaclass=Singleton):
                     self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
                     self.connect_state = True
                     self.motor_door = serial_list[count]
+                    print("Home Reset")
                     self.home_reset()
                     break
             except Exception:
@@ -51,16 +52,14 @@ class FilterControl(metaclass=Singleton):
             self.CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
             sleep(1)
         except Exception as e:
-            print("open_shutter")
-            print(e)
+            print("Open Shutter ERROR -> {}".format(e))
 
     def close_shutter(self):
         try:
             self.CommInterface.WriteCommand("UB=0")
             sleep(1)
         except Exception as e:
-            print("close_shutter")
-            print(e)
+            print("Close Shutter ERROR -> {}".format(e))
 
     def home_reset(self):
         self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
@@ -144,11 +143,12 @@ class FilterControl(metaclass=Singleton):
 
         except Exception as e:
             print("------------------------------------")
-            print("Home reset ERROR")
-            print(e)
+            print("Home reset ERROR -> {}".format(e))
             print("------------------------------------")
         finally:
-            print(hPosition)
+            print("----------------------------------------------------")
+            print("Filter position: " + str(hPosition))
+            print("----------------------------------------------------\n")
 
     def get_filtro_atual(self):
         if self.connect_state:
@@ -171,8 +171,8 @@ class FilterControl(metaclass=Singleton):
 
     def FilterWheel_Control(self, FilterNumber):
         '''
-        :param FilterNumber: 
-        :return: 
+        :param FilterNumber(int): numero do filtro desejado
+        :return: Posição atual do filtro.
         '''
 
         self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
@@ -192,12 +192,12 @@ class FilterControl(metaclass=Singleton):
         if FilterNumber == 6:
             command = "g=6"
 
-        sleep(1)
+        sleep(0.5)
         self.CommInterface.WriteCommand(command)  # Send filter position
-        sleep(1)
+        sleep(0.5)
 
-        g = int(FilterNumber)  # Filter position
-        h = int(hPosition)  # Present position
+        g = FilterNumber  # Filter position
+        h = hPosition  # Present position
 
         if h == 1:  # Present position is 3333
             if g < 5:
@@ -242,9 +242,9 @@ class FilterControl(metaclass=Singleton):
         self.CommInterface.WriteCommand("O=h*3333")  # And reset the present origin
         self.CommInterface.WriteCommand("END")
         hPosition = FilterNumber  # h receive g for VB use
-        print("----------------------------------------------------")
-
-        print("Filter position: " + FilterNumber)
 
         print("----------------------------------------------------")
+        print("Filter position: " + str(FilterNumber))
+        print("----------------------------------------------------\n")
+
         return FilterNumber

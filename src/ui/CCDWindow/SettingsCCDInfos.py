@@ -221,8 +221,8 @@ class SettingsCCDInfos(QWidget):
 
     def func_home_position(self):
         try:
-            sleep(1)
-            print("func_home_position")
+            sleep(0.5)
+            print("Home Position")
             self.roda_filtros.home_reset()
             sleep(1)
         except Exception as e:
