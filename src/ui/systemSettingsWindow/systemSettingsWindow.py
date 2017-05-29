@@ -41,7 +41,8 @@ class SystemSettingsWindow(QtWidgets.QWidget):
 
     def setting_up(self):
         self.setLayout(set_lvbox(set_hbox(self.wp),
-                                 set_hbox(self.button_ok, self.button_clear, self.button_cancel, stretch2=1)))
+                                 set_hbox(self.button_ok, self.button_clear, self.button_cancel,
+                                          stretch2=1)))
 
     def saving_settings(self):
         info = self.wp.get_values()

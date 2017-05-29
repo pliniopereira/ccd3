@@ -39,21 +39,21 @@ class ConfigProject:
         self._settings.sync()
 
     def get_site_settings(self):
-        return self.get_value(p.SITE_TITLE, p.NAME),\
-               self.get_value(p.SITE_TITLE, p.SITE_ID),\
+        return self.get_value(p.SITE_TITLE, p.NAME), \
+               self.get_value(p.SITE_TITLE, p.SITE_ID), \
                self.get_value(p.SITE_TITLE, p.IMAGER_ID)
 
     def get_geographic_settings(self):
         m = p.GEOGRAPHIC_TITLE
-        return self.get_value(m, p.LATITUDE),\
-               self.get_value(m, p.LONGITUDE),\
-               self.get_value(m, p.ELEVATION),\
-               self.get_value(m, p.PRESSURE),\
+        return self.get_value(m, p.LATITUDE), \
+               self.get_value(m, p.LONGITUDE), \
+               self.get_value(m, p.ELEVATION), \
+               self.get_value(m, p.PRESSURE), \
                self.get_value(m, p.TEMPERATURE)
 
     def get_moonsun_settings(self):
         m = p.SUN_MOON_TITLE
-        return self.get_value(m, p.MAX_SOLAR_ELEVATION),\
-               cb(self.get_value(m, p.IGNORE_LUNAR_POSITION)),\
-               self.get_value(m, p.MAX_LUNAR_PHASE),\
+        return self.get_value(m, p.MAX_SOLAR_ELEVATION), \
+               cb(self.get_value(m, p.IGNORE_LUNAR_POSITION)), \
+               self.get_value(m, p.MAX_LUNAR_PHASE), \
                self.get_value(m, p.MAX_LUNAR_ELEVATION)

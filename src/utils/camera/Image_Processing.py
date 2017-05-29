@@ -99,7 +99,7 @@ def resize_image_512x512(name_png):
     '''
     img = Image.open(name_png)
     resized_img = img.resize((int(512), int(512)))
-    #resized_img = ImageOps.autocontrast(resized_img, 2)
+    # resized_img = ImageOps.autocontrast(resized_img, 2)
     resized_img.save(name_png)
 
 
@@ -124,8 +124,8 @@ def draw_image(name_png):
     del draw
 
     img.save(name_png)
-    #mostra imagem unicamente
-    #img.show()
+    # mostra imagem unicamente
+    # img.show()
 
 
 def bytscl(array, max = None, min = None, nan = 0, top=255):

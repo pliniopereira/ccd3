@@ -1,6 +1,4 @@
-'''
-    Pega valor no ini e passa para booleano
-'''
+# Pega valor no ini e passa para booleano
 
 
 def cb(string):

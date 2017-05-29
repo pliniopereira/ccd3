@@ -5,6 +5,7 @@ from src.utils.singleton import Singleton
 class ConsoleThreadOutput(metaclass=Singleton):
     def __init__(self):
         self.logger = Logger()
+        self.log = None
 
     def get_widget_console(self):
         return self.log

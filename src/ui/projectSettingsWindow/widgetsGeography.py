@@ -53,7 +53,8 @@ class WidgetsGeography(QtWidgets.QWidget):
         self.setLayout(vbox)
 
     def get_geography(self):
-        return self.eLat.text(), self.eLon.text(), self.eElev.text(), self.ePres.text(), self.eTemp.text()
+        return self.eLat.text(), self.eLon.text(), self.eElev.text(), self.ePres.text(),\
+               self.eTemp.text()
 
     def set_geography(self, latitude, longitude, elevation, pressure, temperature):
         self.eLat.setText(latitude)
@@ -68,4 +69,3 @@ class WidgetsGeography(QtWidgets.QWidget):
         self.eElev.clear()
         self.ePres.clear()
         self.eTemp.clear()
-

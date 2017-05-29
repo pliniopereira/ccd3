@@ -30,4 +30,3 @@ class Clock(QtWidgets.QFrame):
 
         self.title.setFont(get_qfont(True))
         self.lcd.setFont(get_qfont(False))
-

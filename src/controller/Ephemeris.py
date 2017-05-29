@@ -13,9 +13,9 @@ class Ephemeris:
     def __init__(self):
         self.config = ConfigProject()
         info = self.config.get_geographic_settings()
-        self.latitude = info[0] #'-45.51'
-        self.longitude = info[1] #'-23.12'
-        self.elev = info[2] #350
+        self.latitude = info[0]  # '-45.51'
+        self.longitude = info[1]  # '-23.12'
+        self.elev = info[2]  # 350
         self.shootOn = False
 
         t = Thread(target=self.check_all)

@@ -249,7 +249,6 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_exposure_filter5.clear()
         self.setField_exposure_filter6.clear()
 
-
         self.setField_ccdgain_filter1.clear()
         self.setField_ccdgain_filter2.clear()
         self.setField_ccdgain_filter3.clear()

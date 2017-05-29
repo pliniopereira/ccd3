@@ -16,4 +16,3 @@ class MainWindow(QtWidgets.QMainWindow):
     def init_widget(self):
         a = SettingsWindow(self)
         self.setCentralWidget(a)
-

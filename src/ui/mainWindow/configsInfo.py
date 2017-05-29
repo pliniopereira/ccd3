@@ -27,4 +27,3 @@ class ConfigsInfo(QtWidgets.QFrame):
 
     def set_layout(self):
         self.setLayout(set_wvbox(self.site, self.moon))
-

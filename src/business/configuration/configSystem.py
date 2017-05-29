@@ -31,4 +31,3 @@ class ConfigSystem:
 
     def get_log_path(self):
         return self._settings.value(s.LOG_PATH)
-

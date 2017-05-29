@@ -7,9 +7,8 @@ from src.utils.camera import SbigDriver
 
 
 class Logger(QtCore.QThread):
-    '''
-    cria o log
-    '''
+    # cria o log
+
     def __init__(self):
         super(Logger, self).__init__()
         self.text = None
@@ -60,8 +59,8 @@ class Logger(QtCore.QThread):
                     log.write(str(data_log) + " - " + str(self.text) + "\n")
                     log.close()
                 else:
-                    name_log = name_log_folder + "/LOG_" + name_observatory + "_" + mes + "_" + str(abs_julian_day[1]) + str(
-                        abs_julian_day[2]) + '.txt'
+                    name_log = name_log_folder + "/LOG_" + name_observatory + "_" + mes + "_" + str(abs_julian_day[1]) \
+                               + str(abs_julian_day[2]) + '.txt'
                     log = open(str(name_log), 'a')
                     log.write(str(data_log) + " - " + str(self.text) + "\n")
                     log.close()

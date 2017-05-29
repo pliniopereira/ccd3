@@ -44,5 +44,3 @@ class MainWindow(QtWidgets.QWidget):
             self.count += 1
             print(self.count)
             time.sleep(1)
-
-
