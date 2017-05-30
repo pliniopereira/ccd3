@@ -187,7 +187,7 @@ class SettingsCCDInfos(QWidget):
         self.temp_set_point_f = QtWidgets.QLineEdit(self)
         self.temp_set_point_f.setMaximumWidth(100)
 
-        self.temp_init_l = QtWidgets.QLabel("Tempo para iniciar:", self)
+        self.temp_init_l = QtWidgets.QLabel("Tempo para iniciar(s):", self)
         self.temp_init_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_init_f = QtWidgets.QLineEdit(self)
         self.temp_init_f.setMaximumWidth(100)

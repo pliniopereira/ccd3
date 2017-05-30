@@ -40,7 +40,7 @@ class FilterControl(metaclass=Singleton):
                 self.CommInterface.WriteCommand("d=-1 GOSUB1")
                 answer = self.CommInterface.ReadResponse()
                 if answer == 'SHTR:???':
-                    # print(serial_list[count] + " - Established a link to Motors!")
+                    print(serial_list[count] + " - Established a link to Motors!\n")
                     self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
                     self.connect_state = True
                     self.motor_door = serial_list[count]
@@ -80,7 +80,7 @@ class FilterControl(metaclass=Singleton):
             self.CommInterface.WriteCommand("DOUTA0,b=7")
             self.CommInterface.WriteCommand("WAIT=500")
 
-            # Initializa SMARTMOTOR variables
+            # Initialize SMARTMOTOR variables
             self.CommInterface.WriteCommand("AMPS=100")
             self.CommInterface.WriteCommand("MP")
             self.CommInterface.WriteCommand("KGON")
