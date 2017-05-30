@@ -5,6 +5,7 @@ import comtypes.gen.INTEGMOTORINTERFACELib
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QGuiApplication
 
+from src.business.filters.settingsFilters import SettingsFilters
 from src.utils.rodafiltros import Leitura_portas
 from src.utils.singleton import Singleton
 
@@ -18,6 +19,15 @@ class FilterControl(metaclass=Singleton):
         self.connect_state = False
         self.shutter_open = None
         self.connect()
+
+        settings = SettingsFilters()
+        info_filters = settings.get_filters_settings()
+
+        print(info_filters)
+
+        ('OH1111', 'aaa12', 'aaa13', '0', 'aaa14', 'OH2', 'bbb22', 'bbb23', '0', 'bbb24', 'OH3', 'ccc32', 'ccc33', '0',
+         'ccc34', 'OH4', 'ddd42', 'ddd43', '0', 'ddd44', 'OH5', 'eee52', 'eee53', '0', 'eee54', 'OH6', 'fff62', 'fff63',
+         '0', 'fff64')
 
     def connect(self):
         self.smi = cc.CreateObject('SMIEngine.SMIHost')

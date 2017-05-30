@@ -3,6 +3,7 @@ import time
 from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
+from src.business.filters.settingsFilters import SettingsFilters
 from src.business.models.image import Image
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
@@ -22,7 +23,8 @@ class SThread(QtCore.QThread):
         self.img = None
         self.generic_count = 0
 
-    def get_camera_settings(self):
+    @staticmethod
+    def get_camera_settings():
         '''
         pega os valores no ini camera
         info[0] = temperature_camera
@@ -33,6 +35,48 @@ class SThread(QtCore.QThread):
         info = settings.get_camera_settings()
 
         return info
+
+    @staticmethod
+    def get_filter_settings():
+        '''
+        info[0] = label_field_1
+        info[1] = wavelength_field_1
+        info[2] = exposure_field_1
+        info[3] = binning_field_1
+        info[4] = ccd_gain_field_1
+        info[5] = label_field_2
+        info[6] = wavelength_field_2
+        info[7] = exposure_field_2
+        info[8] = binning_field_2
+        info[9] = ccd_gain_field_2
+        info[10] = label_field_3
+        info[11] = wavelength_field_3
+        info[12] = exposure_field_3
+        info[13] = binning_field_3
+        info[14] = ccd_gain_field_3
+        info[15] = label_field_4
+        info[16] = wavelength_field_4
+        info[17] = exposure_field_4
+        info[18] = binning_field_4
+        info[19] = ccd_gain_field_4
+        info[20] = label_field_5
+        info[21] = wavelength_field_5
+        info[22] = exposure_field_5
+        info[23] = binning_field_5
+        info[24] = ccd_gain_field_5
+        info[25] = label_field_6
+        info[26] = wavelength_field_6
+        info[27] = exposure_field_6
+        info[28] = binning_field_6
+        info[29] = ccd_gain_field_6
+        '''
+
+        settings = SettingsFilters()
+        info_filters = settings.get_filters_settings()
+
+        print(info_filters)
+
+        return info_filters
 
     def take_dark(self):
         '''
