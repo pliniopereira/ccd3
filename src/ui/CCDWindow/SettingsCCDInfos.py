@@ -131,7 +131,7 @@ class SettingsCCDInfos(QWidget):
         self.fill_combo_close_open_filter_wheel_shutter()
 
         self.get_filter_l = QtWidgets.QLabel('Current filter:', self)
-        self.filter_position = QtWidgets.QLabel(self.roda_filtros.get_filtro_atual())
+        self.filter_position = QtWidgets.QLabel(self.roda_filtros.get_current_filter())
         self.filter_position.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.filter_position.setMinimumWidth(60)
 
@@ -265,7 +265,7 @@ class SettingsCCDInfos(QWidget):
         try:
             sleep(1)
             wish_filter_int = self.set_filter_position.currentIndex() + 1
-            self.roda_filtros.FilterWheel_Control(wish_filter_int)
+            self.roda_filtros.filter_wheel_control(wish_filter_int)
             sleep(1)
         except Exception as e:
             print(e)
