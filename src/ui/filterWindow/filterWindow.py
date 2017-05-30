@@ -10,38 +10,7 @@ class FilterWindow(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(FilterWindow, self).__init__(parent)
-        self.create_filters_widgets()
-        self.var_save_ini_filters = SettingsFilters()
-        self.f = parent
 
-        self.console = ConsoleThreadOutput()
-
-        self.setting_values()
-
-        self.setLayout(set_lvbox(set_hbox(self.setField_label_label, self.setField_wavelength_label,
-                                          self.setField_exposure_label, self.setField_binning_label,
-                                          self.setField_ccd_gain_label),
-                                 set_hbox(self.setField_1, self.setField_label_filter1,
-                                          self.setField_wavelength_filter1, self.setField_exposure_filter1,
-                                          self.setField_binning_filter1, self.setField_ccd_gain_filter1),
-                                 set_hbox(self.setField_2, self.setField_label_filter2,
-                                          self.setField_wavelength_filter2, self.setField_exposure_filter2,
-                                          self.setField_binning_filter2, self.setField_ccd_gain_filter2),
-                                 set_hbox(self.setField_3, self.setField_label_filter3,
-                                          self.setField_wavelength_filter3, self.setField_exposure_filter3,
-                                          self.setField_binning_filter3, self.setField_ccd_gain_filter3),
-                                 set_hbox(self.setField_4, self.setField_label_filter4,
-                                          self.setField_wavelength_filter4, self.setField_exposure_filter4,
-                                          self.setField_binning_filter4, self.setField_ccd_gain_filter4),
-                                 set_hbox(self.setField_5, self.setField_label_filter5,
-                                          self.setField_wavelength_filter5, self.setField_exposure_filter5,
-                                          self.setField_binning_filter5, self.setField_ccd_gain_filter5),
-                                 set_hbox(self.setField_6, self.setField_label_filter6,
-                                          self.setField_wavelength_filter6, self.setField_exposure_filter6,
-                                          self.setField_binning_filter6, self.setField_ccd_gain_filter6),
-                                 set_hbox(self.button_ok, self.button_clear, self.button_cancel, stretch2=1)))
-
-        # Instance attributes
         self.setField_label_label = None
         self.setField_wavelength_label = None
         self.setField_exposure_label = None
@@ -95,6 +64,37 @@ class FilterWindow(QtWidgets.QWidget):
         self.button_clear = None
         self.button_cancel = None
 
+        self.create_filters_widgets()
+        self.var_save_ini_filters = SettingsFilters()
+        self.f = parent
+
+        self.console = ConsoleThreadOutput()
+
+        self.setting_values()
+
+        self.setLayout(set_lvbox(set_hbox(self.setField_label_label, self.setField_wavelength_label,
+                                          self.setField_exposure_label, self.setField_binning_label,
+                                          self.setField_ccd_gain_label),
+                                 set_hbox(self.setField_1, self.setField_label_filter1,
+                                          self.setField_wavelength_filter1, self.setField_exposure_filter1,
+                                          self.setField_binning_filter1, self.setField_ccd_gain_filter1),
+                                 set_hbox(self.setField_2, self.setField_label_filter2,
+                                          self.setField_wavelength_filter2, self.setField_exposure_filter2,
+                                          self.setField_binning_filter2, self.setField_ccd_gain_filter2),
+                                 set_hbox(self.setField_3, self.setField_label_filter3,
+                                          self.setField_wavelength_filter3, self.setField_exposure_filter3,
+                                          self.setField_binning_filter3, self.setField_ccd_gain_filter3),
+                                 set_hbox(self.setField_4, self.setField_label_filter4,
+                                          self.setField_wavelength_filter4, self.setField_exposure_filter4,
+                                          self.setField_binning_filter4, self.setField_ccd_gain_filter4),
+                                 set_hbox(self.setField_5, self.setField_label_filter5,
+                                          self.setField_wavelength_filter5, self.setField_exposure_filter5,
+                                          self.setField_binning_filter5, self.setField_ccd_gain_filter5),
+                                 set_hbox(self.setField_6, self.setField_label_filter6,
+                                          self.setField_wavelength_filter6, self.setField_exposure_filter6,
+                                          self.setField_binning_filter6, self.setField_ccd_gain_filter6),
+                                 set_hbox(self.button_ok, self.button_clear, self.button_cancel, stretch2=1)))
+
     def get_values(self):
         return self.var_save_ini_filters.get_filters_settings()
 
@@ -114,6 +114,7 @@ class FilterWindow(QtWidgets.QWidget):
                    label_filter4, wavelength_filter4, exposure_filter4, binning_filter4, ccd_gain_filter4,
                    label_filter5, wavelength_filter5, exposure_filter5, binning_filter5, ccd_gain_filter5,
                    label_filter6, wavelength_filter6, exposure_filter6, binning_filter6, ccd_gain_filter6):
+
         binning_var1 = self.error_binning(binning_filter1)
         binning_var2 = self.error_binning(binning_filter2)
         binning_var3 = self.error_binning(binning_filter3)
@@ -278,7 +279,8 @@ class FilterWindow(QtWidgets.QWidget):
             self.console.raise_text("Filters settings successfully saved!", 1)
 
         except Exception as e:
-            print(e)
+            self.console.raise_text("Filters settings NOT saved!", 2)
+            print("Filters settings save ERROR -> {}".format(e))
 
     def clear_all(self):
         self.setField_label_filter1.clear()
