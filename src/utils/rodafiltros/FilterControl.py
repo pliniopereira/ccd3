@@ -50,9 +50,6 @@ class FilterControl(metaclass=Singleton):
                     self.motor_door = serial_list[count]
                     print("Home Reset")
                     self.home_reset()
-                    settings = SettingsImager()
-                    info_imager = settings.get_imager_settings()
-                    print(info_imager)
                     break
             except Exception as e:
                 print(serial_list[count] + " - Cannot establish a link to Motors -> {}".format(e))
