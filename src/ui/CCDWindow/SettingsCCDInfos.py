@@ -6,25 +6,18 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
+from src.business.shooters.SThread import SThread
 from src.controller.camera import Camera
+from src.controller.fan import Fan
 from src.ui.commons.layout import set_hbox, set_lvbox
-from src.utils.camera.SbigDriver import (ccdinfo)
+from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 from src.utils.rodafiltros.FilterControl import FilterControl
+from src.controller.commons.Locker import Locker
 
 
 class SettingsCCDInfos(QWidget):
     def __init__(self, parent=None):
         super(SettingsCCDInfos, self).__init__(parent)
-
-        self.imager_window = parent
-
-        self.cam = Camera()
-
-        self.roda_filtros = FilterControl()
-
-        self.var_save_ini_camera = SettingsCamera()
-
-        self.console = ConsoleThreadOutput()
 
         # Instance attributes create_filter_wheel_info_group
         self.serial_filter_wheel_info_l = None
@@ -57,7 +50,7 @@ class SettingsCCDInfos(QWidget):
         self.temp_set_point_f = None
         self.temp_init_l = None
         self.temp_init_f = None
-        self.btn_one_photo = None
+        self.one_photoButton = None
         self.tempButton = None
         self.fanButton = None
 
@@ -66,11 +59,26 @@ class SettingsCCDInfos(QWidget):
         self.cancelButton = None
         self.clearButton = None
 
+        self.imager_window = parent
+
+        self.cam = Camera()
+
+        self.roda_filtros = FilterControl()
+
+        self.var_save_ini_camera = SettingsCamera()
+
+        self.console = ConsoleThreadOutput()
+
+        self.fan = Fan(self.fanButton)
+
+        self.one_photo = SThread()
+
+        self.lock = Locker()
+
         try:
-            self.firmware, self.model, self.y_pixels, self.x_pixels =\
+            self.firmware, self.model, self.y_pixels, self.x_pixels = \
                 self.cam.get_firmware_and_model_and_pixels()
         except Exception as e:
-            print(e)
             self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
                                                                       "????", "????"
 
@@ -112,8 +120,8 @@ class SettingsCCDInfos(QWidget):
         self.tempt_filter_wheel_info_f = QtWidgets.QLabel("25 °C", self)
         self.tempt_filter_wheel_info_f.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
-        group_box.setLayout(set_lvbox(set_hbox(self.serial_filter_wheel_info_l, self.serial_filter_wheel_info_f), 
-                                      set_hbox(self.slots_filter_wheel_info_l, self.slots_filter_wheel_info_f), 
+        group_box.setLayout(set_lvbox(set_hbox(self.serial_filter_wheel_info_l, self.serial_filter_wheel_info_f),
+                                      set_hbox(self.slots_filter_wheel_info_l, self.slots_filter_wheel_info_f),
                                       set_hbox(self.tempt_filter_wheel_info_l, self.tempt_filter_wheel_info_f)))
 
         return group_box
@@ -142,9 +150,9 @@ class SettingsCCDInfos(QWidget):
 
         self.btn_home_position_filter = QtWidgets.QPushButton('Home Reset', self)
 
-        group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel), 
-                                      set_hbox(self.get_filter_l, self.filter_position, stretch2=1), 
-                                      set_hbox(self.btn_set_filter, self.set_filter_position), 
+        group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel),
+                                      set_hbox(self.get_filter_l, self.filter_position, stretch2=1),
+                                      set_hbox(self.btn_set_filter, self.set_filter_position),
                                       set_hbox(self.btn_home_position_filter)))
         return group_box
 
@@ -192,18 +200,21 @@ class SettingsCCDInfos(QWidget):
         self.temp_init_f = QtWidgets.QLineEdit(self)
         self.temp_init_f.setMaximumWidth(100)
 
-        self.btn_one_photo = QtWidgets.QPushButton('Take Photo', self)
+        self.one_photoButton = QtWidgets.QPushButton('Take Photo', self)
+        self.one_photoButton.clicked.connect(self.take_one_photo)
 
         self.tempButton = QtWidgets.QPushButton("Set Temp", self)
+        self.tempButton.clicked.connect(self.btn_temperature)
 
         self.fanButton = QtWidgets.QPushButton("Fan (On/Off)")
+        self.fanButton.clicked.connect(self.button_fan_func)
 
         self.setting_values()
 
         group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open),
                                       set_hbox(self.temp_set_point_l, self.temp_set_point_f),
                                       set_hbox(self.temp_init_l, self.temp_init_f),
-                                      set_hbox(self.btn_one_photo, self.tempButton, self.fanButton, stretch2=1)))
+                                      set_hbox(self.one_photoButton, self.tempButton, self.fanButton, stretch2=1)))
         return group_box
 
     def create_push_button_group(self):
@@ -254,18 +265,18 @@ class SettingsCCDInfos(QWidget):
             self.roda_filtros.open_shutter()
 
     def fill_combo_filter_position(self):
-            self.set_filter_position.addItem("1", 1)
-            self.set_filter_position.addItem("2", 2)
-            self.set_filter_position.addItem("3", 3)
-            self.set_filter_position.addItem("4", 4)
-            self.set_filter_position.addItem("5", 5)
-            self.set_filter_position.addItem("6", 6)
+        self.set_filter_position.addItem("1", 1)
+        self.set_filter_position.addItem("2", 2)
+        self.set_filter_position.addItem("3", 3)
+        self.set_filter_position.addItem("4", 4)
+        self.set_filter_position.addItem("5", 5)
+        self.set_filter_position.addItem("6", 6)
 
     def func_filter_position(self):
         try:
             sleep(1)
             wish_filter_int = self.set_filter_position.currentIndex() + 1
-            self.roda_filtros.filter_wheel_control(wish_filter_int)
+            self.roda_filtros.filter_wheel_control(int(wish_filter_int))
             sleep(1)
         except Exception as e:
             print(e)
@@ -306,7 +317,7 @@ class SettingsCCDInfos(QWidget):
     def button_ok_func(self):
         try:
             self.var_save_ini_camera.set_camera_settings(self.temp_set_point_f.text(),
-                                                         self.temp_init_f.text(), 
+                                                         self.temp_init_f.text(),
                                                          self.close_open.currentIndex())
             self.var_save_ini_camera.save_settings()
             self.console.raise_text("Camera settings successfully saved!", 1)
@@ -320,3 +331,42 @@ class SettingsCCDInfos(QWidget):
 
     def func_cancel(self):
         self.imager_window.close()
+
+    def take_one_photo(self):
+        try:
+            info = self.var_save_ini_camera.get_camera_settings()
+            print(info)
+            if int(info[2]) == 1:
+                self.console.raise_text("Taking dark photo", 1)
+                self.one_photo.start()
+            else:
+                self.console.raise_text("Taking photo", 1)
+                self.one_photo.start()
+        except Exception as e:
+            self.console.raise_text("Not possible taking photo -> {}".format(e), 1)
+
+    def button_fan_func(self):
+        if getlinkstatus() is True:
+            try:
+                self.fan.set_fan()
+                self.console.raise_text('State changed Fan!', 2)
+            except Exception as e:
+                self.console.raise_text("The camera is not connected!", 3)
+                self.console.raise_text('State Fan unchanged', 3)
+                self.console.raise_text("Exception -> {}".format(e))
+        else:
+            self.console.raise_text("The camera is not connected!", 3)
+            self.console.raise_text('State Fan unchanged', 3)
+
+    def btn_temperature(self):
+        try:
+            value = self.temp_set_point_f.text()
+            if value is '':
+                pass
+            else:
+                try:
+                    self.cam.set_temperature(float(value))
+                except TypeError:
+                    self.cam.set_temperature(float(20.0))
+        except Exception as e:
+            print("Exception -> {}".format(e))

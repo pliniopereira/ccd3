@@ -26,21 +26,8 @@ class SThread(QtCore.QThread):
         '''
         pega os valores no ini camera
         info[0] = temperature_camera
-        info[1] = prefixo/filter name
-        info[2] = tempo_exposicao
-        info[3] = binning
-        info[4] = tempo_fotos(tempo entre fotos)
-        info[5] = time_cooling(CCD cooling time)
-        info[6] = Image contrast: bottom
-        info[7] = Image contrast: top level
-        info[8] = Booleano para decidir se a foto é dark
-        info[9] = axis_xi inicial
-        info[10] = axis_xf final
-        info[11] = axis_yi inicial
-        info[12] = axis_yf final
-        info[13] = ignore_crop
-        info[14] = image_tif
-        info[15] = image_fit
+        info[1] = tempo de espera até atingir temperatura desejada
+        info[2] = dark(Open or close shutter)
         '''
         settings = SettingsCamera()
         info = settings.get_camera_settings()
@@ -105,7 +92,6 @@ class SThread(QtCore.QThread):
 
             self.get_image_tif = info[14]
             self.get_image_fit = info[15]
-
 
         except Exception as e:
             print(e)
