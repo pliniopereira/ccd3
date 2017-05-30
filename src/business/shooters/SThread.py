@@ -3,6 +3,7 @@ import time
 from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
+from src.business.configuration.settingsImager import SettingsImager
 from src.business.filters.settingsFilters import SettingsFilters
 from src.business.models.image import Image
 from src.controller.commons.Locker import Locker
@@ -24,6 +25,23 @@ class SThread(QtCore.QThread):
         self.generic_count = 0
 
     @staticmethod
+    def get_imager_settings():
+        '''
+        pega os valores no ini imager
+        info[0] =
+        info[1] =
+        info[2] =
+        info[3] =
+        info[4] =
+        info[5] =
+        '''
+        settings = SettingsImager()
+        info_imager = settings.get_imager_settings()
+        print(info_imager)
+
+        return info_imager
+
+    @staticmethod
     def get_camera_settings():
         '''
         pega os valores no ini camera
@@ -39,6 +57,7 @@ class SThread(QtCore.QThread):
     @staticmethod
     def get_filter_settings():
         '''
+        pega os valores no ini filters
         info[0] = label_field_1
         info[1] = wavelength_field_1
         info[2] = exposure_field_1

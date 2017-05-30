@@ -15,35 +15,37 @@ class SettingsImager:
     def save_settings(self):
         self._settings.sync()
 
-    def set_imager_settings(self, get_level1, get_level2, crop_xi, crop_xf, crop_yi, crop_yf, ignore_crop, image_tif, image_fit):
-        """
-        :param get_level1:  nível inferior normalizado para ajuste de contraste
-        :param get_level2: nível superior normalizado para ajuste de contraste
+    def set_imager_settings(self, get_level1, get_level2, ignore_crop, crop_xi, crop_xf, crop_yi, crop_yf, image_tif, image_fit):
+        '''
+        :param get_level1:
+        :param get_level2:
+        :param ignore_crop:
         :param crop_xi:
         :param crop_xf:
         :param crop_yi:
         :param crop_yf:
-        :param ignore_crop:
+        :param image_tif:
+        :param image_fit:
         :return:
-        """
+        '''
         self._settings.setValue(i.GET_LEVEL1, get_level1)
         self._settings.setValue(i.GET_LEVEL2, get_level2)
+        self._settings.setValue(i.CHEBOX_IGNORE_CROP, ignore_crop)
         self._settings.setValue(i.CROP_X_AXIS_XI, crop_xi)
         self._settings.setValue(i.CROP_X_AXIS_XF, crop_xf)
         self._settings.setValue(i.CROP_Y_AXIS_YI, crop_yi)
         self._settings.setValue(i.CROP_Y_AXIS_YF, crop_yf)
-        self._settings.setValue(i.CHEBOX_IGNORE_CROP, ignore_crop)
         self._settings.setValue(i.CHEBOX_IMAGE_TIF, image_tif)
         self._settings.setValue(i.CHEBOX_IMAGE_FIT, image_fit)
 
     def get_imager_settings(self):
         return self._settings.value(i.GET_LEVEL1), \
                self._settings.value(i.GET_LEVEL2), \
+               self._settings.value(i.CHEBOX_IGNORE_CROP, True, type=bool), \
                self._settings.value(i.CROP_X_AXIS_XI), \
                self._settings.value(i.CROP_X_AXIS_XF),\
                self._settings.value(i.CROP_Y_AXIS_YI), \
                self._settings.value(i.CROP_Y_AXIS_YF),\
-               self._settings.value(i.CHEBOX_IGNORE_CROP, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_TIF, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_FIT, True, type=bool)
 
