@@ -5,10 +5,6 @@ import comtypes.gen.INTEGMOTORINTERFACELib
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QGuiApplication
 
-from src.business.configuration.settingsImager import SettingsImager
-
-
-from src.business.filters.settingsFilters import SettingsFilters
 from src.utils.rodafiltros import Leitura_portas
 from src.utils.singleton import Singleton
 
@@ -48,8 +44,10 @@ class FilterControl(metaclass=Singleton):
                     self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
                     self.connect_state = True
                     self.motor_door = serial_list[count]
+
                     print("Home Reset")
                     self.home_reset()
+
                     break
             except Exception as e:
                 print(serial_list[count] + " - Cannot establish a link to Motors -> {}".format(e))

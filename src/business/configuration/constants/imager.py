@@ -1,6 +1,6 @@
 # List of constants
 
-FILENAME = "imager"
+FILENAME = "image"
 GET_LEVEL1 = "get_level1"
 GET_LEVEL2 = "get_level2"
 CHEBOX_IGNORE_CROP = "ignore_crop"

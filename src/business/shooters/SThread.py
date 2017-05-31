@@ -3,7 +3,7 @@ import time
 from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
-from src.business.configuration.settingsImager import SettingsImager
+from src.business.configuration.settingsImage import SettingsImage
 from src.business.filters.settingsFilters import SettingsFilters
 from src.business.models.image import Image
 from src.controller.commons.Locker import Locker
@@ -25,70 +25,74 @@ class SThread(QtCore.QThread):
         self.generic_count = 0
 
     @staticmethod
-    def get_imager_settings():
-        '''
+    def get_image_settings():
+        """
         pega os valores no ini imager
-        info[0] =
-        info[1] =
-        info[2] =
-        info[3] =
-        info[4] =
-        info[5] =
-        '''
-        settings = SettingsImager()
-        info_imager = settings.get_imager_settings()
-        print(info_imager)
+        info_image[0] = get_level1
+        info_image[1] = get_level2
+        info_image[2] = crop_xi
+        info_image[3] = crop_xf
+        info_image[4] = crop_yi
+        info_image[5] = crop_yf
+        info_image[6] = ignore_crop
+        info_image[7] = image_tif
+        info_image[8] = image_fit
+        """
 
-        return info_imager
+        settings = SettingsImage()
+        info_image = settings.get_image_settings()
+        print(info_image)
+
+        return info_image
 
     @staticmethod
     def get_camera_settings():
-        '''
+        """
         pega os valores no ini camera
-        info[0] = temperature_camera
-        info[1] = tempo de espera até atingir temperatura desejada
-        info[2] = dark(Open or close shutter)
-        '''
+        info_cam[0] = temperature_camera
+        info_cam[1] = tempo de espera até atingir temperatura desejada
+        info_cam[2] = dark(Open or close shutter)
+        """
         settings = SettingsCamera()
-        info = settings.get_camera_settings()
+        info_cam = settings.get_camera_settings()
 
-        return info
+        return info_cam
 
     @staticmethod
     def get_filter_settings():
-        '''
+        """
         pega os valores no ini filters
-        info[0] = label_field_1
-        info[1] = wavelength_field_1
-        info[2] = exposure_field_1
-        info[3] = binning_field_1
-        info[4] = ccd_gain_field_1
-        info[5] = label_field_2
-        info[6] = wavelength_field_2
-        info[7] = exposure_field_2
-        info[8] = binning_field_2
-        info[9] = ccd_gain_field_2
-        info[10] = label_field_3
-        info[11] = wavelength_field_3
-        info[12] = exposure_field_3
-        info[13] = binning_field_3
-        info[14] = ccd_gain_field_3
-        info[15] = label_field_4
-        info[16] = wavelength_field_4
-        info[17] = exposure_field_4
-        info[18] = binning_field_4
-        info[19] = ccd_gain_field_4
-        info[20] = label_field_5
-        info[21] = wavelength_field_5
-        info[22] = exposure_field_5
-        info[23] = binning_field_5
-        info[24] = ccd_gain_field_5
-        info[25] = label_field_6
-        info[26] = wavelength_field_6
-        info[27] = exposure_field_6
-        info[28] = binning_field_6
-        info[29] = ccd_gain_field_6
-        '''
+        info_filters[0] = label_field_1
+        info_filters[1] = wavelength_field_1
+        info_filters[2] = exposure_field_1
+        info_filters[3] = binning_field_1
+        info_filters[4] = ccd_gain_field_1
+        info_filters[5] = label_field_2
+        info_filters[6] = wavelength_field_2
+        info_filters[7] = exposure_field_2
+        info_filters[8] = binning_field_2
+        info_filters[9] = ccd_gain_field_2
+        info_filters[10] = label_field_3
+        info_filters[11] = wavelength_field_3
+        info_filters[12] = exposure_field_3
+        info_filters[13] = binning_field_3
+        info_filters[14] = ccd_gain_field_3
+        info_filters[15] = label_field_4
+        info_filters[16] = wavelength_field_4
+        info_filters[17] = exposure_field_4
+        info_filters[18] = binning_field_4
+        info_filters[19] = ccd_gain_field_4
+        info_filters[20] = label_field_5
+        info_filters[21] = wavelength_field_5
+        info_filters[22] = exposure_field_5
+        info_filters[23] = binning_field_5
+        info_filters[24] = ccd_gain_field_5
+        info_filters[25] = label_field_6
+        info_filters[26] = wavelength_field_6
+        info_filters[27] = exposure_field_6
+        info_filters[28] = binning_field_6
+        info_filters[29] = ccd_gain_field_6
+        """
 
         settings = SettingsFilters()
         info_filters = settings.get_filters_settings()
@@ -98,10 +102,10 @@ class SThread(QtCore.QThread):
         return info_filters
 
     def take_dark(self):
-        '''
+        """
         Manda instrução para o SbigDriver para tirar uma foto dark(shooter fechado)\
         com os valores na info[]
-        '''
+        """
         try:
             self.set_etime_pre_binning()
             self.lock.set_acquire()
@@ -120,10 +124,10 @@ class SThread(QtCore.QThread):
             self.lock.set_release()
 
     def set_etime_pre_binning(self):
-        '''
+        """
         seta os valores para o tempo de exposição = etime, prefixo, binning, se a foto é dark ou não,\
         e valores Image contrast: bottom e top level
-        '''
+        """
 
         try:
             info = self.get_camera_settings()
@@ -200,6 +204,7 @@ class SThread(QtCore.QThread):
 
             self.img = Image(self.info[0], self.info[1], self.info[2], self.info[3], self.info[4])
         except Exception as e:
+            print("Image('', '', '', '', '') -> {}".format(e))
             self.img = Image('', '', '', '', '')
         return self.img
 

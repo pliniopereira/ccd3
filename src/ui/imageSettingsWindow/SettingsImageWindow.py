@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton)
 
-from src.business.configuration.settingsImager import SettingsImager
+from src.business.configuration.settingsImage import SettingsImage
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.controller.camera import Camera
 from src.controller.commons.Locker import Locker
@@ -42,7 +42,7 @@ class SettingsImageWindow(QtWidgets.QWidget):
         self.cancelButton = None
         self.clearButton = None
 
-        self.image_settings = SettingsImager()
+        self.image_settings = SettingsImage()
 
         self.camera = Camera()
 
@@ -62,9 +62,9 @@ class SettingsImageWindow(QtWidgets.QWidget):
         self.setWindowTitle("Imager Box")
 
     @staticmethod
-    def get_imager_settings():
-        settings = SettingsImager()
-        info = settings.get_imager_settings()
+    def get_image_settings():
+        settings = SettingsImage()
+        info = settings.get_image_settings()
         return info
 
     def get_pixels(self):
@@ -180,6 +180,9 @@ class SettingsImageWindow(QtWidgets.QWidget):
             print(y_pixels)
             print(x_pixels)
 
+            """
+            ATENCAO
+            """
             # Saving the Settings
             # if int(self.getcropxi_l.text()) > int(self.getcropxf_l.text()) or \
             #    int(self.getcropyi_l.text()) > int(self.getcropyf_l.text()) or \
@@ -189,12 +192,12 @@ class SettingsImageWindow(QtWidgets.QWidget):
             #     self.console.raise_text("Wrong values for image crop.", 3)
             #
             # else:
-            self.image_settings.set_imager_settings(self.getlevel1l.text(), self.getlevel2l.text(),
-                                                    self.ignore_crop_l.isChecked(),
-                                                    self.getcropxi_l.text(), self.getcropxf_l.text(),
-                                                    self.getcropyi_l.text(), self.getcropyf_l.text(),
-                                                    self.image_tif_l.isChecked(),
-                                                    self.image_fit_l.isChecked())
+            self.image_settings.set_image_settings(self.getlevel1l.text(), self.getlevel2l.text(),
+                                                   self.ignore_crop_l.isChecked(),
+                                                   self.getcropxi_l.text(), self.getcropxf_l.text(),
+                                                   self.getcropyi_l.text(), self.getcropyf_l.text(),
+                                                   self.image_tif_l.isChecked(),
+                                                   self.image_fit_l.isChecked())
             self.image_settings.save_settings()
             self.console.raise_text("Image settings successfully saved!", 1)
 
