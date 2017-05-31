@@ -17,17 +17,34 @@ class SThread(QtCore.QThread):
     escalonada independentemente do fluxo inicial da aplicação.
     Fonte: http://imasters.com.br/artigo/20127/py/threads-em-python/?trace=1519021197&source=single
     """
+
     def __init__(self):
         super(SThread, self).__init__()
+        self.prefix = None
+        self.exp_time = None
+        self.binning = None
+        self.dark_photo = None
+
+        self.get_level1 = None
+        self.get_level2 = None
+        self.get_axis_xi = None
+        self.get_axis_xf = None
+        self.get_axis_yi = None
+        self.get_axis_yf = None
+        self.get_ignore_crop = None
+
+        self.get_image_tif = None
+        self.get_image_fit = None
+        
+        self.img = None
+
         self.lock = Locker()
         self.info = []
-        self.img = None
-        self.generic_count = 0
 
     @staticmethod
     def get_image_settings():
         """
-        pega os valores no ini imager
+        Pega os valores no ini image
         info_image[0] = get_level1
         info_image[1] = get_level2
         info_image[2] = crop_xi
@@ -48,7 +65,7 @@ class SThread(QtCore.QThread):
     @staticmethod
     def get_camera_settings():
         """
-        pega os valores no ini camera
+        Pega os valores no ini camera
         info_cam[0] = temperature_camera
         info_cam[1] = tempo de espera até atingir temperatura desejada
         info_cam[2] = dark(Open or close shutter)
@@ -61,7 +78,7 @@ class SThread(QtCore.QThread):
     @staticmethod
     def get_filter_settings():
         """
-        pega os valores no ini filters
+        Pega os valores no ini filters
         info_filters[0] = label_field_1
         info_filters[1] = wavelength_field_1
         info_filters[2] = exposure_field_1
@@ -107,9 +124,9 @@ class SThread(QtCore.QThread):
         com os valores na info[]
         """
         try:
-            self.set_etime_pre_binning()
+            self.set_config_take_image()
             self.lock.set_acquire()
-            self.info = SbigDriver.photoshoot(self.etime, self.pre, self.b, 1,
+            self.info = SbigDriver.photoshoot(self.exp_time, self.prefix, self.binning, 1,
                                               self.get_level1, self.get_level2,
                                               self.get_axis_xi, self.get_axis_xf,
                                               self.get_axis_yi, self.get_axis_yf,
@@ -123,27 +140,26 @@ class SThread(QtCore.QThread):
             time.sleep(1)
             self.lock.set_release()
 
-    def set_etime_pre_binning(self):
+    def set_config_take_image(self):
         """
-        seta os valores para o tempo de exposição = etime, prefixo, binning, se a foto é dark ou não,\
-        e valores Image contrast: bottom e top level
+        seta as configuracoes para se tirar uma foto
         """
 
         try:
             info = self.get_camera_settings()
 
-            self.pre = str(info[1])
+            self.prefix = str(info[1])
 
-            self.etime = float(info[2])
-            if self.etime <= 0.12:
-                self.etime = 0.12 * 100
-            elif self.etime >= 3600:
-                 self.etime = 3600 * 100
+            self.exp_time = float(info[2])
+            if self.exp_time <= 0.12:
+                self.exp_time = 0.12 * 100
+            elif self.exp_time >= 3600:
+                self.exp_time = 3600 * 100
             else:
-                self.etime = float(info[2]) * 100
-            self.etime = int(self.etime)
+                self.exp_time = float(info[2]) * 100
+            self.exp_time = int(self.exp_time)
 
-            self.b = int(info[3])
+            self.binning = int(info[3])
 
             self.get_level1 = float(info[6])
             self.get_level2 = float(info[7])
@@ -160,18 +176,17 @@ class SThread(QtCore.QThread):
             self.get_image_tif = info[14]
             self.get_image_fit = info[15]
 
-        except Exception as e:
-            print(e)
-            self.etime = 100
-            self.b = 0
+        except TypeError:
+            self.exp_time = 100
+            self.binning = 0
             self.dark_photo = 1
             self.get_level1 = 0.1
             self.get_level2 = 0.99
 
             if str(info[1]) != '':
-                self.pre = str(info[1])
+                self.prefix = str(info[1])
             else:
-                self.pre = 'pre'
+                self.prefix = 'prefix'
 
             self.get_axis_xi = info[9]
             self.get_axis_xf = info[10]
@@ -184,10 +199,10 @@ class SThread(QtCore.QThread):
             self.get_image_fit = True
 
     def run(self):
-        self.set_etime_pre_binning()
+        self.set_config_take_image()
         self.lock.set_acquire()
         try:
-            self.info = SbigDriver.photoshoot(self.etime, self.pre, self.b, self.dark_photo, self.get_level1,
+            self.info = SbigDriver.photoshoot(self.exp_time, self.prefix, self.binning, self.dark_photo, self.get_level1,
                                               self.get_level2, self.get_axis_xi, self.get_axis_xf, self.get_axis_yi,
                                               self.get_axis_yf, self.get_ignore_crop,
                                               self.get_image_tif, self.get_image_fit)
