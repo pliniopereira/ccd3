@@ -15,7 +15,6 @@ class ContinuousShooterThread(QtCore.QThread):
     def __init__(self, time_sleep):
         super(ContinuousShooterThread, self).__init__()
         self.continuous = True
-        self.s = time_sleep
 
         # SThread manda para o Sbigdriver as informações para se tirar a foto em si.
 
@@ -27,9 +26,6 @@ class ContinuousShooterThread(QtCore.QThread):
         self.wait_temperature = False
         self.not_two_dark = True
         self.one_photo = False
-
-    def set_sleep_time(self, t):
-        self.s = t
 
     def run(self):
         self.count = 1
@@ -43,7 +39,7 @@ class ContinuousShooterThread(QtCore.QThread):
             except Exception as e:
                 print(e)
 
-            time.sleep(self.s)
+            time.sleep(1)
             self.signalAfterShooting.emit()
 
     def start_continuous_shooter(self):

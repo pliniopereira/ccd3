@@ -7,7 +7,6 @@ from PyQt5 import QtCore
 
 from src.business.EphemObserverFactory import EphemObserverFactory
 from src.business.configuration.configProject import ConfigProject
-from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.ContinuousShooterThread import ContinuousShooterThread
 
@@ -23,9 +22,6 @@ class EphemerisShooter(QtCore.QThread):
     def __init__(self):
 
         super(EphemerisShooter, self).__init__()
-        self.cam_config = SettingsCamera()
-        self.cam_config.setup_settings()
-        info_cam = self.cam_config.get_camera_settings()
 
         self.ObserverFactory = EphemObserverFactory()
         # self.continuousShooterThread = ContinuousShooterThread(int(info_cam[4]))
@@ -45,14 +41,6 @@ class EphemerisShooter(QtCore.QThread):
         self.max_lunar_elevation = info_sun[2]  # 8
         self.max_lunar_phase = info_sun[3]  # 1
         self.wait_temperature = False
-
-        # print(int(info_cam[4]))
-        try:
-            # self.s = int(info_cam[4])
-            self.s = 0
-            self.continuousShooterThread.set_sleep_time(self.s)
-        except Exception:
-            self.s = 5
 
         self.shootOn = False
         self.controller = True
@@ -81,22 +69,16 @@ class EphemerisShooter(QtCore.QThread):
             self.max_lunar_elevation = 0
             self.max_lunar_phase = 0
 
-        info_cam = self.cam_config.get_camera_settings()
-
-        # try:
-        #     self.s = int(info_cam[4])
-        # except Exception as e:
-        #     self.s = 0
-        self.s = 0
-
-    def calculate_moon(self, obs):
+    @staticmethod
+    def calculate_moon(obs):
         aux = obs
         aux.compute_pressure()
         aux.horizon = '8'
         moon = ephem.Moon(aux)
         return aux.previous_setting(moon), aux.next_rising(moon)
 
-    def calculate_sun(self, obs):
+    @staticmethod
+    def calculate_sun(obs):
         aux = obs
         aux.compute_pressure()
         aux.horizon = '-12'
@@ -166,7 +148,6 @@ class EphemerisShooter(QtCore.QThread):
         self.continuousShooterThread.stop_continuous_shooter()
 
     def start_taking_photo(self):
-        self.continuousShooterThread.set_sleep_time(self.s)
         self.continuousShooterThread.start_continuous_shooter()
         self.continuousShooterThread.start()
 

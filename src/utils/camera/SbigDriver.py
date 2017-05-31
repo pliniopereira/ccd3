@@ -440,24 +440,26 @@ def get_observatory(name):
     return name_aux
 
 
-def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
+def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
                get_axis_xi, get_axis_xf, get_axis_yi, get_axis_yf, ignore_crop,
                image_tif, image_fit):
-    '''
     print("\n\n")
-    print(etime)
-    print(pre)
-    print(binning)
-    print(dark_photo)
-    print(get_level1)
-    print(get_level2)
-    print(get_axis_xi)
-    print(get_axis_xf)
-    print(get_axis_yi)
-    print(get_axis_yf)
-    print(ignore_crop)
+    print("exposure_time " + str(exposure_time) + " " + str(type(exposure_time)))
+    print("pre " + str(pre) + " " + str(type(pre)))
+    print("binning " + str(binning) + " " + str(type(binning)))
+    print("dark_photo " + str(dark_photo) + " " + str(type(dark_photo)))
+    print("get_level1 " + str(get_level1) + " " + str(type(get_level1)))
+    print("get_level2 " + str(get_level2) + " " + str(type(get_level2)))
+    print("get_axis_xi " + str(get_axis_xi) + " " + str(type(get_axis_xi)))
+    print("get_axis_xf " + str(get_axis_xf) + " " + str(type(get_axis_xf)))
+    print("get_axis_yi " + str(get_axis_yi) + " " + str(type(get_axis_yi)))
+    print("get_axis_yf " + str(get_axis_yf) + " " + str(type(get_axis_yf)))
+    print("ignore_crop " + str(ignore_crop) + " " + str(type(ignore_crop)))
+    print("image_tif " + str(image_tif) + " " + str(type(image_tif)))
+    print("image_fit " + str(image_fit) + " " + str(type(image_fit)))
     print("\n\n")
-    :param etime: tempo de exposição
+    """
+    :param exposure_time: tempo de exposição
     :param pre: prefixo do nome do arquivo
     :param binning: redução da imagem
     :param dark_photo: shooter fechado = 1 ou aberto = 0
@@ -470,8 +472,10 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
     :param get_axis_yi:
     :param get_axis_yf:
     :param ignore_crop:
+    :param image_tif:
+    :param image_fit:
     :return:
-    '''
+    """
     # open_driver()
     # open_deviceusb()
     # establishinglink()
@@ -528,21 +532,21 @@ def photoshoot(etime, pre, binning, dark_photo, get_level1, get_level2,
     udrv.SBIGUnivDrvCommand.argtypes = [c_ushort, POINTER(cin), POINTER(cout)]
 
     try:
-        if dark_photo == 1:
+        if dark_photo == 0:
             try:
                 cin = cin(openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value)
             except Exception as e:
-                print("Close SHUTTER_COMMAND ERROR ->" + str(e))
+                print("Close SHUTTER_COMMAND ERROR -> {}".format(e))
             finally:
-                cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
+                cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposure_time=exposure_time,
                           openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value, readoutMode=v_read,
                           top=0, left=0, height=v_h, width=v_w)
         else:
-            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=etime,
+            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposure_time=exposure_time,
                       openShutter=SbigLib.SHUTTER_COMMAND.SC_OPEN_SHUTTER.value, readoutMode=v_read, top=0, left=0,
                       height=v_h, width=v_w)
     except Exception as e:
-        print("Open/Close shutter error ->" + str(e))
+        print("Open/Close shutter error -> {}".format(e))
 
     print("Readout Height: " + str(v_h))
     print("Readout Width: " + str(v_w))

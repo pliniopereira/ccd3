@@ -35,8 +35,8 @@ class Camera(metaclass=Singleton):
         self.now_plus_10 = datetime.now()
         self.settedhour = datetime.now()
 
-        # self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[0]))  # executa o
-        #  modo manual continuousShooterThread
+        #  executa o modo manual continuousShooterThread
+        # self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[0]))
         self.continuousShooterThread = ContinuousShooterThread('0')
         self.ephemerisShooterThread = EphemerisShooter()  # executa o modo automatico ephemerisShooterThread
 
@@ -188,10 +188,12 @@ class Camera(metaclass=Singleton):
 
         return temp
 
-    def check_link(self):
+    @staticmethod
+    def check_link():
         return getlinkstatus()
 
-    def get_camera_settings_ini(self):
+    @staticmethod
+    def get_camera_settings_ini():
         settings = SettingsCamera()
         info_ini = settings.get_camera_settings()
         return info_ini

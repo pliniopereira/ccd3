@@ -45,8 +45,8 @@ class FilterControl(metaclass=Singleton):
                     self.connect_state = True
                     self.motor_door = serial_list[count]
 
-                    print("Home Reset")
-                    self.home_reset()
+                    # print("Home Reset")
+                    # self.home_reset()
 
                     break
             except Exception as e:
