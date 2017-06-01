@@ -142,88 +142,132 @@ class SThread(QtCore.QThread):
         seta as configuracoes para se tirar uma foto
         """
 
+        # try:
+        #     print("\n\n")
+        #     print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
+        #     print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
+        #     print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
+        #     print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
+        #     print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
+        #     print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
+        #     print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
+        #     print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
+        #     print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
+        #     print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
+        #     print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
+        #     print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
+        #     print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
+        #     print("\n\n")
+
+        info_cam = self.get_camera_settings()
+        info_filters = self.get_filter_settings()
+        info_image = self.get_image_settings()
+        print(info_filters)
+
+        print(info_image)
+
+        self.prefix = info_filters[0]
+        self.exposure_time = float(info_filters[2])
+        if self.exposure_time <= 0.12:
+            self.exposure_time = 0.12 * 100
+        elif self.exposure_time >= 3600:
+            self.exposure_time = 3600 * 100
+        else:
+            self.exposure_time = float(info_filters[2]) * 100
+        # self.exposure_time = int(self.exposure_time)
+
         try:
-
-            info_cam = self.get_camera_settings()
-            info_filters = self.get_filter_settings()
-            info_image = self.get_image_settings()
-            print(info_cam)
-            print(info_filters)
-
-            print(info_image)
-
-            self.prefix = info_filters[0]
-
-            self.exposure_time = float(info_filters[2])
-            if self.exposure_time <= 0.12:
-                self.exposure_time = 0.12 * 100
-            elif self.exposure_time >= 3600:
-                self.exposure_time = 3600 * 100
-            else:
-                self.exposure_time = float(info_filters[2]) * 100
-            self.exposure_time = int(self.exposure_time)
-
-            self.binning = info_filters[3]
-
-            self.get_level1 = float(info_image[0])
-            self.get_level2 = float(info_image[1])
-
-            self.dark_photo = int(info_cam[2])
-
-            self.get_axis_xi = int(info_image[2])
-            self.get_axis_xf = int(info_image[3])
-            self.get_axis_yi = int(info_image[4])
-            self.get_axis_yf = int(info_image[5])
-
-            self.get_ignore_crop = info_image[6]
-
-            self.get_image_tif = info_image[7]
-            self.get_image_fit = info_image[8]
-
-        except Exception as e:
-            print(e)
-            self.exposure_time = 100
+            self.binning = int(info_filters[3])
+        except TypeError:
             self.binning = 0
+        try:
+            self.dark_photo = int(info_cam[2])
+        except TypeError:
             self.dark_photo = 0
+
+        try:
+            self.get_ignore_crop = float(info_image[0])
+        except TypeError:
             self.get_level1 = 0.1
+        try:
+            self.get_level2 = float(info_image[1])
+        except TypeError:
             self.get_level2 = 0.99
-
-            if str(info_filters[0]) != '':
-                self.prefix = str(info_filters[0])
-            else:
-                self.prefix = 'PREFIX'
-
-            self.get_axis_xi = int(0)
-            self.get_axis_xf = int(0)
-            self.get_axis_yi = int(0)
-            self.get_axis_yf = int(0)
-
+        try:
+            self.get_axis_xi = int(info_image[2])
+        except TypeError:
+            self.get_axis_xi = 0
+        try:
+            self.get_axis_xf = int(info_image[3])
+        except TypeError:
+            self.get_axis_xf = 0
+        try:
+            self.get_axis_yi = int(info_image[4])
+        except TypeError:
+            self.get_axis_yi = 0
+        try:
+            self.get_axis_yf = info_image[5]
+        except TypeError:
+            self.get_axis_yf = 0
+        try:
+            self.get_ignore_crop = info_image[6]
+        except TypeError:
+            self.get_ignore_crop = True
+        try:
+            self.get_image_tif = info_image[7]
+        except TypeError:
+            self.get_ignore_crop = True
+        try:
+            self.get_image_fit = info_image[8]
+        except TypeError:
             self.get_ignore_crop = True
 
-            self.get_image_tif = True
-            self.get_image_fit = True
-            print("Except self.set_config_take_image()")
+            # except Exception as e:
+            #     print("DEU RUIM")
+            #     print(e)
+            #     self.exposure_time = 100
+            #     self.binning = 0
+            #     self.dark_photo = 0
+            #     self.get_level1 = 0.1
+            #     self.get_level2 = 0.99
+            #
+            #     if str(info_filters[0]) != '':
+            #         self.prefix = str(info_filters[0])
+            #     else:
+            #         self.prefix = 'PREFIX'
+            #
+            #     self.get_axis_xi = int(0)
+            #     self.get_axis_xf = int(0)
+            #     self.get_axis_yi = int(0)
+            #     self.get_axis_yf = int(0)
+            #
+            #     self.get_ignore_crop = True
+            #
+            #     self.get_image_tif = True
+            #     self.get_image_fit = True
+            #     print("Except self.set_config_take_image()")
 
     def run(self):
         self.set_config_take_image()
         self.lock.set_acquire()
+
         print("\n\n")
         print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
         print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
         print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
         print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
-        print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
-        print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
-        print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
-        print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
-        print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
-        print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
-        print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
-        print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
-        print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
+        # print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
+        # print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
+        # print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
+        # print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
+        # print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
+        # print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
+        # print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
+        # print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
+        # print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
         print("\n\n")
+
         try:
-            print("AAAAAAAAAAAAAAAAAAAAAAAA")
             self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
                                               self.get_level1, self.get_level2, self.get_axis_xi, self.get_axis_xf,
                                               self.get_axis_yi, self.get_axis_yf,

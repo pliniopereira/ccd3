@@ -61,6 +61,8 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
         self.setWindowTitle("Imager Box")
 
+        self.setting_values()
+
     @staticmethod
     def get_image_settings():
         settings = SettingsImage()
@@ -177,9 +179,6 @@ class SettingsImageWindow(QtWidgets.QWidget):
     def button_ok_func(self):
         try:
             y_pixels, x_pixels = self.get_pixels()
-            print(y_pixels)
-            print(x_pixels)
-
             """
             ATENCAO
             """
@@ -193,9 +192,9 @@ class SettingsImageWindow(QtWidgets.QWidget):
             #
             # else:
             self.image_settings.set_image_settings(self.getlevel1l.text(), self.getlevel2l.text(),
-                                                   self.ignore_crop_l.isChecked(),
                                                    self.getcropxi_l.text(), self.getcropxf_l.text(),
                                                    self.getcropyi_l.text(), self.getcropyf_l.text(),
+                                                   self.ignore_crop_l.isChecked(),
                                                    self.image_tif_l.isChecked(),
                                                    self.image_fit_l.isChecked())
             self.image_settings.save_settings()
@@ -215,3 +214,22 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
     def func_cancel(self):
         self.image_parent.close()
+
+    def setting_values(self):
+        info = self.get_image_settings()
+        self.set_values(info[0], info[1], info[2], info[3], info[4],
+                        info[5], info[6], info[7], info[8])
+
+    def set_values(self, get_level1, get_level2, crop_xi, crop_xf, crop_yi, crop_yf,
+                   ignore_crop, image_tif, image_fit):
+        self.getlevel1l.setText(get_level1)
+        self.getlevel2l.setText(get_level2)
+
+        self.getcropxi_l.setText(crop_xi)
+        self.getcropxf_l.setText(crop_xf)
+        self.getcropyi_l.setText(crop_yi)
+        self.getcropyf_l.setText(crop_yf)
+
+        self.ignore_crop_l.setChecked(ignore_crop)
+        self.image_tif_l.setChecked(image_tif)
+        self.image_fit_l.setChecked(image_fit)

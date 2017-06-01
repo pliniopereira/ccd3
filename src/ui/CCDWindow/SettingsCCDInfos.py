@@ -340,7 +340,7 @@ class SettingsCCDInfos(QWidget):
                 self.console.raise_text("Taking dark photo", 1)
                 self.one_photo.start()
             else:
-                self.console.raise_text("Takingaaa photo", 1)
+                self.console.raise_text("Taking photo", 1)
                 self.one_photo.start()
         except Exception as e:
             self.console.raise_text("Not possible taking photo -> {}".format(e), 1)

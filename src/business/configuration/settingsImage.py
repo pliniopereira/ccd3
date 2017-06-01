@@ -42,11 +42,11 @@ class SettingsImage:
     def get_image_settings(self):
         return self._settings.value(i.GET_LEVEL1), \
                self._settings.value(i.GET_LEVEL2), \
-               self._settings.value(i.CHEBOX_IGNORE_CROP, True, type=bool), \
                self._settings.value(i.CROP_X_AXIS_XI), \
-               self._settings.value(i.CROP_X_AXIS_XF),\
+               self._settings.value(i.CROP_X_AXIS_XF), \
                self._settings.value(i.CROP_Y_AXIS_YI), \
-               self._settings.value(i.CROP_Y_AXIS_YF),\
+               self._settings.value(i.CROP_Y_AXIS_YF), \
+               self._settings.value(i.CHEBOX_IGNORE_CROP, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_TIF, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_FIT, True, type=bool)
 
