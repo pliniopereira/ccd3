@@ -82,32 +82,26 @@ class SThread(QtCore.QThread):
         info_filters[1] = wavelength_field_1
         info_filters[2] = exposure_field_1
         info_filters[3] = binning_field_1
-        info_filters[4] = ccd_gain_field_1
         info_filters[5] = label_field_2
         info_filters[6] = wavelength_field_2
         info_filters[7] = exposure_field_2
         info_filters[8] = binning_field_2
-        info_filters[9] = ccd_gain_field_2
         info_filters[10] = label_field_3
         info_filters[11] = wavelength_field_3
         info_filters[12] = exposure_field_3
         info_filters[13] = binning_field_3
-        info_filters[14] = ccd_gain_field_3
         info_filters[15] = label_field_4
         info_filters[16] = wavelength_field_4
         info_filters[17] = exposure_field_4
         info_filters[18] = binning_field_4
-        info_filters[19] = ccd_gain_field_4
         info_filters[20] = label_field_5
         info_filters[21] = wavelength_field_5
         info_filters[22] = exposure_field_5
         info_filters[23] = binning_field_5
-        info_filters[24] = ccd_gain_field_5
         info_filters[25] = label_field_6
         info_filters[26] = wavelength_field_6
         info_filters[27] = exposure_field_6
         info_filters[28] = binning_field_6
-        info_filters[29] = ccd_gain_field_6
         """
 
         settings = SettingsFilters()
