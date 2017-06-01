@@ -162,12 +162,13 @@ class SThread(QtCore.QThread):
         info_cam = self.get_camera_settings()
         info_filters = self.get_filter_settings()
         info_image = self.get_image_settings()
-        print(info_filters)
-
-        print(info_image)
 
         self.prefix = info_filters[0]
-        self.exposure_time = float(info_filters[2])
+
+        try:
+            self.exposure_time = float(info_filters[2])
+        except TypeError:
+            self.exposure_time = 100
         if self.exposure_time <= 0.12:
             self.exposure_time = 0.12 * 100
         elif self.exposure_time >= 3600:
@@ -180,82 +181,66 @@ class SThread(QtCore.QThread):
             self.binning = int(info_filters[3])
         except TypeError:
             self.binning = 0
+
         try:
             self.dark_photo = int(info_cam[2])
         except TypeError:
             self.dark_photo = 0
 
         try:
-            self.get_ignore_crop = float(info_image[0])
+            self.get_level1 = float(info_image[0])
         except TypeError:
             self.get_level1 = 0.1
+
         try:
             self.get_level2 = float(info_image[1])
         except TypeError:
             self.get_level2 = 0.99
+
         try:
             self.get_axis_xi = int(info_image[2])
         except TypeError:
             self.get_axis_xi = 0
+
         try:
             self.get_axis_xf = int(info_image[3])
         except TypeError:
             self.get_axis_xf = 0
+
         try:
             self.get_axis_yi = int(info_image[4])
         except TypeError:
             self.get_axis_yi = 0
+
         try:
             self.get_axis_yf = info_image[5]
         except TypeError:
             self.get_axis_yf = 0
+
         try:
-            self.get_ignore_crop = info_image[6]
-        except TypeError:
-            self.get_ignore_crop = True
-        try:
-            self.get_image_tif = info_image[7]
-        except TypeError:
-            self.get_ignore_crop = True
-        try:
-            self.get_image_fit = info_image[8]
+            self.get_ignore_crop = bool(info_image[6])
         except TypeError:
             self.get_ignore_crop = True
 
-            # except Exception as e:
-            #     print("DEU RUIM")
-            #     print(e)
-            #     self.exposure_time = 100
-            #     self.binning = 0
-            #     self.dark_photo = 0
-            #     self.get_level1 = 0.1
-            #     self.get_level2 = 0.99
-            #
-            #     if str(info_filters[0]) != '':
-            #         self.prefix = str(info_filters[0])
-            #     else:
-            #         self.prefix = 'PREFIX'
-            #
-            #     self.get_axis_xi = int(0)
-            #     self.get_axis_xf = int(0)
-            #     self.get_axis_yi = int(0)
-            #     self.get_axis_yf = int(0)
-            #
-            #     self.get_ignore_crop = True
-            #
-            #     self.get_image_tif = True
-            #     self.get_image_fit = True
-            #     print("Except self.set_config_take_image()")
+        try:
+            self.get_image_tif = bool(info_image[7])
+        except TypeError:
+            self.get_ignore_crop = True
+
+        try:
+            self.get_image_fit = bool(info_image[8])
+        except TypeError:
+            self.get_ignore_crop = True
 
     def run(self):
         self.set_config_take_image()
         self.lock.set_acquire()
 
-        print("\n\n")
-        print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-        print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
-        print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
-        print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
+        # print("\n\n")
+        # print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
+        # print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
+        # print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
+        # print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
         # print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
         # print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
         # print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
