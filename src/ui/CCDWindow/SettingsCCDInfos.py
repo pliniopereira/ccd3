@@ -6,13 +6,14 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
+from src.business.models.Validator import Validator
 from src.business.shooters.SThread import SThread
 from src.controller.camera import Camera
+from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.commons.layout import set_hbox, set_lvbox
 from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 from src.utils.rodafiltros.FilterControl import FilterControl
-from src.controller.commons.Locker import Locker
 
 
 class SettingsCCDInfos(QWidget):
@@ -58,6 +59,8 @@ class SettingsCCDInfos(QWidget):
         self.saveButton = None
         self.cancelButton = None
         self.clearButton = None
+
+        self.validator = Validator()
 
         self.imager_window = parent
 
@@ -194,11 +197,13 @@ class SettingsCCDInfos(QWidget):
         self.temp_set_point_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_set_point_f = QtWidgets.QLineEdit(self)
         self.temp_set_point_f.setMaximumWidth(100)
+        self.temp_set_point_f.setValidator(self.validator.neg_intValidator)
 
         self.temp_init_l = QtWidgets.QLabel("Tempo para iniciar(s):", self)
         self.temp_init_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_init_f = QtWidgets.QLineEdit(self)
         self.temp_init_f.setMaximumWidth(100)
+        self.temp_init_f.setValidator(self.validator.intValidator)
 
         self.one_photoButton = QtWidgets.QPushButton('Take Photo', self)
         self.one_photoButton.clicked.connect(self.take_one_photo)
@@ -319,6 +324,7 @@ class SettingsCCDInfos(QWidget):
             self.var_save_ini_camera.set_camera_settings(self.temp_set_point_f.text(),
                                                          self.temp_init_f.text(),
                                                          self.close_open.currentIndex())
+
             self.var_save_ini_camera.save_settings()
             self.console.raise_text("Camera settings successfully saved!", 1)
 
