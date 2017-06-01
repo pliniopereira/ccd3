@@ -163,6 +163,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter1.addItem("1x1", 0)
         self.setField_binning_filter1.addItem("2x2", 1)
         self.setField_binning_filter1.addItem("3x3", 2)
+        self.setField_binning_filter1.addItem("4x4", 3)
+        self.setField_binning_filter1.addItem("5x5", 4)
+        self.setField_binning_filter1.addItem("6x6", 5)
 
         self.setField_label_filter2 = QtWidgets.QLineEdit(self)
         self.setField_wavelength_filter2 = QtWidgets.QLineEdit(self)
@@ -171,6 +174,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter2.addItem("1x1", 0)
         self.setField_binning_filter2.addItem("2x2", 1)
         self.setField_binning_filter2.addItem("3x3", 2)
+        self.setField_binning_filter2.addItem("4x4", 3)
+        self.setField_binning_filter2.addItem("5x5", 4)
+        self.setField_binning_filter2.addItem("6x6", 5)
 
         self.setField_label_filter3 = QtWidgets.QLineEdit(self)
         self.setField_wavelength_filter3 = QtWidgets.QLineEdit(self)
@@ -179,6 +185,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter3.addItem("1x1", 0)
         self.setField_binning_filter3.addItem("2x2", 1)
         self.setField_binning_filter3.addItem("3x3", 2)
+        self.setField_binning_filter3.addItem("4x4", 3)
+        self.setField_binning_filter3.addItem("5x5", 4)
+        self.setField_binning_filter3.addItem("6x6", 5)
 
         self.setField_label_filter4 = QtWidgets.QLineEdit(self)
         self.setField_wavelength_filter4 = QtWidgets.QLineEdit(self)
@@ -187,6 +196,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter4.addItem("1x1", 0)
         self.setField_binning_filter4.addItem("2x2", 1)
         self.setField_binning_filter4.addItem("3x3", 2)
+        self.setField_binning_filter4.addItem("4x4", 3)
+        self.setField_binning_filter4.addItem("5x5", 4)
+        self.setField_binning_filter4.addItem("6x6", 5)
 
         self.setField_label_filter5 = QtWidgets.QLineEdit(self)
         self.setField_wavelength_filter5 = QtWidgets.QLineEdit(self)
@@ -195,6 +207,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter5.addItem("1x1", 0)
         self.setField_binning_filter5.addItem("2x2", 1)
         self.setField_binning_filter5.addItem("3x3", 2)
+        self.setField_binning_filter5.addItem("4x4", 3)
+        self.setField_binning_filter5.addItem("5x5", 4)
+        self.setField_binning_filter5.addItem("6x6", 5)
 
         self.setField_label_filter6 = QtWidgets.QLineEdit(self)
         self.setField_wavelength_filter6 = QtWidgets.QLineEdit(self)
@@ -203,6 +218,9 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter6.addItem("1x1", 0)
         self.setField_binning_filter6.addItem("2x2", 1)
         self.setField_binning_filter6.addItem("3x3", 2)
+        self.setField_binning_filter6.addItem("4x4", 3)
+        self.setField_binning_filter6.addItem("5x5", 4)
+        self.setField_binning_filter6.addItem("6x6", 5)
 
         self.button_ok = QtWidgets.QPushButton("Save", self)
         self.button_ok.clicked.connect(self.button_ok_func)
