@@ -18,12 +18,12 @@ class SettingsFilters:
         self._settings.sync()
 
     def set_filters_settings(self,
-                             label_filter1, wavelength_filter1, exposure_filter1, binning_filter1, ccdgain_filter1,
-                             label_filter2, wavelength_filter2, exposure_filter2, binning_filter2, ccdgain_filter2,
-                             label_filter3, wavelength_filter3, exposure_filter3, binning_filter3, ccdgain_filter3,
-                             label_filter4, wavelength_filter4, exposure_filter4, binning_filter4, ccdgain_filter4,
-                             label_filter5, wavelength_filter5, exposure_filter5, binning_filter5, ccdgain_filter5,
-                             label_filter6, wavelength_filter6, exposure_filter6, binning_filter6, ccdgain_filter6):
+                             label_filter1, wavelength_filter1, exposure_filter1, binning_filter1,
+                             label_filter2, wavelength_filter2, exposure_filter2, binning_filter2,
+                             label_filter3, wavelength_filter3, exposure_filter3, binning_filter3,
+                             label_filter4, wavelength_filter4, exposure_filter4, binning_filter4,
+                             label_filter5, wavelength_filter5, exposure_filter5, binning_filter5,
+                             label_filter6, wavelength_filter6, exposure_filter6, binning_filter6):
 
         self._settings.setValue(f.LABEL_FILTER1, label_filter1)
         self._settings.setValue(f.WAVELENGTH_FILTER1, wavelength_filter1)

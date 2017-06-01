@@ -279,8 +279,8 @@ class FilterWindow(QtWidgets.QWidget):
                                                            self.setField_label_filter6.text(),
                                                            self.setField_wavelength_filter6.text(),
                                                            self.setField_exposure_filter6.text(),
-                                                           self.setField_binning_filter6.currentIndex(),
-                                                           self.var_save_ini_filters.save_settings())
+                                                           self.setField_binning_filter6.currentIndex())
+            self.var_save_ini_filters.save_settings()
             self.console.raise_text("Filters settings successfully saved!", 1)
 
         except Exception as e:
