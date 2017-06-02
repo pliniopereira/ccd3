@@ -10,5 +10,8 @@ class Validator:
         self.neg_intValidator = QIntValidator()
         self.neg_intValidator.setRange(-101, 100)
 
+        self.filter_intValidator = QIntValidator()
+        self.filter_intValidator.setRange(0, 360)
+
         self.doubleValidator = QDoubleValidator()
         self.doubleValidator.setRange(-100, 1000)
