@@ -188,12 +188,10 @@ class Camera(metaclass=Singleton):
 
         return temp
 
-    @staticmethod
-    def check_link():
+    def check_link(self):
         return getlinkstatus()
 
-    @staticmethod
-    def get_camera_settings_ini():
+    def get_camera_settings_ini(self):
         settings = SettingsCamera()
         info_ini = settings.get_camera_settings()
         return info_ini

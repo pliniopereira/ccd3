@@ -9,6 +9,7 @@ class EphemerisShooterWindow(QtWidgets.QWidget):
     """
     def __init__(self, parent=None):
         super(EphemerisShooterWindow, self).__init__(parent)
+        self.line1_layout = None
         self.cam = Camera()
         self.button_start_count = QtWidgets.QPushButton('Start', self)
         self.button_stop_count = QtWidgets.QPushButton('Stop', self)

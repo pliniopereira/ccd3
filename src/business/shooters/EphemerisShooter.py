@@ -69,16 +69,14 @@ class EphemerisShooter(QtCore.QThread):
             self.max_lunar_elevation = 0
             self.max_lunar_phase = 0
 
-    @staticmethod
-    def calculate_moon(obs):
+    def calculate_moon(self, obs):
         aux = obs
         aux.compute_pressure()
         aux.horizon = '8'
         moon = ephem.Moon(aux)
         return aux.previous_setting(moon), aux.next_rising(moon)
 
-    @staticmethod
-    def calculate_sun(obs):
+    def calculate_sun(self, obs):
         aux = obs
         aux.compute_pressure()
         aux.horizon = '-12'

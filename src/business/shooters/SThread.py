@@ -41,8 +41,7 @@ class SThread(QtCore.QThread):
         self.lock = Locker()
         self.info = []
 
-    @staticmethod
-    def get_image_settings():
+    def get_image_settings(self):
         """
         Pega os valores no ini image
         info_image[0] = get_level1
@@ -61,8 +60,7 @@ class SThread(QtCore.QThread):
 
         return info_image
 
-    @staticmethod
-    def get_camera_settings():
+    def get_camera_settings(self):
         """
         Pega os valores no ini camera
         info_cam[0] = temperature_camera
@@ -74,8 +72,7 @@ class SThread(QtCore.QThread):
 
         return info_cam
 
-    @staticmethod
-    def get_filter_settings():
+    def get_filter_settings(self):
         """
         Pega os valores no ini filters
         info_filters[0] = label_field_1

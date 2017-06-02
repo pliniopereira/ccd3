@@ -240,8 +240,7 @@ class FilterWindow(QtWidgets.QWidget):
         self.button_cancel = QtWidgets.QPushButton("Cancel", self)
         self.button_cancel.clicked.connect(self.func_cancel)
 
-    @staticmethod
-    def error_binning(binning_var):
+    def error_binning(self, binning_var):
         try:
             binning_filter = int(binning_var)
         except TypeError:

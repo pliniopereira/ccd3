@@ -66,8 +66,7 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
         self.setting_values()
 
-    @staticmethod
-    def get_image_settings():
+    def get_image_settings(self):
         settings = SettingsImage()
         info = settings.get_image_settings()
         return info
