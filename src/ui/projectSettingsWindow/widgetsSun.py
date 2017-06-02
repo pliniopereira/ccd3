@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from src.business.models.Validator import Validator
+from src.business.models.ValidatorFactory import ValidatorFactory
 from src.ui.commons.layout import set_hbox, set_lvbox
 
 
@@ -9,7 +9,7 @@ class WidgetsSun(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(WidgetsSun, self).__init__(parent)
 
-        self.validator = Validator()
+        self.validator = ValidatorFactory()
 
         # Creating Labels
         self.lmse = QtWidgets.QLabel("Max Solar Elevation (º):", self)
@@ -24,7 +24,7 @@ class WidgetsSun(QtWidgets.QWidget):
         # Creating Input Line
         self.emse = QtWidgets.QLineEdit(self)
         self.emse.setMaximumWidth(100)
-        self.emse.setValidator(self.validator.neg_intValidator)
+        self.emse.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
 
         self.ignore_lunar_position_label = QtWidgets.QLabel("    Ignore Lunar Position:", self)
         self.ignore_lunar_position_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -32,11 +32,11 @@ class WidgetsSun(QtWidgets.QWidget):
 
         self.emle = QtWidgets.QLineEdit(self)
         self.emle.setMaximumWidth(100)
-        self.emle.setValidator(self.validator.neg_intValidator)
+        self.emle.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
 
         self.emlp = QtWidgets.QLineEdit(self)
         self.emlp.setMaximumWidth(100)
-        self.emlp.setValidator(self.validator.neg_intValidator)
+        self.emlp.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
 
         self.setting_up()
 

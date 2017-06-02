@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from src.business.models.Validator import Validator
+from src.business.models.ValidatorFactory import ValidatorFactory
 from src.ui.commons.layout import set_hbox, set_lvbox, add_widget_to_vbox
 
 
@@ -9,7 +9,7 @@ class WidgetsGeography(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(WidgetsGeography, self).__init__(parent)
 
-        self.validator = Validator()
+        self.validator = ValidatorFactory()
 
         # Creating Labels
         self.lLat = QtWidgets.QLabel("Latitude (º):", self)
@@ -30,23 +30,23 @@ class WidgetsGeography(QtWidgets.QWidget):
         # Creating Input Fields
         self.eLat = QtWidgets.QLineEdit(self)
         self.eLat.setMaximumWidth(100)
-        self.eLat.setValidator(self.validator.neg_intValidator)
+        self.eLat.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
 
         self.eLon = QtWidgets.QLineEdit(self)
         self.eLon.setMaximumWidth(100)
-        self.eLon.setValidator(self.validator.neg_intValidator)
+        self.eLon.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
 
         self.eElev = QtWidgets.QLineEdit(self)
         self.eElev.setMaximumWidth(100)
-        self.eElev.setValidator(self.validator.neg_intValidator)
+        self.eElev.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
 
         self.ePres = QtWidgets.QLineEdit(self)
         self.ePres.setMaximumWidth(100)
-        self.ePres.setValidator(self.validator.intValidator)
+        self.ePres.setValidator(self.validator.get_validator_int_from_0_to_1000())
 
         self.eTemp = QtWidgets.QLineEdit(self)
         self.eTemp.setMaximumWidth(100)
-        self.eTemp.setValidator(self.validator.neg_intValidator)
+        self.eTemp.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
 
         self.setting_up()
 
