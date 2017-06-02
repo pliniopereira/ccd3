@@ -119,37 +119,37 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_label_filter1.setText(label_filter1)
         self.setField_wavelength_filter1.setText(wavelength_filter1)
         self.setField_exposure_filter1.setText(exposure_filter1)
-        self.setField_exposure_filter1.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter1.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter1.setCurrentIndex(binning_var1)
 
         self.setField_label_filter2.setText(label_filter2)
         self.setField_wavelength_filter2.setText(wavelength_filter2)
         self.setField_exposure_filter2.setText(exposure_filter2)
-        self.setField_exposure_filter2.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter2.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter2.setCurrentIndex(binning_var2)
 
         self.setField_label_filter3.setText(label_filter3)
         self.setField_wavelength_filter3.setText(wavelength_filter3)
         self.setField_exposure_filter3.setText(exposure_filter3)
-        self.setField_exposure_filter3.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter3.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter3.setCurrentIndex(binning_var3)
 
         self.setField_label_filter4.setText(label_filter4)
         self.setField_wavelength_filter4.setText(wavelength_filter4)
         self.setField_exposure_filter4.setText(exposure_filter4)
-        self.setField_exposure_filter4.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter4.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter4.setCurrentIndex(binning_var4)
 
         self.setField_label_filter5.setText(label_filter5)
         self.setField_wavelength_filter5.setText(wavelength_filter5)
         self.setField_exposure_filter5.setText(exposure_filter5)
-        self.setField_exposure_filter5.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter5.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter5.setCurrentIndex(binning_var5)
 
         self.setField_label_filter6.setText(label_filter6)
         self.setField_wavelength_filter6.setText(wavelength_filter6)
         self.setField_exposure_filter6.setText(exposure_filter6)
-        self.setField_exposure_filter6.setValidator(self.validator.get_validator_int_from_0_to_360())
+        self.setField_exposure_filter6.setValidator(self.validator.create_validator_int_from_0_to_360())
         self.setField_binning_filter6.setCurrentIndex(binning_var6)
 
     def create_filters_widgets(self):

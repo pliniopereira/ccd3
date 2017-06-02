@@ -101,14 +101,14 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
         self.getlevel1l = QtWidgets.QLineEdit(self)
         self.getlevel1l.setMaximumWidth(50)
-        self.getlevel1l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getlevel1l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         self.getlevel2 = QtWidgets.QLabel("Top Level:", self)
         self.getlevel2.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
         self.getlevel2l = QtWidgets.QLineEdit(self)
         self.getlevel2l.setMaximumWidth(50)
-        self.getlevel2l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getlevel2l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         group_box.setLayout(set_lvbox(set_hbox(self.getlevel1, self.getlevel1l, self.getlevel2, self.getlevel2l)))
 
@@ -127,28 +127,28 @@ class SettingsImageWindow(QtWidgets.QWidget):
 
         self.getcropxi_l = QtWidgets.QLineEdit(self)
         self.getcropxi_l.setMaximumWidth(50)
-        self.getcropxi_l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getcropxi_l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         self.crop_xf = QtWidgets.QLabel("Wf:", self)
         self.crop_xf.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
         self.getcropxf_l = QtWidgets.QLineEdit(self)
         self.getcropxf_l.setMaximumWidth(50)
-        self.getcropxf_l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getcropxf_l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         self.crop_yi = QtWidgets.QLabel("Height: Hi:", self)
         self.crop_yi.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
         self.getcropyi_l = QtWidgets.QLineEdit(self)
         self.getcropyi_l.setMaximumWidth(50)
-        self.getcropyi_l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getcropyi_l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         self.crop_yf = QtWidgets.QLabel("Hf:", self)
         self.crop_yf.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
         self.getcropyf_l = QtWidgets.QLineEdit(self)
         self.getcropyf_l.setMaximumWidth(50)
-        self.getcropyf_l.setValidator(self.validator.get_validator_double_from_minus_100_to_100())
+        self.getcropyf_l.setValidator(self.validator.create_validator_double_from_minus_100_to_100())
 
         group_box.setLayout(set_lvbox(set_hbox(self.ignore_crop_l),
                                       set_hbox(self.crop_msg),

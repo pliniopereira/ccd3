@@ -24,7 +24,7 @@ class WidgetsSun(QtWidgets.QWidget):
         # Creating Input Line
         self.emse = QtWidgets.QLineEdit(self)
         self.emse.setMaximumWidth(100)
-        self.emse.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
+        self.emse.setValidator(self.validator.create_validator_int_from_minus_100_to_100())
 
         self.ignore_lunar_position_label = QtWidgets.QLabel("    Ignore Lunar Position:", self)
         self.ignore_lunar_position_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -32,11 +32,11 @@ class WidgetsSun(QtWidgets.QWidget):
 
         self.emle = QtWidgets.QLineEdit(self)
         self.emle.setMaximumWidth(100)
-        self.emle.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
+        self.emle.setValidator(self.validator.create_validator_int_from_minus_100_to_100())
 
         self.emlp = QtWidgets.QLineEdit(self)
         self.emlp.setMaximumWidth(100)
-        self.emlp.setValidator(self.validator.get_validator_int_from_minus_100_to_100())
+        self.emlp.setValidator(self.validator.create_validator_int_from_minus_100_to_100())
 
         self.setting_up()
 
