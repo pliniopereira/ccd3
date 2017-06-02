@@ -1,12 +1,15 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+from src.business.models.Validator import Validator
 from src.ui.commons.layout import set_hbox, set_lvbox, add_widget_to_vbox
 
 
 class WidgetsGeography(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(WidgetsGeography, self).__init__(parent)
+
+        self.validator = Validator()
 
         # Creating Labels
         self.lLat = QtWidgets.QLabel("Latitude (º):", self)
@@ -24,36 +27,40 @@ class WidgetsGeography(QtWidgets.QWidget):
         self.lTemp = QtWidgets.QLabel("Temperature (ºC):", self)
         self.lTemp.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
-
         # Creating Input Fields
         self.eLat = QtWidgets.QLineEdit(self)
         self.eLat.setMaximumWidth(100)
+        self.eLat.setValidator(self.validator.neg_intValidator)
 
         self.eLon = QtWidgets.QLineEdit(self)
         self.eLon.setMaximumWidth(100)
+        self.eLon.setValidator(self.validator.neg_intValidator)
 
         self.eElev = QtWidgets.QLineEdit(self)
         self.eElev.setMaximumWidth(100)
+        self.eElev.setValidator(self.validator.neg_intValidator)
 
         self.ePres = QtWidgets.QLineEdit(self)
         self.ePres.setMaximumWidth(100)
+        self.ePres.setValidator(self.validator.intValidator)
 
         self.eTemp = QtWidgets.QLineEdit(self)
         self.eTemp.setMaximumWidth(100)
+        self.eTemp.setValidator(self.validator.neg_intValidator)
 
         self.setting_up()
 
     def setting_up(self):
         vbox = set_lvbox(set_hbox(self.lLat, self.eLat))
         add_widget_to_vbox(vbox,
-                        set_hbox(self.lLon, self.eLon),
-                        set_hbox(self.lElev, self.eElev),
-                        set_hbox(self.lPres, self.ePres),
-                        set_hbox(self.lTemp, self.eTemp))
+                           set_hbox(self.lLon, self.eLon),
+                           set_hbox(self.lElev, self.eElev),
+                           set_hbox(self.lPres, self.ePres),
+                           set_hbox(self.lTemp, self.eTemp))
         self.setLayout(vbox)
 
     def get_geography(self):
-        return self.eLat.text(), self.eLon.text(), self.eElev.text(), self.ePres.text(),\
+        return self.eLat.text(), self.eLon.text(), self.eElev.text(), self.ePres.text(), \
                self.eTemp.text()
 
     def set_geography(self, latitude, longitude, elevation, pressure, temperature):
