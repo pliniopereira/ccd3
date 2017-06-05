@@ -2,11 +2,11 @@ from time import sleep
 
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
-from src.business.models.ValidatorFactory import ValidatorFactory
 from src.business.shooters.SThread import SThread
 from src.controller.camera import Camera
 from src.controller.commons.Locker import Locker
@@ -59,8 +59,6 @@ class SettingsCCDInfos(QWidget):
         self.saveButton = None
         self.cancelButton = None
         self.clearButton = None
-
-        self.validator = ValidatorFactory()
 
         self.imager_window = parent
 
@@ -197,13 +195,13 @@ class SettingsCCDInfos(QWidget):
         self.temp_set_point_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_set_point_f = QtWidgets.QLineEdit(self)
         self.temp_set_point_f.setMaximumWidth(100)
-        self.temp_set_point_f.setValidator(self.validator.create_validator_int_from_minus_100_to_100())
+        self.temp_set_point_f.setValidator(QIntValidator(-100, 30))
 
         self.temp_init_l = QtWidgets.QLabel("Tempo para iniciar(s):", self)
         self.temp_init_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.temp_init_f = QtWidgets.QLineEdit(self)
         self.temp_init_f.setMaximumWidth(100)
-        self.temp_init_f.setValidator(self.validator.create_validator_int_from_0_to_1000())
+        self.temp_init_f.setValidator(QIntValidator(0, 600))
 
         self.one_photoButton = QtWidgets.QPushButton('Take Photo', self)
         self.one_photoButton.clicked.connect(self.take_one_photo)
