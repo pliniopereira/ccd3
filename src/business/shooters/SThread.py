@@ -43,6 +43,8 @@ class SThread(QtCore.QThread):
 
         self.filter_split_l = None
 
+        self.count_aux = 5
+
     def get_image_settings(self):
         """
         Pega os valores no ini image
@@ -59,7 +61,6 @@ class SThread(QtCore.QThread):
 
         settings = SettingsImage()
         info_image = settings.get_image_settings()
-        print(info_image)
 
         return info_image
 
@@ -115,13 +116,6 @@ class SThread(QtCore.QThread):
             start = int(i * len_l / n)
             end = int((i + 1) * len_l / n)
             self.filter_split_l.append(info_filters_l[start:end])
-        print(self.filter_split_l)
-        print(self.filter_split_l[0])
-        print(self.filter_split_l[1])
-        print(self.filter_split_l[2])
-        print(self.filter_split_l[3])
-        print(self.filter_split_l[4])
-        print(self.filter_split_l[5])
 
     def take_dark(self):
         """
@@ -225,42 +219,34 @@ class SThread(QtCore.QThread):
             except Exception as e:
                 print("self.get_image_tif = True -> {}".format(e))
                 self.get_image_fit = True
-
-
             try:
                 self.get_image_fit = info_image[8]
             except Exception as e:
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
+            try:
+                self.get_filter_settings()
+            except Exception as e:
+                print("get_filter_settings() -> {}".format(e))
 
-            # try:
-            #     print("\n\n22222222222222222222")
-            #     print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-            #     print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
-            #     print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
-            #     print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
-            #     print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
-            #     print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
-            #     print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
-            #     print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
-            #     print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
-            #     print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
-            #     print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
-            #     print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
-            #     print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
-            #     print("\n\n")
-            # except Exception as e:
-            #     print("Try ini 2 -> {}".format(e))
         except Exception as e:
             print("Try ini definitive -> {}".format(e))
 
     def run(self):
         self.set_config_take_image()
 
-        self.exposure_time = 1
-        self.prefix = "HH"
-        self.binning = 0
+        try:
+            aux = self.filter_split_l[self.count_aux]
+            print(aux)
+            print(aux[0])
+            print(aux[2])
+            print(aux[3])
 
+            self.prefix = aux[0]
+            self.exposure_time = aux[2]
+            self.binning = aux[3]
+        except Exception as e:
+            print("Try filter ini -> {}".format(e))
         self.lock.set_acquire()
 
         print("\n\n")
@@ -280,7 +266,6 @@ class SThread(QtCore.QThread):
         print("\n\n")
 
         try:
-
                 self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
                                                   self.get_level1, self.get_level2, self.get_axis_xi, self.get_axis_xf,
                                                   self.get_axis_yi, self.get_axis_yf,
