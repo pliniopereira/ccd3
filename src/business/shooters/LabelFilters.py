@@ -42,4 +42,25 @@ def get_filter_settings():
         end = int((i + 1) * len_l / n)
         filter_split_l.append(info_filters_l[start:end])
 
+    i = 0
+    x = 0
+    n = len(filter_split_l)
+    list(filter_split_l)
+    while i < n:
+        try:
+            if filter_split_l[i][0] == '' or filter_split_l[i][2] == '':
+                filter_split_l[i] = list(filter_split_l[i])
+                filter_split_l = list(filter_split_l)
+                filter_split_l.remove(filter_split_l[i])
+                i -= 1
+                n -= 1
+                x += 1
+            else:
+                filter_split_l[i] = list(filter_split_l[i])
+                filter_split_l[i].extend(str(x))
+                x += 1
+        except Exception as e:
+            print(e)
+        i += 1
+
     return filter_split_l

@@ -1,4 +1,5 @@
 import time
+from time import sleep
 
 from PyQt5 import QtCore
 
@@ -7,6 +8,9 @@ from src.business.configuration.settingsImage import SettingsImage
 from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
+from src.utils.rodafiltros.FilterControl import FilterControl
+
+
 
 
 class SThread(QtCore.QThread):
@@ -43,6 +47,8 @@ class SThread(QtCore.QThread):
         self.filter_split_label = None
 
         self.count_aux = 0
+
+        self.roda_filtros = FilterControl()
 
     def get_image_settings(self):
         """
@@ -184,10 +190,6 @@ class SThread(QtCore.QThread):
                 self.get_image_fit = True
             try:
                 self.filter_split_label = LabelFilters.get_filter_settings()
-                print("\n\n")
-                print("self.filter_split_label = " + str(self.filter_split_label))
-                print("\n\n")
-
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -197,32 +199,62 @@ class SThread(QtCore.QThread):
     def run(self):
         self.set_config_take_image()
         try:
-            if self.count_aux <= 5:
+            if self.count_aux < len(self.filter_split_label):
                 aux = self.filter_split_label[self.count_aux]
+                
+                '''
+                print("\n\n")
+                print("---------------------------------------->")
+                print(len(self.filter_split_label))
+                print("---------------------------------------->")
+
                 print(aux)
                 print(aux[0])
                 print(aux[2])
                 print(aux[3])
+                print(aux[4])
+                print("\n\n")
+                '''
+
+
                 self.prefix = aux[0]
                 self.exposure_time = aux[2]
                 self.binning = aux[3]
                 self.count_aux += 1
+
+                self.filter_wheel_control(aux[4])
+
             else:
                 self.count_aux = 0
                 aux = self.filter_split_label[self.count_aux]
+
+                '''
+                print("\n\n")
+                print("---------------------------------------->")
+                print(len(self.filter_split_label))
+                print("---------------------------------------->")
+
                 print(aux)
                 print(aux[0])
                 print(aux[2])
                 print(aux[3])
+                print(aux[4])
+                print("\n\n")
+                '''
+
                 self.prefix = aux[0]
                 self.exposure_time = aux[2]
                 self.binning = aux[3]
                 self.count_aux += 1
+
+
+                self.filter_wheel_control(aux[4])
+
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
         self.lock.set_acquire()
-
+        '''
         print("\n\n")
         print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
         print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
@@ -238,6 +270,7 @@ class SThread(QtCore.QThread):
         print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
         print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
         print("\n\n")
+        '''
 
         try:
                 self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
@@ -264,3 +297,14 @@ class SThread(QtCore.QThread):
 
     def get_image_info(self):
         return self.img
+
+    def filter_wheel_control(self, wish_filter_int):
+        try:
+            sleep(1)
+            wish_filter_int = int(wish_filter_int)
+            wish_filter_int += 1
+            self.roda_filtros.filter_wheel_control(wish_filter_int)
+            sleep(1)
+        except Exception as e:
+            self.roda_filtros.home_reset()
+            print(e)
