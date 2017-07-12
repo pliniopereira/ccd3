@@ -4,8 +4,7 @@ from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.configuration.settingsImage import SettingsImage
-from src.business.filters.settingsFilters import SettingsFilters
-from src.business.models.image import Image
+from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 
@@ -41,9 +40,9 @@ class SThread(QtCore.QThread):
         self.lock = Locker()
         self.info = []
 
-        self.filter_split_l = None
+        self.filter_split_label = None
 
-        self.count_aux = 5
+        self.count_aux = 0
 
     def get_image_settings(self):
         """
@@ -75,47 +74,6 @@ class SThread(QtCore.QThread):
         info_cam = settings.get_camera_settings()
 
         return info_cam
-
-    def get_filter_settings(self):
-        """
-        Pega os valores no ini filters
-        info_filters[0] = label_field_1
-        info_filters[1] = wavelength_field_1
-        info_filters[2] = exposure_field_1
-        info_filters[3] = binning_field_1
-        info_filters[5] = label_field_2
-        info_filters[6] = wavelength_field_2
-        info_filters[7] = exposure_field_2
-        info_filters[8] = binning_field_2
-        info_filters[10] = label_field_3
-        info_filters[11] = wavelength_field_3
-        info_filters[12] = exposure_field_3
-        info_filters[13] = binning_field_3
-        info_filters[15] = label_field_4
-        info_filters[16] = wavelength_field_4
-        info_filters[17] = exposure_field_4
-        info_filters[18] = binning_field_4
-        info_filters[20] = label_field_5
-        info_filters[21] = wavelength_field_5
-        info_filters[22] = exposure_field_5
-        info_filters[23] = binning_field_5
-        info_filters[25] = label_field_6
-        info_filters[26] = wavelength_field_6
-        info_filters[27] = exposure_field_6
-        info_filters[28] = binning_field_6
-        """
-
-        settings = SettingsFilters()
-        info_filters_l = settings.get_filters_settings()
-
-        n = 6
-        self.filter_split_l = []
-        len_l = len(info_filters_l)
-
-        for i in range(n):
-            start = int(i * len_l / n)
-            end = int((i + 1) * len_l / n)
-            self.filter_split_l.append(info_filters_l[start:end])
 
     def take_dark(self):
         """
@@ -225,7 +183,11 @@ class SThread(QtCore.QThread):
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
             try:
-                self.get_filter_settings()
+                self.filter_split_label = LabelFilters.get_filter_settings()
+                print("\n\n")
+                print("self.filter_split_label = " + str(self.filter_split_label))
+                print("\n\n")
+
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -234,19 +196,31 @@ class SThread(QtCore.QThread):
 
     def run(self):
         self.set_config_take_image()
-
         try:
-            aux = self.filter_split_l[self.count_aux]
-            print(aux)
-            print(aux[0])
-            print(aux[2])
-            print(aux[3])
-
-            self.prefix = aux[0]
-            self.exposure_time = aux[2]
-            self.binning = aux[3]
+            if self.count_aux <= 5:
+                aux = self.filter_split_label[self.count_aux]
+                print(aux)
+                print(aux[0])
+                print(aux[2])
+                print(aux[3])
+                self.prefix = aux[0]
+                self.exposure_time = aux[2]
+                self.binning = aux[3]
+                self.count_aux += 1
+            else:
+                self.count_aux = 0
+                aux = self.filter_split_label[self.count_aux]
+                print(aux)
+                print(aux[0])
+                print(aux[2])
+                print(aux[3])
+                self.prefix = aux[0]
+                self.exposure_time = aux[2]
+                self.binning = aux[3]
+                self.count_aux += 1
         except Exception as e:
             print("Try filter ini -> {}".format(e))
+
         self.lock.set_acquire()
 
         print("\n\n")
