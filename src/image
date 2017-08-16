@@ -1,0 +1,10 @@
+[General]
+get_level1=
+get_level2=
+crop_xi=
+crop_xf=
+crop_yi=
+crop_yf=
+ignore_crop=true
+image_tif=false
+image_fit=true

@@ -224,7 +224,7 @@ class FilterControl(metaclass=Singleton):
             if g == 1:
                 self.CommInterface.WriteCommand("P=23333")
             if g == 2:
-                self.CommInterface.WriteCommand("P=-26666")
+                self.CommInterface.WriteCommand("P=26666")
             if g > 2:
                 self.CommInterface.WriteCommand("P=g*3333")
 
