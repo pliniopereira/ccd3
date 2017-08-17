@@ -238,6 +238,7 @@ class SThread(QtCore.QThread):
                 # print("\n\n")
 
                 self.prefix = str(aux[0])
+
                 self.exposure_time = float(aux[2])
                 if self.exposure_time <= 0.12:
                     self.exposure_time = 0.12 * 100
@@ -246,6 +247,7 @@ class SThread(QtCore.QThread):
                 else:
                     self.exposure_time = float(aux[2]) * 100
                 self.exposure_time = int(self.exposure_time)
+
                 self.binning = int(aux[3])
                 self.count_aux += 1
 
