@@ -532,11 +532,11 @@ def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
 
     try:
         if dark_photo == 1:
-            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposure_time=exposure_time,
+            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=exposure_time,
                       openShutter=SbigLib.SHUTTER_COMMAND.SC_CLOSE_SHUTTER.value, readoutMode=v_read, top=0, left=0,
                       height=v_h, width=v_w)
         else:
-            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposure_time=exposure_time,
+            cin = cin(ccd=SbigLib.CCD_REQUEST.CCD_IMAGING.value, exposureTime=exposure_time,
                       openShutter=SbigLib.SHUTTER_COMMAND.SC_OPEN_SHUTTER.value, readoutMode=v_read, top=0, left=0,
                       height=v_h, width=v_w)
     except Exception as e:

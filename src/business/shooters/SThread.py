@@ -238,7 +238,14 @@ class SThread(QtCore.QThread):
                 # print("\n\n")
 
                 self.prefix = str(aux[0])
-                self.exposure_time = int(aux[2])
+                self.exposure_time = float(aux[2])
+                if self.exposure_time <= 0.12:
+                    self.exposure_time = 0.12 * 100
+                elif self.exposure_time >= 3600:
+                    self.exposure_time = 3600 * 100
+                else:
+                    self.exposure_time = float(aux[2]) * 100
+                self.exposure_time = int(self.exposure_time)
                 self.binning = int(aux[3])
                 self.count_aux += 1
 
@@ -275,8 +282,17 @@ class SThread(QtCore.QThread):
                 print("\n\n")
 
                 self.prefix = str(aux[0])
-                self.exposure_time = int(aux[2])
+                self.exposure_time = float(aux[2])
                 self.binning = int(aux[3])
+
+                self.exposure_time = float(aux[2])
+                if self.exposure_time <= 0.12:
+                    self.exposure_time = 0.12 * 100
+                elif self.exposure_time >= 3600:
+                    self.exposure_time = 3600 * 100
+                else:
+                    self.exposure_time = float(aux[2]) * 100
+                self.exposure_time = int(self.exposure_time)
 
                 self.filter_wheel_control(aux[4])
 
