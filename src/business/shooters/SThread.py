@@ -11,8 +11,6 @@ from src.utils.camera import SbigDriver
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
-
-
 class SThread(QtCore.QThread):
     """
     Threads são fluxos de programas que executam em paralelo dentro de uma aplicação, isto é,\
@@ -130,6 +128,7 @@ class SThread(QtCore.QThread):
             info_cam = self.get_camera_settings()
             info_image = self.get_image_settings()
 
+
             try:
                 self.dark_photo = int(info_cam[2])
             except Exception as e:
@@ -198,40 +197,74 @@ class SThread(QtCore.QThread):
 
     def run(self):
         self.set_config_take_image()
+        # print("\n\n\n")
+        # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+        # print(str(self.filter_split_label))
+        # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+        # print("\n\n\n")
+
+        # my_list = [2, 3, 2, 6, 2, 4, 2, 5]
+        my_list = [2, 3, 6, 2, 5]
         try:
-            if self.count_aux < len(self.filter_split_label):
-                aux = self.filter_split_label[self.count_aux]
-                
-                '''
-                print("\n\n")
-                print("---------------------------------------->")
-                print(len(self.filter_split_label))
-                print("---------------------------------------->")
+            if self.count_aux < len(my_list):
+                index_of_dic = str(my_list[self.count_aux])
+                aux = self.filter_split_label[str(index_of_dic)][0]
+                # print("\n\n\n")
+                # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                # print(index_of_dic)
+                # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                # print("\n\n\n")
+                # print("\n\n\n")
+                # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                # print(str(self.filter_split_label))
+                # print(str(self.count_aux))
+                # print(str(my_list[self.count_aux]))
+                # print(aux)
+                # print(type(aux))
+                # print(aux[0])
+                # print(index_of_dic)
+                # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                # print("\n\n\n")
+                # print("\n\n")
+                # print("---------------------------------------->")
+                # # print(len(self.filter_split_label))
+                # aux = list(aux)
+                # print(aux)
+                # print(aux[0])
+                # print(aux[2])
+                # print(aux[3])
+                # print(aux[4])
+                # print("---------------------------------------->")
+                # print("\n\n")
 
-                print(aux)
-                print(aux[0])
-                print(aux[2])
-                print(aux[3])
-                print(aux[4])
-                print("\n\n")
-                '''
-
-
-                self.prefix = aux[0]
-                self.exposure_time = aux[2]
-                self.binning = aux[3]
+                self.prefix = str(aux[0])
+                self.exposure_time = int(aux[2])
+                self.binning = int(aux[3])
                 self.count_aux += 1
 
-                self.filter_wheel_control(aux[4])
+                self.filter_wheel_control(int(aux[4]))
+
+                # print("\n\n")
+                # print("---------------------------------------->")
+                # print(str(self.count_aux))
+                # print(len(my_list))
+                # print("---------------------------------------->")
+                #
+                # print(aux)
+                # print(aux[0])
+                # print(aux[2])
+                # print(aux[3])
+                # print(aux[4])
+                # print("\n\n")
 
             else:
-                self.count_aux = 0
-                aux = self.filter_split_label[self.count_aux]
+                self.count_aux = 1
+                index_of_dic = str(my_list[self.count_aux])
+                aux = self.filter_split_label[str(index_of_dic)][0]
 
-                '''
                 print("\n\n")
                 print("---------------------------------------->")
-                print(len(self.filter_split_label))
+                print(str(self.count_aux))
                 print("---------------------------------------->")
 
                 print(aux)
@@ -240,15 +273,14 @@ class SThread(QtCore.QThread):
                 print(aux[3])
                 print(aux[4])
                 print("\n\n")
-                '''
 
-                self.prefix = aux[0]
-                self.exposure_time = aux[2]
-                self.binning = aux[3]
-                self.count_aux += 1
-
+                self.prefix = str(aux[0])
+                self.exposure_time = int(aux[2])
+                self.binning = int(aux[3])
 
                 self.filter_wheel_control(aux[4])
+
+                self.count_aux += 1
 
         except Exception as e:
             print("Try filter ini -> {}".format(e))
@@ -302,7 +334,6 @@ class SThread(QtCore.QThread):
         try:
             sleep(1)
             wish_filter_int = int(wish_filter_int)
-            wish_filter_int += 1
             self.roda_filtros.filter_wheel_control(wish_filter_int)
             sleep(1)
         except Exception as e:

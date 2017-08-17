@@ -37,13 +37,15 @@ def get_filter_settings():
     filter_split_l = []
     len_l = len(info_filters_l)
 
+    filter_position_dic = {}
+
     for i in range(n):
         start = int(i * len_l / n)
         end = int((i + 1) * len_l / n)
         filter_split_l.append(info_filters_l[start:end])
 
     i = 0
-    x = 0
+    x = 1
     n = len(filter_split_l)
     list(filter_split_l)
     while i < n:
@@ -63,4 +65,9 @@ def get_filter_settings():
             print(e)
         i += 1
 
-    return filter_split_l
+    dic = {}
+    for lista in filter_split_l:
+        dic[lista[4]] = []
+        dic[lista[4]].append(lista)
+
+    return dic
