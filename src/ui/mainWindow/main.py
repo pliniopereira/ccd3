@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QMessageBox, QAction)
+from PyQt5.QtWidgets import QMessageBox, QAction
 
 from src.business.configuration.configSystem import ConfigSystem
 from src.controller.camera import Camera
@@ -12,6 +12,7 @@ from src.ui.imageSettingsWindow.main import Main as imag_menu
 from src.ui.mainWindow.mainWindow import MainWindow
 from src.ui.mainWindow.status import Status
 from src.ui.projectSettingsWindow.main import MainWindow as sw
+from src.ui.sequenceWindow.main import Main as filterssequence
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
 
@@ -39,6 +40,7 @@ class Main(QtWidgets.QMainWindow):
         self.CCD_menu = CCD_menu(self)
         self.cam = Camera()
         self.filters_menu = filters(self)
+        self.filters_sequence_menu = filterssequence(self)
         self.init_menu()
         self.init_window_geometry()
 
@@ -83,6 +85,7 @@ class Main(QtWidgets.QMainWindow):
         self.add_to_menu(menubar, "Project Settings", a2[0])
         self.add_to_menu(menubar, "Image Settings", self.open_settings_image()[0])
         self.add_to_menu(menubar, "Filters Settings", self.open_settings_filters()[0])
+        self.add_to_menu(menubar, "Filters Sequence Settings", self.open_settings_sequence_filters()[0])
         self.add_to_menu(menubar, "Imager Settings", self.open_settings_CCD()[0])
 
     def action_continuous_shooter(self):
@@ -144,6 +147,17 @@ class Main(QtWidgets.QMainWindow):
             print(e)
 
         return setF, "&Options"
+
+    def open_settings_sequence_filters(self):
+        setSeqFilters = QtWidgets.QAction('Filters Sequence Settings', self)
+        setSeqFilters.setShortcut("Ctrl+S")
+
+        try:
+            setSeqFilters.triggered.connect(self.filters_sequence_menu.show)
+        except Exception as e:
+            print(e)
+
+        return setSeqFilters, "&Options"
 
     def open_settings_CCD(self):
         setCCD = QtWidgets.QAction('Imager Settings', self)
