@@ -156,7 +156,7 @@ class FilterControl(metaclass=Singleton):
             print("----------------------------------------------------\n")
             QGuiApplication.restoreOverrideCursor()
 
-    def get_filtro_atual(self):
+    def get_current_filter(self):
         if self.connect_state:
             # self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
 
