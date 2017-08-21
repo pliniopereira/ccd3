@@ -1,10 +1,9 @@
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton)
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPushButton
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
+from src.business.shooters import LabelFilters
 from src.ui.commons.layout import set_lvbox, set_hbox
 
 
@@ -19,8 +18,7 @@ class SequenceFilters(QtWidgets.QWidget):
 
         # Instance attributes create_wish_filters_group
         self.wish_sequence_filters_l = None
-        self.ignore_filters_wish_l = None
-        self.sequence_desejada = None
+        self.showfiltersl = None
 
         # Instance attributes create_push_button_group
         self.saveButton = None
@@ -29,7 +27,11 @@ class SequenceFilters(QtWidgets.QWidget):
 
         self.sequencia_filtros = SettingsSequenceFilters()
 
+        self.filters_disp_var = None
+
         self.console = ConsoleThreadOutput()
+
+        self.count_aux = 0
 
         self.seq_filtros_parent = parent
 
@@ -49,35 +51,24 @@ class SequenceFilters(QtWidgets.QWidget):
         return info
 
     def create_filtros_disponiveis_group(self):
-        group_box = QGroupBox("&Filters Disp:")
-        group_box.setCheckable(True)
-        group_box.setChecked(True)
+        group_box = QGroupBox("&Filters Available:")
 
-        self.filters_disp = QtWidgets.QLabel("Filters Disp:", self)
-        self.filters_disp.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.filters_disp = QtWidgets.QLabel(str(self.available_filters()))
+        self.filters_disp.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
 
-        self.showfiltersl = QtWidgets.QLineEdit(self)
-        self.showfiltersl.setMaximumWidth(50)
-        self.showfiltersl.setValidator(QIntValidator(-100, 30))
+        print(self.available_filters())
 
-        group_box.setLayout(set_lvbox(set_hbox(self.filters_disp, self.showfiltersl)))
+        group_box.setLayout(set_lvbox(set_hbox(self.filters_disp)))
 
         return group_box
 
     def create_wish_filters_group(self):
         group_box = QGroupBox("&Wish Filters")
-        group_box.setCheckable(True)
-        group_box.setChecked(False)
 
-        self.ignore_filters_wish_l = QtWidgets.QCheckBox('Ignore Wish Filters', self)
-
-        self.sequence_desejada = QtWidgets.QLabel("Sequencia Desejada", self)
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
-        self.wish_sequence_filters_l.setMaximumWidth(50)
+        self.wish_sequence_filters_l.setMaximumWidth(100)
 
-        group_box.setLayout(set_lvbox(set_hbox(self.ignore_filters_wish_l),
-                                      set_hbox(self.sequence_desejada),
-                                      set_hbox(self.wish_sequence_filters_l)))
+        group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l)))
 
         return group_box
 
@@ -89,18 +80,13 @@ class SequenceFilters(QtWidgets.QWidget):
         self.cancelButton = QPushButton("Cancel")
         self.cancelButton.clicked.connect(self.func_cancel)
 
-        self.clearButton = QPushButton("Clear")
-        self.clearButton.clicked.connect(self.clear_all)
-
-        group_box.setLayout(set_lvbox(set_hbox(self.saveButton, self.clearButton, self.cancelButton)))
+        group_box.setLayout(set_lvbox(set_hbox(self.saveButton, self.cancelButton)))
 
         return group_box
 
     def button_ok_func(self):
         try:
-            self.sequencia_filtros.set_sequence_filters_settings(self.showfiltersl.text(),
-                                                                 self.ignore_filters_wish_l.isChecked(),
-                                                                 self.wish_sequence_filters_l.text())
+            self.sequencia_filtros.set_sequence_filters_settings(self.wish_sequence_filters_l.text())
             self.sequencia_filtros.save_settings()
             self.console.raise_text("Sequence Filters settings successfully saved!", 1)
 
@@ -108,18 +94,26 @@ class SequenceFilters(QtWidgets.QWidget):
             print("Sequence Filters settings were not saved -> {}".format(e))
             self.console.raise_text("Sequence Filters settings were not saved.", 3)
 
-    def clear_all(self):
-        self.showfiltersl.clear()
-        self.wish_sequence_filters_l.clear()
-
     def func_cancel(self):
         self.seq_filtros_parent.close()
 
     def setting_values(self):
         info = self.get_sequence_filters_settings()
-        self.set_values(info[0], info[1], info[2])
+        self.set_values(info[0])
 
-    def set_values(self, showfilters, ignore_filters_wish, wish_sequence_filters_l):
-        self.showfiltersl.setText(showfilters)
-        self.ignore_filters_wish_l.setChecked(ignore_filters_wish)
+    def set_values(self, wish_sequence_filters_l):
         self.wish_sequence_filters_l.setText(wish_sequence_filters_l)
+
+    def available_filters(self):
+        try:
+            filter_split_label = LabelFilters.get_filter_settings()
+        except Exception as e:
+            print("get_filter_settings() -> {}".format(e))
+
+        filter_split_label = list(filter_split_label)
+
+        show_filters = ''
+        for x in filter_split_label:
+            show_filters += "F:" + x + "  "
+
+        return show_filters
