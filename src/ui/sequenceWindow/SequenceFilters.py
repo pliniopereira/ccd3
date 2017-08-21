@@ -51,7 +51,7 @@ class SequenceFilters(QtWidgets.QWidget):
         return info
 
     def create_filtros_disponiveis_group(self):
-        group_box = QGroupBox("&Filters Available:")
+        group_box = QGroupBox("&Available Filters:")
 
         self.filters_disp = QtWidgets.QLabel(str(self.available_filters_and_exposure_time()))
         self.filters_disp.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
@@ -114,6 +114,6 @@ class SequenceFilters(QtWidgets.QWidget):
         show_filters = ''
         for x in filter_split_label:
             filter_name = filter_split_label[x][0]
-            show_filters += x + ": Filter - " + str(filter_name[0]) + "   Exposure Time: " + str(filter_name[2]) + "\n"
+            show_filters += x + ": Filter - " + str(filter_name[0]) + "   Exposure Time(s): " + str(filter_name[2]) + "\n"
 
         return show_filters
