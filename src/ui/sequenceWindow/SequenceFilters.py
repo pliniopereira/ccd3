@@ -53,7 +53,7 @@ class SequenceFilters(QtWidgets.QWidget):
     def create_filtros_disponiveis_group(self):
         group_box = QGroupBox("&Filters Available:")
 
-        self.filters_disp = QtWidgets.QLabel(str(self.available_filters()))
+        self.filters_disp = QtWidgets.QLabel(str(self.available_filters_and_exposure_time()))
         self.filters_disp.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
 
         group_box.setLayout(set_lvbox(set_hbox(self.filters_disp)))
@@ -105,7 +105,7 @@ class SequenceFilters(QtWidgets.QWidget):
     def set_values(self, wish_sequence_filters_l):
         self.wish_sequence_filters_l.setText(wish_sequence_filters_l)
 
-    def available_filters(self):
+    def available_filters_and_exposure_time(self):
         try:
             filter_split_label = LabelFilters.get_filter_settings()
         except Exception as e:
@@ -114,6 +114,6 @@ class SequenceFilters(QtWidgets.QWidget):
         show_filters = ''
         for x in filter_split_label:
             filter_name = filter_split_label[x][0]
-            show_filters += x + ": Filter - " + str(filter_name[0]) + "\n"
+            show_filters += x + ": Filter - " + str(filter_name[0]) + "   Exposure Time: " + str(filter_name[2]) + "\n"
 
         return show_filters
