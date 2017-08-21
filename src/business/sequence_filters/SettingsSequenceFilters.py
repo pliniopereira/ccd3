@@ -17,14 +17,11 @@ class SettingsSequenceFilters:
     def save_settings(self):
         self._settings.sync()
 
-    def set_sequence_filters_settings(self, showfilters, wish_sequence_filters):
-        self._settings.setValue(s.SHOWFILTERS, showfilters)
+    def set_sequence_filters_settings(self, wish_sequence_filters):
         self._settings.setValue(s.WISH_SEQUENCE_FILTERS, wish_sequence_filters)
 
     def get_sequence_filters_settings(self):
-        return self._settings.value(s.SHOWFILTERS), \
-               self._settings.value(s.WISH_SEQUENCE_FILTERS)
+        return self._settings.value(s.WISH_SEQUENCE_FILTERS)
 
-
-def get_filepath(self):
-    return self._settings.value(s.SEQUENCE_FILTERS)
+    def get_filepath(self):
+        return self._settings.value(s.SEQUENCE_FILTERS)

@@ -5,6 +5,8 @@ from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.configuration.settingsImage import SettingsImage
+from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
+
 from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
@@ -47,6 +49,18 @@ class SThread(QtCore.QThread):
         self.count_aux = 0
 
         self.roda_filtros = FilterControl()
+
+    def get_wish_filters_settings(self):
+        settings = SettingsSequenceFilters()
+        info_wish_filters = settings.get_sequence_filters_settings()
+
+        my_list = []
+
+        for i, c in enumerate(info_wish_filters):
+            if c in '0123456789':
+                my_list.append(c)
+
+        return my_list
 
     def get_image_settings(self):
         """
@@ -203,8 +217,8 @@ class SThread(QtCore.QThread):
         # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
         # print("\n\n\n")
 
-        # my_list = [2, 3, 2, 6, 2, 4, 2, 5]
-        my_list = [2, 3, 6, 2, 5]
+        my_list = self.get_wish_filters_settings()
+
         try:
             if self.count_aux < len(my_list):
                 index_of_dic = str(my_list[self.count_aux])

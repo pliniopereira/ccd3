@@ -56,8 +56,6 @@ class SequenceFilters(QtWidgets.QWidget):
         self.filters_disp = QtWidgets.QLabel(str(self.available_filters()))
         self.filters_disp.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
 
-        print(self.available_filters())
-
         group_box.setLayout(set_lvbox(set_hbox(self.filters_disp)))
 
         return group_box
@@ -66,7 +64,7 @@ class SequenceFilters(QtWidgets.QWidget):
         group_box = QGroupBox("&Wish Filters")
 
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
-        self.wish_sequence_filters_l.setMaximumWidth(100)
+        self.wish_sequence_filters_l.setMinimumWidth(250)
 
         group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l)))
 
@@ -101,6 +99,9 @@ class SequenceFilters(QtWidgets.QWidget):
         info = self.get_sequence_filters_settings()
         self.set_values(info[0])
 
+    def get_values(self):
+        return self.wish_sequence_filters_l.text()
+
     def set_values(self, wish_sequence_filters_l):
         self.wish_sequence_filters_l.setText(wish_sequence_filters_l)
 
@@ -110,10 +111,9 @@ class SequenceFilters(QtWidgets.QWidget):
         except Exception as e:
             print("get_filter_settings() -> {}".format(e))
 
-        filter_split_label = list(filter_split_label)
-
         show_filters = ''
         for x in filter_split_label:
-            show_filters += "F:" + x + "  "
+            filter_name = filter_split_label[x][0]
+            show_filters += x + ": Filter - " + str(filter_name[0]) + "\n"
 
         return show_filters
