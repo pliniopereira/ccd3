@@ -94,7 +94,7 @@ class SequenceFilters(QtWidgets.QWidget):
             available_filters_list_and_commons.append(',')
 
             # Percorre a string que está na box e testa caracter por caracter, permitindo somente numeros de filtors
-            #  disponiveis e ','.
+            # disponiveis e ','.
             for x in self.wish_sequence_filters_l.text():
                 if x not in available_filters_list_and_commons:
                     list_save_ok = False
@@ -117,13 +117,13 @@ class SequenceFilters(QtWidgets.QWidget):
 
     def setting_values(self):
         info = self.get_sequence_filters_settings()
-        self.set_values(info[0])
+        self.set_values(info)
 
     def get_values(self):
-        return self.wish_sequence_filters_l.text()
+        return self.wish_sequence_filters.text()
 
-    def set_values(self, wish_sequence_filters_l):
-        self.wish_sequence_filters_l.setText(wish_sequence_filters_l)
+    def set_values(self, wish_sequence_filters):
+        self.wish_sequence_filters_l.setText(wish_sequence_filters)
 
     def available_filters_and_exposure_time(self):
         try:
