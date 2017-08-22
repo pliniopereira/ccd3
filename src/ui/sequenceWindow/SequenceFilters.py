@@ -19,6 +19,7 @@ class SequenceFilters(QtWidgets.QWidget):
         # Instance attributes create_wish_filters_group
         self.wish_sequence_filters_l = None
         self.showfiltersl = None
+        self.obs_msg = None
 
         # Instance attributes create_push_button_group
         self.saveButton = None
@@ -66,7 +67,11 @@ class SequenceFilters(QtWidgets.QWidget):
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
         self.wish_sequence_filters_l.setMinimumWidth(250)
 
-        group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l)))
+        self.obs_msg = QtWidgets.QLabel('Obs. Só serão aceitos números de filtros disponíveis e vírgulas(,).')
+        self.obs_msg.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
+
+        group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l),
+                                      set_hbox(self.obs_msg)))
 
         return group_box
 
