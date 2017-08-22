@@ -112,8 +112,21 @@ class SequenceFilters(QtWidgets.QWidget):
             print("get_filter_settings() -> {}".format(e))
 
         show_filters = ''
-        for x in filter_split_label:
-            filter_name = filter_split_label[x][0]
-            show_filters += x + ": Filter - " + str(filter_name[0]) + "   Exposure Time(s): " + str(filter_name[2]) + "\n"
+        for filter_position_number in filter_split_label:
+
+            filter_name = filter_split_label[filter_position_number][0]
+
+            filter_position_number = str(filter_position_number)
+            filter_name_str = str(filter_name[0])
+            exposure_time_str = str(filter_name[2])
+
+            show_filters += str(filter_position_number) + ":  Filter - " + filter_name_str[:3]
+
+            if len(filter_name_str) == 1:
+                show_filters += "    Exposure Time(s): " + exposure_time_str + "\n"
+            elif len(filter_name_str) == 2:
+                show_filters += "    Exposure Time(s): " + exposure_time_str + "\n"
+            else:
+                show_filters += "  Exposure Time(s): " + exposure_time_str + "\n"
 
         return show_filters
