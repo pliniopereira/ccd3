@@ -89,10 +89,25 @@ class SequenceFilters(QtWidgets.QWidget):
 
     def button_ok_func(self):
         try:
-            self.sequencia_filtros.set_sequence_filters_settings(self.wish_sequence_filters_l.text())
-            self.sequencia_filtros.save_settings()
-            self.console.raise_text("Sequence Filters settings successfully saved!", 1)
+            available_filters_list_and_commons = LabelFilters.get_filter_settings()
+            available_filters_list_and_commons = list(available_filters_list_and_commons)
+            available_filters_list_and_commons.append(',')
 
+            # Percorre a string que está na box e testa caracter por caracter, permitindo somente numeros de filtors
+            #  disponiveis e ','.
+            for x in self.wish_sequence_filters_l.text():
+                if x not in available_filters_list_and_commons:
+                    list_save_ok = False
+                    break
+                else:
+                    list_save_ok = True
+            if list_save_ok:
+                self.sequencia_filtros.set_sequence_filters_settings(self.wish_sequence_filters_l.text())
+                self.sequencia_filtros.save_settings()
+                self.console.raise_text("Sequence Filters settings successfully saved!", 1)
+            else:
+                print("Sequence Filters settings were not saved")
+                self.console.raise_text("Sequence Filters settings were not saved.", 3)
         except Exception as e:
             print("Sequence Filters settings were not saved -> {}".format(e))
             self.console.raise_text("Sequence Filters settings were not saved.", 3)
