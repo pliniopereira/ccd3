@@ -85,7 +85,7 @@ class Main(QtWidgets.QMainWindow):
         self.add_to_menu(menubar, "Project Settings", a2[0])
         self.add_to_menu(menubar, "Image Settings", self.open_settings_image()[0])
         self.add_to_menu(menubar, "Filters Settings", self.open_settings_filters()[0])
-        self.add_to_menu(menubar, "Filters Sequence Settings", self.open_settings_sequence_filters()[0])
+        self.add_to_menu(menubar, "Acquisition Schedule", self.open_settings_sequence_filters()[0])
         self.add_to_menu(menubar, "Imager Settings", self.open_settings_CCD()[0])
 
     def action_continuous_shooter(self):
@@ -149,8 +149,8 @@ class Main(QtWidgets.QMainWindow):
         return setF, "&Options"
 
     def open_settings_sequence_filters(self):
-        setSeqFilters = QtWidgets.QAction('Filters Sequence Settings', self)
-        setSeqFilters.setShortcut("Ctrl+S")
+        setSeqFilters = QtWidgets.QAction('Acquisition Schedule', self)
+        setSeqFilters.setShortcut("Ctrl+A")
 
         try:
             setSeqFilters.triggered.connect(self.filters_sequence_menu.show)

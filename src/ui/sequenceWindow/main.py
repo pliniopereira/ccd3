@@ -10,4 +10,4 @@ class Main(QtWidgets.QMainWindow):
         self.s = SequenceFilters(self)
         self.setCentralWidget(self.s)
 
-        self.setWindowTitle("Filters Sequence Settings")
+        self.setWindowTitle("Acquisition Schedule")

@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPushButton
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPushButton, QMessageBox
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
@@ -42,7 +42,7 @@ class SequenceFilters(QtWidgets.QWidget):
         grid.addWidget(self.create_push_button_group(), 5, 0)
         self.setLayout(grid)
 
-        self.setWindowTitle("Sequence Filter Box")
+        self.setWindowTitle("Acquisition Schedule")
 
         self.setting_values()
 
@@ -62,12 +62,12 @@ class SequenceFilters(QtWidgets.QWidget):
         return group_box
 
     def create_wish_filters_group(self):
-        group_box = QGroupBox("&Wish Filters")
+        group_box = QGroupBox("&Filter Sequence:")
 
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
         self.wish_sequence_filters_l.setMinimumWidth(250)
 
-        self.obs_msg = QtWidgets.QLabel('Obs. Só serão aceitos números de filtros disponíveis e vírgulas(,).')
+        self.obs_msg = QtWidgets.QLabel('Note: Include only the number of the available filter, e.g.: 2, 3, 4')
         self.obs_msg.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
 
         group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l),
@@ -104,10 +104,15 @@ class SequenceFilters(QtWidgets.QWidget):
             if list_save_ok:
                 self.sequencia_filtros.set_sequence_filters_settings(self.wish_sequence_filters_l.text())
                 self.sequencia_filtros.save_settings()
-                self.console.raise_text("Sequence Filters settings successfully saved!", 1)
+                self.console.raise_text("Sequence Filters %s successfully saved!" % self.wish_sequence_filters_l, 1)
             else:
                 print("Sequence Filters settings were not saved")
                 self.console.raise_text("Sequence Filters settings were not saved.", 3)
+                error_msg = ''
+                for x in available_filters_list_and_commons:
+                    error_msg += ' ' + str(x)
+                QMessageBox.question(self, 'Error message',
+                                     "Only %s are allowed allowed" % error_msg, QMessageBox.Ok)
         except Exception as e:
             print("Sequence Filters settings were not saved -> {}".format(e))
             self.console.raise_text("Sequence Filters settings were not saved.", 3)
