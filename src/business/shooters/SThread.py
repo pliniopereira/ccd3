@@ -55,9 +55,11 @@ class SThread(QtCore.QThread):
         info_wish_filters = settings.get_sequence_filters_settings()
 
         my_list = []
+        available_filters = LabelFilters.get_filter_settings()
+        available_filters_list = list(available_filters)
 
         for i, c in enumerate(info_wish_filters):
-            if c in '0123456789':
+            if c in available_filters_list:
                 my_list.append(c)
 
         return my_list

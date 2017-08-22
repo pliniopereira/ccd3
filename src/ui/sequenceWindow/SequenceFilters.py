@@ -108,6 +108,7 @@ class SequenceFilters(QtWidgets.QWidget):
     def available_filters_and_exposure_time(self):
         try:
             filter_split_label = LabelFilters.get_filter_settings()
+
         except Exception as e:
             print("get_filter_settings() -> {}".format(e))
 
