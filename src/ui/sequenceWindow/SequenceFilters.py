@@ -67,7 +67,14 @@ class SequenceFilters(QtWidgets.QWidget):
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
         self.wish_sequence_filters_l.setMinimumWidth(250)
 
-        self.obs_msg = QtWidgets.QLabel('Note: Include only the number of the available filter, e.g.: 2, 3, 4')
+        available_filters_list_and_commons = LabelFilters.get_filter_settings()
+        available_filters_list_and_commons = list(available_filters_list_and_commons)
+        available_filters_list_and_commons.append(',')
+
+        permited_filters = ''
+        for x in available_filters_list_and_commons:
+            permited_filters += ' ' + str(x)
+        self.obs_msg = QtWidgets.QLabel("Only %s are allowed allowed" % permited_filters)
         self.obs_msg.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignVCenter)
 
         group_box.setLayout(set_lvbox(set_hbox(self.wish_sequence_filters_l),
@@ -92,6 +99,8 @@ class SequenceFilters(QtWidgets.QWidget):
             available_filters_list_and_commons = LabelFilters.get_filter_settings()
             available_filters_list_and_commons = list(available_filters_list_and_commons)
             available_filters_list_and_commons.append(',')
+            available_filters_list_and_commons.append(' ')
+
 
             # Percorre a string que está na box e testa caracter por caracter, permitindo somente numeros de filtors
             # disponiveis e ','.
@@ -104,7 +113,8 @@ class SequenceFilters(QtWidgets.QWidget):
             if list_save_ok:
                 self.sequencia_filtros.set_sequence_filters_settings(self.wish_sequence_filters_l.text())
                 self.sequencia_filtros.save_settings()
-                self.console.raise_text("Sequence Filters %s successfully saved!" % self.wish_sequence_filters_l, 1)
+                self.console.raise_text("Sequence Filters %s successfully saved!" % self.wish_sequence_filters_l.text(),
+                                        1)
             else:
                 print("Sequence Filters settings were not saved")
                 self.console.raise_text("Sequence Filters settings were not saved.", 3)
@@ -112,7 +122,7 @@ class SequenceFilters(QtWidgets.QWidget):
                 for x in available_filters_list_and_commons:
                     error_msg += ' ' + str(x)
                 QMessageBox.question(self, 'Error message',
-                                     "Only %s are allowed allowed" % error_msg, QMessageBox.Ok)
+                                     "Only %s are allowed!" % error_msg, QMessageBox.Ok)
         except Exception as e:
             print("Sequence Filters settings were not saved -> {}".format(e))
             self.console.raise_text("Sequence Filters settings were not saved.", 3)

@@ -151,10 +151,10 @@ class FilterWindow(QtWidgets.QWidget):
         self.setField_binning_filter6.setCurrentIndex(binning_var6)
 
     def create_filters_widgets(self):
-        self.setField_label_label = QtWidgets.QLabel("    Label", self)
+        self.setField_label_label = QtWidgets.QLabel("    Filter Label", self)
         self.setField_wavelength_label = QtWidgets.QLabel("          Wavelength (nm)", self)
-        self.setField_exposure_label = QtWidgets.QLabel("               Exposure (s)", self)
-        self.setField_binning_label = QtWidgets.QLabel("                    Binning", self)
+        self.setField_exposure_label = QtWidgets.QLabel("                 Exposure (s)", self)
+        self.setField_binning_label = QtWidgets.QLabel("                        Binning", self)
 
         self.setField_1 = QtWidgets.QLabel("1", self)
         self.setField_2 = QtWidgets.QLabel("2", self)
