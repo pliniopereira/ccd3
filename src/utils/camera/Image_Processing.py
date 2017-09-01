@@ -73,9 +73,8 @@ def save_png(img, newname):
         # im2 = bytscl(img, variavel[1], variavel[0])
         # img_aux.save(newname)
 
-        im3 = toimage(im2)
         newname += '.png'
-        im3.save(newname)
+        img_aux.save(newname)
 
         # resize_image_512x512(newname)
         # draw_image(newname)

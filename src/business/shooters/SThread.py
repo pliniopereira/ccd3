@@ -326,15 +326,15 @@ class SThread(QtCore.QThread):
                 #                                   self.get_image_tif, self.get_image_fit)
                 self.set_config_take_image()
                 self.lock.set_acquire()
-                self.info = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
-                self.img = self.info
+                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
                 path, tempo = set_path()
 
                 if not os.path.isdir(path):
                     os.makedirs(path)
 
-                png_name = path + str(self.prefix) + str(tempo)
+                png_name = path + str(self.prefix) + "_" + str(tempo)
                 save_png(self.img, png_name)
+                self.info = png_name
                 self.init_image()
         except Exception as e:
             print("run SbigDriver.photoshoot ERROR -> {}".format(e))

@@ -377,11 +377,11 @@ def ccdinfo():
 
 
 def photoshoot(exposure_time, binning, dark_photo):
-    print("\n\n")
-    print("exposure_time " + str(exposure_time) + " " + str(type(exposure_time)))
-    print("binning " + str(binning) + " " + str(type(binning)))
-    print("dark_photo " + str(dark_photo) + " " + str(type(dark_photo)))
-    print("\n\n")
+    # print("\n\n")
+    # print("exposure_time " + str(exposure_time) + " " + str(type(exposure_time)))
+    # print("binning " + str(binning) + " " + str(type(binning)))
+    # print("dark_photo " + str(dark_photo) + " " + str(type(dark_photo)))
+    # print("\n\n")
 
     for ccd in SbigLib.CCD_INFO_REQUEST.CCD_INFO_IMAGING.value, SbigLib.CCD_INFO_REQUEST.CCD_INFO_TRACKING.value:
 
