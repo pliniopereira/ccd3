@@ -221,10 +221,6 @@ class Camera(metaclass=Singleton):
 
     def start_taking_photo(self):
         try:
-            print("\n\n")
-            print(getlinkstatus())
-            print("\n\n")
-
             if getlinkstatus() is True:
                 self.shooter_mode()
                 self.continuousShooterThread.start_continuous_shooter()
