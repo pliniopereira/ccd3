@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.SThread import SThread
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.commons.layout import set_hbox, set_lvbox

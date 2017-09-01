@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMessageBox, QAction
 
 from src.business.configuration.configSystem import ConfigSystem
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 from src.ui.CCDWindow.main import Main as CCD_menu
 from src.ui.ephemerisShooterWindow.main import Main as eph
 from src.ui.filterWindow.main import Main as filters

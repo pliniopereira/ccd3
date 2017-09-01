@@ -52,7 +52,7 @@ def save_tif(img, newname):
         print("Exception -> {}".format(e))
 
 
-def save_png(img, newname, get_level1, get_level2):
+def save_png(img, newname):
     '''
     :param filename: nome do arquivo fit criado
     :param newname: nome do arquivo png criado a partir do fit
@@ -68,16 +68,17 @@ def save_png(img, newname, get_level1, get_level2):
         img_aux = toimage(img)
         im2 = img_aux
 
-        variavel = get_level(im2, get_level1, get_level2)
-
-        im2 = bytscl(img, variavel[1], variavel[0])
-        img_aux.save(newname)
+        # variavel = get_level(im2, get_level1, get_level2)
+        #
+        # im2 = bytscl(img, variavel[1], variavel[0])
+        # img_aux.save(newname)
 
         im3 = toimage(im2)
+        newname += '.png'
         im3.save(newname)
 
-        resize_image_512x512(newname)
-        draw_image(newname)
+        # resize_image_512x512(newname)
+        # draw_image(newname)
 
     except Exception as e:
         print("Exception -> {}".format(e))

@@ -1,23 +1,17 @@
 import ctypes
-import os
 import sys
 import time
 from ctypes import c_ushort, POINTER, byref
-from datetime import datetime
 
 import numpy as np
-import pyfits as fits
 
-from src.utils.camera import Image_Processing
 from src.utils.camera import SbigLib
 from src.utils.camera import SbigStructures
-from src.utils.camera.Julian_Day import jd_to_date, date_to_jd
 
-'''
-Faz a comunicação do software com a camera sbig, os comandos vem da classe camera.main.
-'''
+"""Faz a comunicação do software com a camera sbig, os comandos vem da classe camera.main."""
 
-# Load Driver (DLL)
+
+"""Load Driver (DLL)"""
 try:
     if sys.platform.startswith("linux"):
         # Linux driver
@@ -139,21 +133,6 @@ def close_device():
         return False, e
 
 
-'''
-# Open Device Eth
-def openDevice(ip):
-    cin = SbigStructures.OpenDeviceParams
-    cout = None
-    udrv.SBIGUnivDrvCommand.argtypes = [c_ushort, POINTER(cin), POINTER(cout)]
-    ip.split(".")
-    ip_hex = hex(int(ip[0])).split('x')[1].rjust(2, '0') + hex(int(ip[1])).split('x')[1].rjust(2, '0') +\
-             hex(int(ip[2])).split('x')[1].rjust(2, '0') + hex(int(ip[3])).split('x')[1].rjust(2, '0')
-    cin = cin(deviceType=SbigLib.SBIG_DEVICE_TYPE.DEV_ETH.value, ipAddress=long(ip_hex, 16))
-    ret = udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_OPEN_DEVICE.value, byref(cin), cout)
-    print(ret)
-'''
-
-
 # Establishing Link
 def establishinglink():
     '''
@@ -171,7 +150,6 @@ def establishinglink():
         return False, e
 
 
-# Getting link status
 def getlinkstatus():
     cin = None
     cout = SbigStructures.GetLinkStatusResults
@@ -216,10 +194,12 @@ def set_temperature(regulation, setpoint, autofreeze=True):
             return False
 
     else:
-        raise False
+        return False
 
 
-# Getting Temperature
+""" Getting Temperature """
+
+
 def get_temperature():
     '''
     :return: temperatura da camera
@@ -396,97 +376,12 @@ def ccdinfo():
     return cout.firmwareVersion, cout.cameraType, cout.name, readout_mode[1], readout_mode[2]
 
 
-def set_path(pre):
-    '''
-    :param pre:
-    :return: gera nome da pasta e consequente do arquivo fit e tif.
-    '''
-    tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
-
-    data = tempo[0:4] + "_" + tempo[4:6] + tempo[6:8]
-
-    from src.business.configuration.configSystem import ConfigSystem
-    cs = ConfigSystem()
-    path = str(cs.get_image_path()) + "/"
-
-    from src.business.configuration.configProject import ConfigProject
-    ci = ConfigProject()
-    name_observatory = str(ci.get_site_settings())
-    name_observatory = Image_Processing.get_observatory(name_observatory)
-
-    if int(tempo[9:11]) > 12:
-        path = path + name_observatory + "_" + data + "/"
-
-    else:
-        tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
-        ano = tempo[0:4]
-        mes = tempo[4:6]
-        dia = tempo[6:8]
-        abs_julian_day = jd_to_date(date_to_jd(ano, mes, int(dia)) - 1)
-
-        aux_month = "%.2d" % abs_julian_day[1]
-
-        aux_day = "%.2d" % abs_julian_day[2]
-
-        path = path + name_observatory + "_" + str(abs_julian_day[0]) + "_" + aux_month + aux_day + "/"
-
-    return path, tempo
-
-
-def get_observatory(name):
-    name_aux = str(name).split(',')[1]
-    name_aux = name_aux.replace("\'", "")
-    name_aux = name_aux.replace(" ", "")
-
-    return name_aux
-
-
-def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
-               get_axis_xi, get_axis_xf, get_axis_yi, get_axis_yf, ignore_crop,
-               image_tif, image_fit):
+def photoshoot(exposure_time, binning, dark_photo):
     # print("\n\n")
     # print("exposure_time " + str(exposure_time) + " " + str(type(exposure_time)))
-    # print("pre " + str(pre) + " " + str(type(pre)))
     # print("binning " + str(binning) + " " + str(type(binning)))
     # print("dark_photo " + str(dark_photo) + " " + str(type(dark_photo)))
-    # print("get_level1 " + str(get_level1) + " " + str(type(get_level1)))
-    # print("get_level2 " + str(get_level2) + " " + str(type(get_level2)))
-    # print("get_axis_xi " + str(get_axis_xi) + " " + str(type(get_axis_xi)))
-    # print("get_axis_xf " + str(get_axis_xf) + " " + str(type(get_axis_xf)))
-    # print("get_axis_yi " + str(get_axis_yi) + " " + str(type(get_axis_yi)))
-    # print("get_axis_yf " + str(get_axis_yf) + " " + str(type(get_axis_yf)))
-    # print("ignore_crop " + str(ignore_crop) + " " + str(type(ignore_crop)))
-    # print("image_tif " + str(image_tif) + " " + str(type(image_tif)))
-    # print("image_fit " + str(image_fit) + " " + str(type(image_fit)))
     # print("\n\n")
-    """
-    :param exposure_time: tempo de exposição
-    :param pre: prefixo do nome do arquivo
-    :param binning: redução da imagem
-    :param dark_photo: shooter fechado = 1 ou aberto = 0
-    :param get_level1: limite inferior para auto contraste
-    :param get_level2: limite superior para auto contraste
-    :param get_axis_xi:
-    :param get_axis_xf:
-    :param get_axis_yi:
-    :param get_axis_yf:
-    :param ignore_crop:
-    :param image_tif:
-    :param image_fit:
-    :return:
-    """
-    # open_driver()
-    # open_deviceusb()
-    # establishinglink()
-    if 0.0 < float(get_level1) < 1.0:
-        get_level1 = float(get_level1)
-    else:
-        get_level1 = 0.1
-
-    if 0.0 < float(get_level2) < 1.0:
-        get_level2 = float(get_level2)
-    else:
-        get_level2 = 0.99
 
     for ccd in SbigLib.CCD_INFO_REQUEST.CCD_INFO_IMAGING.value, SbigLib.CCD_INFO_REQUEST.CCD_INFO_TRACKING.value:
 
@@ -496,7 +391,7 @@ def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
         cin = cin(request=ccd)
         cout = cout()
         udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_GET_CCD_INFO.value, byref(cin), byref(cout))
-        # print("Ret: ", ret, "\nFV: ", cout.firmwareVersion, "\nCt:",
+        # print("Ret: ", ' ', "\nfirmwareVersion: ", cout.firmwareVersion, "\ncameraType:",
         #       cout.cameraType, "\nname", cout.name, "\nReadoutModes: ", cout.readoutModes)
 
         for i_mode in range(cout.readoutModes):
@@ -597,53 +492,6 @@ def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
         udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_READOUT_LINE.value, byref(cin), byref(cout))
         img[i_line] = cout
 
-    path, tempo = set_path(pre)
-
-    # path, tempo = "/home/hiyoku/Imagens/images/", time.strftime('%Y%m%d_%H%M%S')
-
-    if not os.path.isdir(path):
-        os.makedirs(path)
-
-    from src.business.configuration.configProject import ConfigProject
-    ci = ConfigProject()
-    site_id_name = str(ci.get_site_settings())
-
-    site_id_name = Image_Processing.get_observatory(site_id_name)
-
-    if dark_photo == 1:
-        fn = "DARK-" + pre + "_" + site_id_name + "_" + tempo
-        name = path + fn
-        tifname = name + '.tif'
-        tifname_final = fn + '.tif'
-        fitname = name + '.fit'
-        fitname_final = fn + '.fit'
-    else:
-        fn = pre + "_" + site_id_name + "_" + tempo
-        name = path + fn
-        tifname = name + '.tif'
-        tifname_final = fn + '.tif'
-        fitname = name + '.fit'
-        fitname_final = fn + '.fit'
-
-    try:
-        os.unlink(tifname)
-    except OSError:
-        pass
-    '''
-    Create a new FITS file using the supplied data/header.
-    Crop fit image
-    '''
-    try:
-        if not ignore_crop:
-            # x = width
-            # y = height
-            print("Cropping image.")
-            print("Width: xi = " + str(get_axis_xi) + " xf = " + str(get_axis_xf))
-            print("Height: yi = " + str(get_axis_yi) + " yf = " + str(get_axis_yf))
-            img = img[get_axis_yi:get_axis_yf, get_axis_xi:get_axis_xf]  # cropping image
-    except Exception as e:
-        print("Not possible cropping image ->" + str(e))
-
     print("\nGRAB IMAGE - End Readout\n")
 
     cin = SbigStructures.EndReadoutParams
@@ -653,45 +501,6 @@ def photoshoot(exposure_time, pre, binning, dark_photo, get_level1, get_level2,
     ret = udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_END_READOUT.value, byref(cin), cout)
     print("ret", ret)
 
-    # cmd(SbigLib.PAR_COMMAND.CC_CLOSE_DEVICE.value, None, None)
-
-    # cmd(SbigLib.PAR_COMMAND.CC_CLOSE_DRIVER.value, None, None)
-
-    img_to_tif = img
-    img_to_fit = img
-
-    try:
-        if image_tif:
-            print("Call set_tif")
-            Image_Processing.save_tif(img_to_tif, tifname)
-            if dark_photo == 1:
-                fn = pre + "-DARK" + "_" + site_id_name + "_" + tempo
-                nameimage_final = fn + '.tif'
-            else:
-                fn = pre + "_" + site_id_name + "_" + tempo
-                nameimage_final = fn + '.tif'
-
-    except Exception as e:
-        print("Image .tif ERROR -> {}".format(e))
-
-    try:
-        if image_fit:
-            fits.writeto(fitname, img_to_fit)
-            print("Call set_header")
-            Image_Processing.set_header(fitname)
-            if dark_photo == 1:
-                fn = pre + "-DARK" + "_" + site_id_name + "_" + tempo
-                nameimage_final = fn + '.fit'
-            else:
-                fn = pre + "_" + site_id_name + "_" + tempo
-                nameimage_final = fn + '.fit'
-
-    except Exception as e:
-        print("Image .fit ERROR -> {}".format(e))
-
-    # print("Call set_png")
-    # Image_Processing.save_png(img_to_png, pngname, get_level1, get_level2)
-
-    data, hora = Image_Processing.get_date_hour(tempo)
     print("End of process")
-    return path, nameimage_final, tifname_final, fitname_final, data, hora
+
+    return img

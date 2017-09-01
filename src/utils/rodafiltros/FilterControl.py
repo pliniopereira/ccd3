@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QGuiApplication
 
 from src.utils.rodafiltros import Leitura_portas
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class FilterControl(metaclass=Singleton):

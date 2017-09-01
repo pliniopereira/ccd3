@@ -12,7 +12,7 @@ from src.ui.mainWindow.status import Status
 from src.utils.camera.SbigDriver import (ccdinfo, set_temperature, get_temperature,
                                          establishinglink, open_deviceusb, open_driver,
                                          close_device, close_driver, getlinkstatus)
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class Camera(metaclass=Singleton):
@@ -36,8 +36,8 @@ class Camera(metaclass=Singleton):
         self.settedhour = datetime.now()
 
         #  executa o modo manual continuousShooterThread
-        # self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[0]))
-        self.continuousShooterThread = ContinuousShooterThread('0')
+        self.continuousShooterThread = ContinuousShooterThread(int(self.settings.get_camera_settings()[0]))
+        # self.continuousShooterThread = ContinuousShooterThread('0')
         self.ephemerisShooterThread = EphemerisShooter()  # executa o modo automatico ephemerisShooterThread
 
         self.sthread = SThread()
@@ -221,14 +221,18 @@ class Camera(metaclass=Singleton):
 
     def start_taking_photo(self):
         try:
+            print("\n\n")
+            print(getlinkstatus())
+            print("\n\n")
+
             if getlinkstatus() is True:
                 self.shooter_mode()
                 self.continuousShooterThread.start_continuous_shooter()
                 self.continuousShooterThread.start()
             else:
-                self.console.raise_text("The camera is not connected", 3)
+                self.console.raise_text("Error start_taking_photo!", 3)
         except Exception as e:
-            print(e)
+            self.console.raise_text("Error start_taking_photo! {}".format(e), 3)
 
     def stop_taking_photo(self):
         if getlinkstatus() is True:

@@ -1,3 +1,4 @@
+import os
 import time
 from time import sleep
 
@@ -6,10 +7,11 @@ from PyQt5 import QtCore
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.configuration.settingsImage import SettingsImage
 from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
-
 from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
+from src.utils.camera.Image_Path import set_path
+from src.utils.camera.Image_Processing import save_png
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
@@ -103,13 +105,24 @@ class SThread(QtCore.QThread):
         try:
             self.set_config_take_image()
             self.lock.set_acquire()
-            self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, 1,
-                                              self.get_level1, self.get_level2,
-                                              self.get_axis_xi, self.get_axis_xf,
-                                              self.get_axis_yi, self.get_axis_yf,
-                                              self.get_ignore_crop,
-                                              self.get_image_tif,
-                                              self.get_image_fit)
+            self.img = SbigDriver.photoshoot(200, 1, 1)
+            self.prefix = "OH"
+
+            path, tempo = set_path()
+
+            if not os.path.isdir(path):
+                os.makedirs(path)
+
+            png_name = path + 'AAAAAAAAAAAAAAAAAAAAA'
+            save_png(self.img, png_name)
+
+            # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, 1,
+            #                                   self.get_level1, self.get_level2,
+            #                                   self.get_axis_xi, self.get_axis_xf,
+            #                                   self.get_axis_yi, self.get_axis_yf,
+            #                                   self.get_ignore_crop,
+            #                                   self.get_image_tif,
+            #                                   self.get_image_fit)
             self.init_image()
         except Exception as e:
             print(e)
@@ -320,7 +333,7 @@ class SThread(QtCore.QThread):
             print("Try filter ini -> {}".format(e))
 
         self.lock.set_acquire()
-        '''
+
         print("\n\n")
         print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
         print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
@@ -336,14 +349,26 @@ class SThread(QtCore.QThread):
         print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
         print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
         print("\n\n")
-        '''
+
 
         try:
-                self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
-                                                  self.get_level1, self.get_level2, self.get_axis_xi, self.get_axis_xf,
-                                                  self.get_axis_yi, self.get_axis_yf,
-                                                  self.get_ignore_crop,
-                                                  self.get_image_tif, self.get_image_fit)
+                # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
+                #                                   self.get_level1, self.get_level2, self.get_axis_xi,
+                # self.get_axis_xf,
+                #                                   self.get_axis_yi, self.get_axis_yf,
+                #                                   self.get_ignore_crop,
+                #                                   self.get_image_tif, self.get_image_fit)
+                self.set_config_take_image()
+                self.lock.set_acquire()
+                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
+
+                path, tempo = set_path()
+
+                if not os.path.isdir(path):
+                    os.makedirs(path)
+
+                # png_name = path + str(self.prefix) + str(tempo)
+                # save_png(self.img, png_name)
                 self.init_image()
         except Exception as e:
             print("run SbigDriver.photoshoot ERROR -> {}".format(e))

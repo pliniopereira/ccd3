@@ -8,7 +8,7 @@ from PyQt5 import QtWidgets
 from pyfits import getdata
 from scipy.misc import toimage
 
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 from src.ui.commons.layout import set_hbox, set_lvbox
 from src.utils.camera import Image_Processing
 

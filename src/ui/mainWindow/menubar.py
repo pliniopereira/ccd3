@@ -1,7 +1,7 @@
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 from src.ui.imageSettingsWindow.main import Main as csw
 from src.ui.continuousShooterWindow.main import Main as conts
 from src.ui.projectSettingsWindow.main import MainWindow

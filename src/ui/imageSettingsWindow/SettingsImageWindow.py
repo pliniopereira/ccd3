@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton)
 
 from src.business.configuration.settingsImage import SettingsImage
 from src.business.consoleThreadOutput import ConsoleThreadOutput
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.ui.commons.layout import set_lvbox, set_hbox
 from src.utils.camera.SbigDriver import (ccdinfo)

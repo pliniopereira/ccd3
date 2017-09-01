@@ -2,7 +2,7 @@ import time
 
 from PyQt5 import QtCore
 
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 
 
 class QThreadTemperature(QtCore.QThread):

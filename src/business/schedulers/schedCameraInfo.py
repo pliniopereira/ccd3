@@ -3,7 +3,7 @@ import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class SchedClock(metaclass=Singleton):

@@ -1,5 +1,5 @@
 from src.business.schedulers.qthreadClock import QThreadClock
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class SchedClock(metaclass=Singleton):

@@ -3,7 +3,7 @@ from threading import Thread
 
 from PyQt5 import QtWidgets
 
-from src.controller.camera import Camera
+from src.controller.Camera import Camera
 
 
 class MainWindow(QtWidgets.QWidget):

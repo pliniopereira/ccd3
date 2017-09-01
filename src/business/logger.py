@@ -4,6 +4,7 @@ from datetime import datetime
 from PyQt5 import QtCore
 
 from src.utils.camera import SbigDriver
+from src.utils.camera.Image_Path import get_observatory
 
 
 class Logger(QtCore.QThread):
@@ -38,7 +39,7 @@ class Logger(QtCore.QThread):
             from src.business.configuration.configProject import ConfigProject
             ci = ConfigProject()
             name_observatory = str(ci.get_site_settings())
-            name_observatory = SbigDriver.get_observatory(name_observatory)
+            name_observatory = get_observatory(name_observatory)
 
             if int(tempo[9:11]) > 12:
                 name_log = name_log_folder + "/LOG_" + name_observatory + "_" + data + '.txt'

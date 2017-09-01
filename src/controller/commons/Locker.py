@@ -1,6 +1,6 @@
 from threading import Lock
 
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class Locker(metaclass=Singleton):

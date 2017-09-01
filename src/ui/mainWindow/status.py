@@ -1,4 +1,4 @@
-from src.utils.singleton import Singleton
+from src.utils.Singleton import Singleton
 
 
 class Status(metaclass=Singleton):
