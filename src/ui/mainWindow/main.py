@@ -15,6 +15,7 @@ from src.ui.projectSettingsWindow.main import MainWindow as sw
 from src.ui.sequenceWindow.main import Main as filterssequence
 from src.ui.systemSettingsWindow.main import MainWindow as mw
 from src.ui.testWindow.MainWindow2 import MainWindow2 as conts
+from src.utils.rodafiltros.FilterControl import FilterControl
 
 
 class Main(QtWidgets.QMainWindow):
@@ -48,8 +49,11 @@ class Main(QtWidgets.QMainWindow):
 
         info = self.cs.get_site_settings()
 
+        self.roda_filtros = FilterControl()
+
         # Connect Camera
         if info[0]:
+            self.roda_filtros.connect()
             self.cam.connect()
             self.cam.start_ephemeris_shooter()
 
@@ -185,7 +189,7 @@ class Main(QtWidgets.QMainWindow):
 
     def createActions(self):
         self.connectAction = QAction(QIcon('icons/Connect.png'), 'Connect', self)
-        self.connectAction.triggered.connect(self.cam.connect)
+        self.connectAction.triggered.connect(self.connect_cam_filter_wheel)
         '''
         self.connectAction.setCheckable(True)
         self.connectAction.setChecked(True)
@@ -218,6 +222,10 @@ class Main(QtWidgets.QMainWindow):
                 print("Nothing to stop")
         except Exception as e:
             print(e)
+
+    def connect_cam_filter_wheel(self):
+        self.cam.connect()
+        self.roda_filtros.connect()
 
     def createToolBars(self):
         self.toolbar = self.addToolBar('Close Toolbar')

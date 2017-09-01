@@ -277,14 +277,20 @@ class SettingsCCDInfos(QWidget):
 
     def func_filter_position(self):
         try:
-            sleep(1)
-            wish_filter_int = self.set_filter_position.currentIndex() + 1
-            self.roda_filtros.filter_wheel_control(int(wish_filter_int))
-            sleep(1)
+            if self.roda_filtros.connect_state:
+                sleep(1)
+                wish_filter_int = self.set_filter_position.currentIndex() + 1
+                self.roda_filtros.filter_wheel_control(int(wish_filter_int))
+                sleep(1)
         except Exception as e:
             print(e)
         finally:
-            self.filter_position.setText(str(wish_filter_int))
+            if self.roda_filtros.connect_state:
+                self.filter_position.setText(str(wish_filter_int))
+                self.console.raise_text("Filter Position: {}".format(str(wish_filter_int)), 2)
+            else:
+                self.filter_position.setText("?")
+                self.console.raise_text("Filter Wheel is not connect!", 3)
 
     def button_settings(self):
         self.btn_set_filter.clicked.connect(self.func_filter_position)
@@ -292,14 +298,20 @@ class SettingsCCDInfos(QWidget):
 
     def func_home_position(self):
         try:
-            sleep(0.5)
-            print("Home Position")
-            self.roda_filtros.home_reset()
-            sleep(1)
+            if self.roda_filtros.connect_state:
+                sleep(0.5)
+                print("Home Position")
+                self.roda_filtros.home_reset()
+                sleep(1)
         except Exception as e:
             print(e)
         finally:
-            self.filter_position.setText("1")
+            if self.roda_filtros.connect_state:
+                self.filter_position.setText("1")
+                self.console.raise_text("Filter Position: 1", 2)
+            else:
+                self.filter_position.setText("?")
+                self.console.raise_text("Filter Wheel is not connect!", 3)
 
     def get_values(self):
         return self.var_save_ini_camera.get_camera_settings()

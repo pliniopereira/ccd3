@@ -14,10 +14,10 @@ class FilterControl(metaclass=Singleton):
         self.smi = None
         self.CommInterface = None
         self.motor_door = None
-        self.connect_state = False
+        self.connect_state = None
         self.shutter_open = None
-        self.connect()
-        self.CommInterface.AddressMotorChain()
+        if self.connect_state:
+            self.CommInterface.AddressMotorChain()
 
     def connect(self):
         self.smi = cc.CreateObject('SMIEngine.SMIHost')
@@ -45,8 +45,8 @@ class FilterControl(metaclass=Singleton):
                     self.connect_state = True
                     self.motor_door = serial_list[count]
 
-                    # print("Home Reset")
-                    # self.home_reset()
+                    print("Home Reset")
+                    self.home_reset()
 
                     break
             except Exception as e:
