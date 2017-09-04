@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 from scipy.misc import toimage
 
 
-def save_tif(img_to_fit, fitname):
+def save_fit(img_to_fit, fitname):
     try:
         fits.writeto(img_to_fit, fitname)
         print("Call set_header")
