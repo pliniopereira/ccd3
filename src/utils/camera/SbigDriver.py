@@ -482,6 +482,8 @@ def photoshoot(exposure_time, binning, dark_photo):
 
     img = np.zeros((v_h, v_w))
 
+    # img = np.array(img, dtype='int16')
+
     for i_line in range(v_h):
         cin = SbigStructures.ReadoutLineParams
         cout = c_ushort * v_w

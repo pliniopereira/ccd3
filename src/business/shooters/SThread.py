@@ -1,7 +1,7 @@
 import os
 import time
 from time import sleep
-
+import sys
 from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
@@ -11,7 +11,7 @@ from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
-from src.utils.camera.Image_Processing import save_png
+from src.utils.camera.Image_Processing import save_png, set_header, save_tif
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
@@ -327,13 +327,30 @@ class SThread(QtCore.QThread):
                 self.set_config_take_image()
                 self.lock.set_acquire()
                 self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
+                print("\n\n")
+                print(str(self.img))
+                print(str(type(self.img)))
+                print(sys.getsizeof(self.img))
+                print(self.img.shape)
+                print("\n\n")
+
                 path, tempo = set_path()
 
                 if not os.path.isdir(path):
                     os.makedirs(path)
 
                 png_name = path + str(self.prefix) + "_" + str(tempo)
-                save_png(self.img, png_name)
+                tif_name = path + str(self.prefix) + "_" + str(tempo) + ".tif"
+                fit_name = path + str(self.prefix) + "_" + str(tempo) + ".fit"
+                # set_header(self.img)
+                img_to_tif = self.img
+                img_to_png = self.img
+                img_to_fit = self.img
+
+                save_tif(img_to_tif, tif_name)
+                save_png(img_to_png, png_name)
+                set_header(img_to_fit, fit_name)
+
                 self.info = png_name
                 self.init_image()
         except Exception as e:
@@ -381,6 +398,7 @@ class SThread(QtCore.QThread):
                 os.makedirs(path)
 
             png_name = path + str(self.prefix) + str(tempo)
+            set_header(self.img)
             save_png(self.img, png_name)
             self.init_image()
         except Exception as e:

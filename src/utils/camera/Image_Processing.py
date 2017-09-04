@@ -8,6 +8,15 @@ from PIL import Image, ImageDraw, ImageFont
 from scipy.misc import toimage
 
 
+def save_tif(img_to_fit, fitname):
+    try:
+        fits.writeto(img_to_fit, fitname)
+        print("Call set_header")
+        set_header(fitname)
+    except Exception as e:
+        print("Image .fit ERROR -> {}".format(e))
+
+
 def set_header(fitname):
     # Abrindo o arquivo
     fits_file = fits.open(fitname)
@@ -66,7 +75,6 @@ def save_png(img, newname):
     try:
         print("tricat of save_png")
         img_aux = toimage(img)
-        im2 = img_aux
 
         # variavel = get_level(im2, get_level1, get_level2)
         #
