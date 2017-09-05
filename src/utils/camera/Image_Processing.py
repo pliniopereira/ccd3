@@ -5,6 +5,7 @@ from datetime import datetime
 import numpy
 import pyfits as fits
 from PIL import Image, ImageDraw, ImageFont
+from numpngw import write_png
 from scipy.misc import toimage
 
 
@@ -57,8 +58,8 @@ def save_png(img, newname):
     img_png = img
     print("Opening filename")
     try:
-        im2 = toimage(img_png)
-        im2.save(newname_png, compress_level=0, quality=100)
+        imgarray = numpy.asarray(img_png, dtype=numpy.uint16)
+        write_png(newname_png, imgarray)
     except Exception as e:
         print("Exception save_png -> {}".format(e))
 
