@@ -8,49 +8,46 @@ from PIL import Image, ImageDraw, ImageFont
 from scipy.misc import toimage
 
 
-def save_fit(img_to_fit, fitname):
-    try:
-        fits.writeto(img_to_fit, fitname)
-        print("Call set_header")
-        set_header(fitname)
-    except Exception as e:
-        print("Image .fit ERROR -> {}".format(e))
-
-
-def set_header(fitname):
-    # Abrindo o arquivo
-    fits_file = fits.open(fitname)
-    # Escrevendo o Header
-    # Can't get the temperature because have a locker locking shooter process
-    # fits_file[0].header["TEMP"] = tuple(get_temperature())[3]
-    fits_file[0].header["DATE"] = datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S')
-
+def save_fit(img_to_fit, newname):
+    img_fit = img_to_fit
+    newname_fit = newname
+    newname_fit += ".fit"
     # Criando o arquivo final
     try:
-        print("Tricat of set_header")
+        # Abrindo o arquivo
+        fits.writeto(newname_fit, img_fit)
+        fits_file = fits.open(newname_fit)
+        # Escrevendo o Header
+        # Can't get the temperature because have a locker locking shooter process
+        # fits_file[0].header["TEMP"] = tuple(get_temperature())[3]
+        fits_file[0].header["DATE"] = datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S')
+        print("Tricat of save_fit")
         # Fechando e removendo o arquivo temporario
         # fits_file.flush()
         fits_file.close()
     except OSError as e:
-        print(fitname)
-        print("Exception ->" + str(e))
+        print(newname_fit)
+        print("Exception save_fit ->" + str(e))
 
 
 def save_tif(img, newname):
     print("Opening filename")
+    img_tif = img
+    newname_tif = newname
+    newname_tif += ".tif"
     try:
-        print("tricat of save_tif")
+        print("Tricat of save_tif")
 
         try:
             if sys.platform.startswith("linux"):
-                imgarray = numpy.array(img, dtype='uint16')
+                imgarray = numpy.array(img_tif, dtype='uint16')
             elif sys.platform.startswith("win"):
-                imgarray = numpy.array(img, dtype='int16')
+                imgarray = numpy.array(img_tif, dtype='int16')
         except Exception as e:
             print(e)
 
         im3 = Image.fromarray(imgarray)
-        im3.save(newname)
+        im3.save(newname_tif)
 
         '''
         salvar tif via tifffile.py
@@ -71,21 +68,23 @@ def save_png(img, newname):
     seguintes:
     Nome do observatorio, nome do filtro, data e horario.
     '''
+    newname_png = newname
+    newname_png += ".png"
+    img_png = img
     print("Opening filename")
     try:
-        print("tricat of save_png")
-        img_aux = toimage(img)
+        print("Tricat of save_png")
+        img_aux = toimage(img_png)
 
         # variavel = get_level(im2, get_level1, get_level2)
         #
         # im2 = bytscl(img, variavel[1], variavel[0])
-        # img_aux.save(newname)
+        # img_aux.save(newname_png)
 
-        newname += '.png'
-        img_aux.save(newname)
+        img_aux.save(newname_png)
 
-        # resize_image_512x512(newname)
-        # draw_image(newname)
+        # resize_image_512x512(newname_png)
+        # draw_image(newname_png)
 
     except Exception as e:
         print("Exception -> {}".format(e))

@@ -6,12 +6,13 @@ from PyQt5 import QtCore
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.configuration.settingsImage import SettingsImage
+from src.business.models.image import Image
 from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
 from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
-from src.utils.camera.Image_Processing import save_png, save_tif, save_fit
+from src.utils.camera.Image_Processing import save_png, save_tif, save_fit, get_date_hour
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
@@ -326,28 +327,31 @@ class SThread(QtCore.QThread):
                 #                                   self.get_image_tif, self.get_image_fit)
                 self.set_config_take_image()
                 self.lock.set_acquire()
-                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
 
                 path, tempo = set_path()
+                image_name = path + str(self.prefix) + "_" + str(tempo)
+
+                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
 
                 if not os.path.isdir(path):
                     os.makedirs(path)
 
-                png_name = path + str(self.prefix) + "_" + str(tempo)
-                tif_name = path + str(self.prefix) + "_" + str(tempo) + ".tif"
-                fit_name = path + str(self.prefix) + "_" + str(tempo) + ".fit"
+                save_png(self.img, image_name)
+                save_tif(self.img, image_name)
+                try:
+                    save_fit(self.img, image_name)
+                except Exception as e:
+                    print("Exception save_fit() -> {}".format(e))
 
-                # set_header(self.img)
-                img_to_tif = self.img
-                img_to_png = self.img
-                img_to_fit = self.img
-
-                save_tif(img_to_tif, tif_name)
-                save_png(img_to_png, png_name)
-                save_fit(img_to_fit, fit_name)
-
-                self.info = png_name
-                self.init_image()
+                try:
+                    data, hora = get_date_hour(tempo)
+                    self.info = path, self.img, data, hora
+                    print("\n\nself.info = ")
+                    print(self.info)
+                    print("\n\n")
+                    self.init_image()
+                except Exception as e:
+                    print("run init_image() -> {}".format(e))
         except Exception as e:
             print("run SbigDriver.photoshoot ERROR -> {}".format(e))
         finally:
@@ -358,10 +362,10 @@ class SThread(QtCore.QThread):
             # for i in self.info:
             #     print(i)
 
-            self.img = Image(self.info[0], self.info[1], self.info[2], self.info[3], self.info[4], self.info[5])
+            self.img = Image(self.info[0], self.info[1], self.info[2], self.info[3])
         except Exception as e:
-            print("Image('', '', '', '', '') -> {}".format(e))
-            self.img = Image('', '', '', '', '')
+            print("Image('', '', '', '') -> {}".format(e))
+            self.img = Image('', '', '', '')
         return self.img
 
     def get_image_info(self):
@@ -383,21 +387,37 @@ class SThread(QtCore.QThread):
         com os valores na info[]
         """
         try:
-            self.set_config_take_image()
-            self.lock.set_acquire()
-            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
+                # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
+                #                                   self.get_level1, self.get_level2, self.get_axis_xi,
+                # self.get_axis_xf,
+                #                                   self.get_axis_yi, self.get_axis_yf,
+                #                                   self.get_ignore_crop,
+                #                                   self.get_image_tif, self.get_image_fit)
+                self.set_config_take_image()
+                self.lock.set_acquire()
+                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
 
-            path, tempo = set_path()
+                path, tempo = set_path()
 
-            if not os.path.isdir(path):
-                os.makedirs(path)
+                if not os.path.isdir(path):
+                    os.makedirs(path)
 
-            png_name = path + str(self.prefix) + str(tempo)
-            set_header(self.img)
-            save_png(self.img, png_name)
-            self.init_image()
+                image_name = path + str(self.prefix) + "_" + str(tempo)
+
+                save_png(self.img, image_name)
+                save_tif(self.img, image_name)
+                try:
+                    save_fit(self.img, image_name)
+                except Exception as e:
+                    print("Exception save_fit() -> {}".format(e))
+
+                self.info = self.img
+                try:
+                    self.init_image()
+                except Exception as e:
+                    print("run init_image() -> {}".format(e))
         except Exception as e:
-            print(e)
+            print("run take_dark ERROR -> {}".format(e))
         finally:
             time.sleep(1)
             self.lock.set_release()
