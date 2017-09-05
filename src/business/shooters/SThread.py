@@ -346,9 +346,6 @@ class SThread(QtCore.QThread):
                 try:
                     data, hora = get_date_hour(tempo)
                     self.info = path, self.img, data, hora
-                    print("\n\nself.info = ")
-                    print(self.info)
-                    print("\n\n")
                     self.init_image()
                 except Exception as e:
                     print("run init_image() -> {}".format(e))

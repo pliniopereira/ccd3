@@ -37,73 +37,38 @@ def save_tif(img, newname):
     newname_tif += ".tif"
     try:
         print("Tricat of save_tif")
-
         try:
             if sys.platform.startswith("linux"):
                 imgarray = numpy.array(img_tif, dtype='uint16')
             elif sys.platform.startswith("win"):
-                imgarray = numpy.array(img_tif, dtype='int16')
+                imgarray = numpy.array(img_tif, dtype=numpy.uint16)
         except Exception as e:
             print(e)
 
         im3 = Image.fromarray(imgarray)
         im3.save(newname_tif)
 
-        '''
-        salvar tif via tifffile.py
-        img2 = numpy.array(img, dtype='uint16')
-        skimage.io.imsave(newname, img2, plugin='tifffile')
-        '''
     except Exception as e:
         print("Exception -> {}".format(e))
 
 
 def save_png(img, newname):
-    '''
-    :param filename: nome do arquivo fit criado
-    :param newname: nome do arquivo png criado a partir do fit
-    :param get_level1: Image contrast: bottom level
-    :param get_level2: Image contrast: top level
-    :return: arquivo fit e png. Arquivo .png redimensionado para 512X512, com a lib PIL se desenha na imagem os \
-    seguintes:
-    Nome do observatorio, nome do filtro, data e horario.
-    '''
-    newname_png = newname
-    newname_png += ".png"
+    newname_png = newname + ".png"
     img_png = img
     print("Opening filename")
     try:
-        print("Tricat of save_png")
-        img_aux = toimage(img_png)
-
-        # variavel = get_level(im2, get_level1, get_level2)
-        #
-        # im2 = bytscl(img, variavel[1], variavel[0])
-        # img_aux.save(newname_png)
-
-        img_aux.save(newname_png)
-
-        # resize_image_512x512(newname_png)
-        # draw_image(newname_png)
-
+        im2 = toimage(img_png)
+        im2.save(newname_png, compress_level=0, quality=100)
     except Exception as e:
-        print("Exception -> {}".format(e))
+        print("Exception save_png -> {}".format(e))
 
 
 def retorna_imagem(name_png):
-    """
-    :param name_png: recebe imagem png
-    :return:
-    """
     img2 = Image.open(name_png)
     img2.show()
 
 
 def resize_image_512x512(name_png):
-    '''
-    :param name_png: recebe imagem png
-    :return: modifica tamanho para 512x512
-    '''
     img = Image.open(name_png)
     resized_img = img.resize((int(512), int(512)))
     # resized_img = ImageOps.autocontrast(resized_img, 2)
@@ -111,10 +76,6 @@ def resize_image_512x512(name_png):
 
 
 def draw_image(name_png):
-    '''
-    :param name_png: recebe imagem png
-    :return: escreve valores na imagem e salva
-    '''
     hora_img, data_img = get_date_hour_image(name_png)
     filter_img, observatory_img = get_filter_observatory(name_png)
 
@@ -131,11 +92,11 @@ def draw_image(name_png):
     del draw
 
     img.save(name_png)
-    # mostra imagem unicamente
+    # mostra imagem
     # img.show()
 
 
-def bytscl(array, max = None, min = None, nan = 0, top=255):
+def bytscl(array, max=None, min=None, nan=0, top=255):
     # see http://star.pst.qub.ac.uk/idl/BYTSCL.html
     # note that IDL uses slightly different formulae for bytscaling floats and ints.
     # here we apply only the FLOAT formula...
@@ -188,6 +149,7 @@ def get_level(im2, sref_min, sref_max):
         sl0 = res_sa2.index(res[0])
         sl1 = res_sa2.index(res[nr - 1])
         slevel = [sl0, sl1]
+
     except Exception as e:
         print("Exception get_level ->" + str(e))
         print("slevel = [10, 20]")
