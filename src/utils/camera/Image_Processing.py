@@ -58,6 +58,7 @@ def save_png(img, newname):
     img_png = img
     print("Opening filename")
     try:
+        print("Tricat of save_png")
         imgarray = numpy.asarray(img_png, dtype=numpy.uint16)
         write_png(newname_png, imgarray)
     except Exception as e:
