@@ -62,12 +62,6 @@ class Logger(QtCore.QThread):
                 if 0 < int(mes) < 10:
                     mes = "0" + str(mes)
 
-                print("\n\n")
-                print("dia = " + str(dia))
-                print("mes = " + str(mes))
-                print("ano = " + str(ano))
-                print("\n\n")
-
                 name_log = name_log_folder + "/LOG_" + name_observatory + "_" + str(ano) + "_" + str(mes) + str(
                     dia) + '.txt'
                 log = open(str(name_log), 'a')
