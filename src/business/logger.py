@@ -47,7 +47,6 @@ class Logger(QtCore.QThread):
                 log.write(str(data_log) + " - " + str(self.text) + "\n")
                 log.close()
             else:
-                tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
                 ano = tempo[0:4]
                 mes = tempo[4:6]
                 dia = tempo[6:8]
