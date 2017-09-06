@@ -455,7 +455,7 @@ def photoshoot(exposure_time, binning, dark_photo):
         udrv.SBIGUnivDrvCommand(SbigLib.PAR_COMMAND.CC_QUERY_COMMAND_STATUS.value, byref(cin), byref(cout))
 
         status = cout.status
-        # print("Status: %3.2f sec - %s" % (time.time() - t0, status))
+        print("Status: %3.2f sec - %s" % (time.time() - t0, status))
         time.sleep(0.01)
 
     print("GRAB IMAGE - End Exposure")

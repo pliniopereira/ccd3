@@ -8,7 +8,7 @@ def set_path():
     tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
 
     data = tempo[0:4] + "_" + tempo[4:6] + tempo[6:8]
-    
+
     from src.business.configuration.configSystem import ConfigSystem
     cs = ConfigSystem()
     path = str(cs.get_image_path()) + "/"
@@ -21,16 +21,21 @@ def set_path():
     if int(tempo[9:11]) > 12:
         path = path + name_observatory + "_" + data + "/"
     else:
-        tempo = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
         ano = tempo[0:4]
         mes = tempo[4:6]
         dia = tempo[6:8]
         abs_julian_day = jd_to_date(date_to_jd(ano, mes, int(dia)) - 1)
 
-        if 0 < abs_julian_day[2] < 10:
-            path = path + name_observatory + "_" + str(abs_julian_day[0]) + "_" + str(abs_julian_day[1]) + "0" + str(abs_julian_day[2]) + "/"
-        else:
-            path = path + name_observatory + "_" + str(abs_julian_day[0]) + "_" + str(abs_julian_day[1]) + str(abs_julian_day[2]) + "/"
+        mes = abs_julian_day[1]
+        dia = abs_julian_day[2]
+        ano = abs_julian_day[0]
+
+        if 0 < int(dia) < 10:
+            dia = "0" + str(dia)
+        if 0 < int(mes) < 10:
+            mes = "0" + str(mes)
+
+        path = path + name_observatory + "_" + str(ano) + "_" + str(mes) + str(dia) + "/"
 
     return path, tempo
 
