@@ -55,12 +55,12 @@ class ContinuousShooterThread(QtCore.QThread):
         self.continuous = True
 
     def stop_continuous_shooter(self):
-        self.start_dark_sthread()
         self.wait_temperature = False
         self.continuous = False
         self.not_two_dark = False
         # self.console.raise_text("Taking dark photo", 1)
         self.count = 1
+        self.start_dark_sthread()
 
     def stop_one_photo(self):
         self.one_photo = False

@@ -53,17 +53,25 @@ class Logger(QtCore.QThread):
                 dia = tempo[6:8]
                 abs_julian_day = jd_to_date(date_to_jd(ano, mes, int(dia)) - 1)
 
-                if 0 < abs_julian_day[2] < 10:
-                    name_log = name_log_folder + "/LOG_" + name_observatory + "_" + str(abs_julian_day[0]) + "_" + mes\
-                               + "0" + str(abs_julian_day[2]) + '.txt'
-                    log = open(str(name_log), 'a')
-                    log.write(str(data_log) + " - " + str(self.text) + "\n")
-                    log.close()
-                else:
-                    name_log = name_log_folder + "/LOG_" + name_observatory + "_" + mes + "_" + str(abs_julian_day[1]) \
-                               + str(abs_julian_day[2]) + '.txt'
-                    log = open(str(name_log), 'a')
-                    log.write(str(data_log) + " - " + str(self.text) + "\n")
-                    log.close()
+                mes = abs_julian_day[1]
+                dia = abs_julian_day[2]
+                ano = abs_julian_day[0]
+
+                if 0 < int(dia) < 10:
+                    dia = "0" + str(dia)
+                if 0 < int(mes) < 10:
+                    mes = "0" + str(mes)
+
+                print("\n\n")
+                print("dia = " + str(dia))
+                print("mes = " + str(mes))
+                print("ano = " + str(ano))
+                print("\n\n")
+
+                name_log = name_log_folder + "/LOG_" + name_observatory + "_" + str(ano) + "_" + str(mes) + str(
+                    dia) + '.txt'
+                log = open(str(name_log), 'a')
+                log.write(str(data_log) + " - " + str(self.text) + "\n")
+                log.close()
         except Exception as e:
             print(e)
