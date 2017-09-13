@@ -4,9 +4,10 @@ from datetime import datetime
 
 import numpy
 import pyfits as fits
-from PIL import Image, ImageDraw, ImageFont
-from numpngw import write_png
-from scipy.misc import toimage
+from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
+from numpngw import write_png, _write_text
+
+from src.utils.camera.Image_Headers import set_headers_png
 
 
 def save_fit(img_to_fit, newname):
@@ -59,10 +60,71 @@ def save_png(img, newname):
     print("Opening filename")
     try:
         print("Tricat of save_png")
-        imgarray = numpy.asarray(img_png, dtype=numpy.uint16)
-        write_png(newname_png, imgarray)
+        imgarray = numpy.asarray(img_png, dtype=numpy.int32)
+        # try:
+        #     set_headers_png(imgarray)
+        # except Exception as e:
+        #     print("Exception set_headers_png(imgarray) -> {}".format(e))
+
+        # lista = "um: 1 dois: 2 tres: AAA"
+        # palavra = b"123"
+        # print("\n\n")
+        # print("1")
+        # print(lista)
+        # print(type(lista))
+        # print(palavra)
+        # print(type(palavra))
+        # print("\n\n")
+        #
+        # _write_text(imgarray, palavra, lista)
+        # print("\n\n")
+        # print("2")
+        # print(lista)
+        # print(type(lista))
+        # print(palavra)
+        # print(type(palavra))
+        # print("\n\n")
+
+        # write_png(newname_png, imgarray)
+
+        info = PngImagePlugin.PngInfo()
+
+        info.add_text('dpi', '001')
+        info.add_text('Binning', '002')
+        info.add_text('Bit Depth', '003')
+        info.add_text('CCD Gain', '004')
+        info.add_text('CCD Temperature', '005')
+        info.add_text('CCD SET TEMP', '006')
+        info.add_text('CCD Type', '007')
+        info.add_text('Exposure', '008')
+        info.add_text('Filter Label', '010')
+        info.add_text('Filter Position', '011')
+        info.add_text('Filter Wavelength', '012')
+        info.add_text('Filter Wheel Temperature', '013')
+        info.add_text('Image Type', '014')
+        info.add_text('Latitude', '015')
+        info.add_text('Longitude', '017')
+        info.add_text('Moon Elevation', '021')
+        info.add_text('Moon Phase', '022')
+        info.add_text('Readout Speed', '023')
+        info.add_text('Shutter CCD', '024')
+        info.add_text('Shutter Lenz', '025')
+        info.add_text('Site ID', '026')
+        info.add_text('Start Time', '027')
+        info.add_text('Sun Elevation', '028')
+        info.add_text('Version :', '028')
+
+        image = Image.fromarray(imgarray)
+        image.save(newname_png, "PNG", pnginfo=info)
+        # set_headers_png(newname_png)
+
     except Exception as e:
         print("Exception save_png -> {}".format(e))
+    # finally:
+    #     try:
+    #         set_headers_png(newname_png)
+    #     except Exception as e:
+    #         print("Exception set_headers_png -> {}".format(e))
 
 
 def retorna_imagem(name_png):
