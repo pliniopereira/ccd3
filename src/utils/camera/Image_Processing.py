@@ -54,7 +54,7 @@ def save_tif(img, newname):
         print("Exception -> {}".format(e))
 
 
-def save_png(img, newname):
+def save_png(img, newname, headers):
     newname_png = newname + ".png"
     img_png = img
     print("Opening filename")
@@ -88,31 +88,41 @@ def save_png(img, newname):
         # write_png(newname_png, imgarray)
 
         info = PngImagePlugin.PngInfo()
+        day = str(headers[15])
+        hour = str(headers[15])
+        day = day[7:]
+        hour = hour[:-6]
+
+        print("\n\n")
+        print("day hour")
+        print(day)
+        print(hour)
+        print("\n\n")
 
         info.add_text('dpi', '001')
-        info.add_text('Binning', '002')
-        info.add_text('Bit Depth', '003')
-        info.add_text('CCD Gain', '004')
-        info.add_text('CCD Temperature', '005')
-        info.add_text('CCD SET TEMP', '006')
-        info.add_text('CCD Type', '007')
-        info.add_text('Exposure', '008')
-        info.add_text('Filter Label', '010')
-        info.add_text('Filter Position', '011')
-        info.add_text('Filter Wavelength', '012')
-        info.add_text('Filter Wheel Temperature', '013')
-        info.add_text('Image Type', '014')
-        info.add_text('Latitude', '015')
-        info.add_text('Longitude', '017')
-        info.add_text('Moon Elevation', '021')
-        info.add_text('Moon Phase', '022')
-        info.add_text('Readout Speed', '023')
-        info.add_text('Shutter CCD', '024')
-        info.add_text('Shutter Lenz', '025')
-        info.add_text('Site ID', '026')
-        info.add_text('Start Time', '027')
-        info.add_text('Sun Elevation', '028')
-        info.add_text('Version :', '028')
+        info.add_text('Binning: ', str(headers[0][3]))
+        info.add_text('Bit Depth: ', '003')
+        info.add_text('CCD Gain: ', '004')
+        info.add_text('CCD Temperature: ', '005')
+        info.add_text('CCD SET TEMP: ', 'aa')
+        info.add_text('CCD Type: ', '007')
+        info.add_text('Exposure: ', str(headers[0][2]) + " seconds")
+        info.add_text('Filter Label: ', str(headers[0][0]))
+        info.add_text('Filter Position: ', str(headers[0][4]))
+        info.add_text('Filter Wavelength: ', str(headers[0][1]))
+        info.add_text('Filter Wheel Temperature: ', '013')
+        info.add_text('Image Type: ', 'PNG')
+        info.add_text('Latitude: ', '015')
+        info.add_text('Longitude: ', '017')
+        info.add_text('Moon Elevation: ', '021')
+        info.add_text('Moon Phase: ', '022')
+        info.add_text('Readout Speed: ', '023')
+        info.add_text('Shutter CCD: ', '024')
+        info.add_text('Shutter Lenz: ', '025')
+        info.add_text('Site ID: ', '026')
+        info.add_text('Start Time: ', '027')
+        info.add_text('Sun Elevation:', '028')
+        info.add_text('Version: ', '028')
 
         image = Image.fromarray(imgarray)
         image.save(newname_png, "PNG", pnginfo=info)

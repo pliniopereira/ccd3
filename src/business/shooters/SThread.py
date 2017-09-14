@@ -4,10 +4,9 @@ from time import sleep
 
 from PyQt5 import QtCore
 
-from src.business.configuration.settingsCamera import SettingsCamera
-from src.business.configuration.settingsImage import SettingsImage
+from src.business.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
+    get_project_settings
 from src.business.models.image import Image
-from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
 from src.business.shooters import LabelFilters
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
@@ -44,6 +43,8 @@ class SThread(QtCore.QThread):
 
         self.img = None
 
+        self.for_headers_list = []
+
         self.lock = Locker()
         self.info = []
 
@@ -52,59 +53,6 @@ class SThread(QtCore.QThread):
         self.count_aux = 0
 
         self.roda_filtros = FilterControl()
-
-    def get_wish_filters_settings(self):
-        settings = SettingsSequenceFilters()
-        info_wish_filters = settings.get_sequence_filters_settings()
-
-        my_list = []
-        available_filters = LabelFilters.get_filter_settings()
-        available_filters_list = list(available_filters)
-
-        for i, c in enumerate(info_wish_filters):
-            if c in available_filters_list:
-                my_list.append(c)
-
-        return my_list
-
-    def name_observatory(self):
-        from src.business.configuration.configProject import ConfigProject
-        ci = ConfigProject()
-        name_observatory = str(ci.get_site_settings())
-        name_observatory = get_observatory(name_observatory)
-
-        return name_observatory
-
-    def get_image_settings(self):
-        """
-        Pega os valores no ini image
-        info_image[0] = get_level1
-        info_image[1] = get_level2
-        info_image[2] = crop_xi
-        info_image[3] = crop_xf
-        info_image[4] = crop_yi
-        info_image[5] = crop_yf
-        info_image[6] = ignore_crop
-        info_image[7] = image_tif
-        info_image[8] = image_fit
-        """
-
-        settings = SettingsImage()
-        info_image = settings.get_image_settings()
-
-        return info_image
-
-    def get_camera_settings(self):
-        """
-        Pega os valores no ini camera
-        info_cam[0] = temperature_camera
-        info_cam[1] = tempo de espera até atingir temperatura desejada
-        info_cam[2] = dark(Open or close shutter)
-        """
-        settings = SettingsCamera()
-        info_cam = settings.get_camera_settings()
-
-        return info_cam
 
     def set_config_take_image(self):
         """
@@ -130,8 +78,8 @@ class SThread(QtCore.QThread):
             # except Exception as e:
             #     print("Try ini 1 -> {}".format(e))
 
-            info_cam = self.get_camera_settings()
-            info_image = self.get_image_settings()
+            info_cam = get_camera_settings()
+            info_image = get_image_settings()
 
             try:
                 self.dark_photo = int(info_cam[2])
@@ -201,18 +149,14 @@ class SThread(QtCore.QThread):
 
     def run(self):
         self.set_config_take_image()
-        # print("\n\n\n")
-        # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-        # print(str(self.filter_split_label))
-        # print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-        # print("\n\n\n")
 
-        my_list = self.get_wish_filters_settings()
+        my_list = get_wish_filters_settings()
 
         try:
             if self.count_aux < len(my_list):
                 index_of_dic = str(my_list[self.count_aux])
                 aux = self.filter_split_label[str(index_of_dic)][0]
+                self.for_headers_list.append(aux)
                 # print("\n\n\n")
                 # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                 # print(index_of_dic)
@@ -242,6 +186,7 @@ class SThread(QtCore.QThread):
                 # print("\n\n")
 
                 self.prefix = str(aux[0])
+                self.for_headers_list.append(self.prefix)
 
                 self.exposure_time = float(aux[2])
                 if self.exposure_time <= 0.12:
@@ -251,8 +196,11 @@ class SThread(QtCore.QThread):
                 else:
                     self.exposure_time = float(aux[2]) * 100
                 self.exposure_time = int(self.exposure_time)
+                self.for_headers_list.append(self.exposure_time)
 
                 self.binning = int(aux[3])
+                self.for_headers_list.append(self.binning)
+
                 self.count_aux += 1
 
                 self.filter_wheel_control(int(aux[4]))
@@ -307,10 +255,9 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
-        '''
         print("\n\n")
         print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-        print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
+        print("self.prefix " + str(self.prefix) + " " + str(type(self.prefix)))
         print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
         print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
         print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
@@ -323,7 +270,16 @@ class SThread(QtCore.QThread):
         print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
         print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
         print("\n\n")
-        '''
+        self.for_headers_list.append(self.dark_photo)
+        self.for_headers_list.append(self.get_level1)
+        self.for_headers_list.append(self.get_level2)
+        self.for_headers_list.append(self.get_axis_xi)
+        self.for_headers_list.append(self.get_axis_xf)
+        self.for_headers_list.append(self.get_axis_yi)
+        self.for_headers_list.append(self.get_axis_yf)
+        self.for_headers_list.append(self.get_ignore_crop)
+        self.for_headers_list.append(self.get_image_tif)
+        self.for_headers_list.append(self.get_image_fit)
 
         try:
             # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
@@ -335,7 +291,8 @@ class SThread(QtCore.QThread):
             self.set_config_take_image()
             self.lock.set_acquire()
 
-            name_observatory = self.name_observatory()
+            project_infos = get_project_settings()
+            name_observatory = get_observatory(project_infos[3])
 
             path, tempo = set_path()
             image_name = path + str(self.prefix) + "_" + name_observatory + "_" + str(tempo)
@@ -345,7 +302,17 @@ class SThread(QtCore.QThread):
             if not os.path.isdir(path):
                 os.makedirs(path)
 
-            save_png(self.img, image_name)
+            self.for_headers_list.append(path)
+            self.for_headers_list.append(tempo)
+            self.for_headers_list.append(image_name)
+            self.for_headers_list.append(name_observatory)
+            self.for_headers_list.append(project_infos)
+
+            print("\n\n")
+            print(self.for_headers_list)
+            print("len(self.for_headers_list) = " + str(len(self.for_headers_list)))
+            print("\n\n")
+            save_png(self.img, image_name, self.for_headers_list)
             save_tif(self.img, image_name)
             try:
                 save_fit(self.img, image_name)
@@ -361,6 +328,7 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("run SbigDriver.photoshoot ERROR -> {}".format(e))
         finally:
+            self.for_headers_list = []
             self.lock.set_release()
 
     def init_image(self):
