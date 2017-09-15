@@ -55,6 +55,37 @@ def save_tif(img, newname):
 
 
 def save_png(img, newname, headers):
+    """
+    headers[0] = list of get_filter_settings()
+    headers[0][0] = Filter Label (prefix)
+    headers[0][1] = Wavelength (nm)
+    headers[0][2] = Exposure (s)
+    headers[0][3] = Binning
+    headers[0][4] = Filter Position
+    headers[1] = dark_photo
+    headers[2] = get_level1
+    headers[3] = get_level2
+    headers[4] = get_axis_xi
+    headers[5] = get_axis_xf
+    headers[6] = get_axis_yi
+    headers[7] = get_axis_yf
+    headers[8] = get_ignore_crop
+    headers[9] = get_image_tif
+    headers[10] = get_image_fit
+    headers[11] = data_hora
+    headers[0][0] = Latitude
+    headers[0][1] = Longitude
+    headers[0][2] = Elevation(m)
+    headers[0][3] = Pressure(mb)
+    headers[0][4] = Temperature(?)
+    headers[1][0] = Solar Elevation
+    headers[1][1] = Ignore Lunar Position
+    headers[1][2] = Lunar Elevation
+    headers[1][3] = Lunar Phase
+    headers[2][0] = Name
+    headers[2][1] = Observatory
+    headers[2][2] = Imager ID
+    """
     newname_png = newname + ".png"
     img_png = img
     print("Opening filename")

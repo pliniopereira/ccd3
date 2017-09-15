@@ -58,41 +58,8 @@ class SThread(QtCore.QThread):
         seta as configuracoes para se tirar uma foto
         """
         try:
-            # try:
-            #     print("\n\n")
-            #     print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-            #     print("self.pre " + str(self.prefix) + " " + str(type(self.prefix)))
-            #     print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
-            #     print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
-            #     print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
-            #     print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
-            #     print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
-            #     print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
-            #     print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
-            #     print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
-            #     print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
-            #     print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
-            #     print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
-            #     print("\n\n")
-            # except Exception as e:
-            #     print("Try ini 1 -> {}".format(e))
-
             info_cam = get_camera_settings()
             info_image = get_image_settings()
-
-            # print("\n\n")
-            # print("AQUI")
-            # print("type(info_cam)")
-            # print(type(info_cam))
-            # print(str(info_cam))
-            #
-            # print(str(info_cam[0]))
-            # print(str(info_cam[1]))
-            # print(str(info_cam[2]))
-            # print("type(info_image)")
-            # print(type(info_image))
-            # print(str(info_image))
-            # print("\n\n")
 
             try:
                 self.dark_photo = int(info_cam[2])
@@ -164,40 +131,21 @@ class SThread(QtCore.QThread):
         self.set_config_take_image()
         self.lock.set_acquire()
 
-        my_list = get_wish_filters_settings()
+        my_list = get_wish_filters_settings()  # list of schedule
 
         try:
             if self.count_aux < len(my_list):
                 index_of_dic = str(my_list[self.count_aux])
+
                 aux = self.filter_split_label[str(index_of_dic)][0]
                 self.for_headers_list.append(aux)
 
-                # print("\n\n\n")
-                # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-                # print(index_of_dic)
-                # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-                # print("\n")
-                # print(str(self.filter_split_label))
-                # print(str(self.count_aux))
-                # print(str(my_list[self.count_aux]))
-                # print(aux)
-                # print(type(aux))
-                # print(aux[0])
-                # print(index_of_dic)
-                # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                # print("\n\n\n")
-                # print("\n\n")
-                # print("---------------------------------------->")
-                # print(len(self.filter_split_label))
-                # print(aux)
-                # print(aux[0])
-                # print(aux[2])
-                # print(aux[3])
-                # print(aux[4])
-                # print("---------------------------------------->")
-                # print("\n\n")
-
                 aux = list(aux)
+                # aux[0] = self.prefix
+                # aux[2] = self.exposure_time
+                # aux[3] = self.binning
+                # aux[4] = wish filter
+
                 self.prefix = str(aux[0])
 
                 self.exposure_time = float(aux[2])
@@ -215,35 +163,10 @@ class SThread(QtCore.QThread):
 
                 self.filter_wheel_control(int(aux[4]))
 
-                # print("\n\n")
-                # print("---------------------------------------->")
-                # print(str(self.count_aux))
-                # print(len(my_list))
-                # print("---------------------------------------->")
-                #
-                # print(aux)
-                # print(aux[0])
-                # print(aux[2])
-                # print(aux[3])
-                # print(aux[4])
-                # print("\n\n")
-
             else:
                 self.count_aux = 1
                 index_of_dic = str(my_list[self.count_aux])
                 aux = self.filter_split_label[str(index_of_dic)][0]
-
-                # print("\n\n")
-                # print("---------------------------------------->")
-                # print(str(self.count_aux))
-                # print("---------------------------------------->")
-                #
-                # print(aux)
-                # print(aux[0])
-                # print(aux[2])
-                # print(aux[3])
-                # print(aux[4])
-                # print("\n\n")
 
                 self.prefix = str(aux[0])
                 self.exposure_time = float(aux[2])
@@ -276,40 +199,14 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(self.get_image_tif)
         self.for_headers_list.append(self.get_image_fit)
 
-        print("\n\n")
-        print("1 self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-        print("1 self.binning " + str(self.binning) + " " + str(type(self.binning)))
-        print("1 self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
-        # print("self.prefix " + str(self.prefix) + " " + str(type(self.prefix)))
-        # print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
-        # print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
-        # print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
-        # print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
-        # print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
-        # print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
-        # print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
-        # print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
-        # print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
-        # print("\n\n")
-
-        # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
-        #                                   self.get_level1, self.get_level2, self.get_axis_xi,
-        # self.get_axis_xf,
-        #                                   self.get_axis_yi, self.get_axis_yf,
-        #                                   self.get_ignore_crop,
-        #                                   self.get_image_tif, self.get_image_fit)
         project_infos = get_project_settings()
-        print("\n\n")
-        print("project_infos = " + str(project_infos))
-        print("type(project_infos) = " + str(type(project_infos)))
-        print("\n\n")
 
         name_observatory = project_infos[2][1]
-        print("name_observatory = " + str(name_observatory))
 
         path, tempo = set_path()
 
         image_name = path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
+
         try:
             self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
         except Exception as e:
@@ -322,8 +219,7 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(project_infos)
 
         print("\n\n")
-        print(self.for_headers_list)
-        print("len(self.for_headers_list) = " + str(len(self.for_headers_list)))
+        print("self.for_headers_list  = " + str(self.for_headers_list))
         print("\n\n")
 
         try:

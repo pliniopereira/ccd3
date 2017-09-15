@@ -77,6 +77,9 @@ def get_filter_settings():
 
 
 def get_wish_filters_settings():
+    """
+    :return: list of schedule filter wheel
+    """
     settings = SettingsSequenceFilters()
     info_wish_filters = settings.get_sequence_filters_settings()
 
@@ -92,6 +95,23 @@ def get_wish_filters_settings():
 
 
 def get_project_settings():
+    """
+    name_geographic_settings[0] = Latitude
+    name_geographic_settings[1] = Longitude
+    name_geographic_settings[2] = Elevation(m)
+    name_geographic_settings[3] = Pressure(mb)
+    name_geographic_settings[4] = Temperature(?)
+
+    name_set_moonsun_settings[0] = Solar Elevation
+    name_set_moonsun_settings[1] = Ignore Lunar Position
+    name_set_moonsun_settings[2] = Lunar Elevation
+    name_set_moonsun_settings[3] = Lunar Phase
+
+    name_site_settings[0] = Name
+    name_site_settings[1] = Observatory
+    name_site_settings[2] = Imager ID
+    """
+
     from src.business.configuration.configProject import ConfigProject
     ci = ConfigProject()
 
@@ -131,9 +151,5 @@ def get_camera_settings():
     """
     settings = SettingsCamera()
     info_cam = settings.get_camera_settings()
-    print("\n\n")
-    print("type(info_cam)")
-    print(type(info_cam))
-    print("\n\n")
 
     return info_cam
