@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPushButton, QMessageBox
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.sequence_filters.SettingsSequenceFilters import SettingsSequenceFilters
-from src.business.shooters import LabelFilters
+from src.business.shooters.InfosForSThread import get_filter_settings
 from src.ui.commons.layout import set_lvbox, set_hbox
 
 
@@ -67,7 +67,7 @@ class SequenceFilters(QtWidgets.QWidget):
         self.wish_sequence_filters_l = QtWidgets.QLineEdit(self)
         self.wish_sequence_filters_l.setMinimumWidth(250)
 
-        available_filters_list_and_commons = LabelFilters.get_filter_settings()
+        available_filters_list_and_commons = get_filter_settings()
         available_filters_list_and_commons = list(available_filters_list_and_commons)
         available_filters_list_and_commons.append(',')
 
@@ -96,7 +96,7 @@ class SequenceFilters(QtWidgets.QWidget):
 
     def button_ok_func(self):
         try:
-            available_filters_list_and_commons = LabelFilters.get_filter_settings()
+            available_filters_list_and_commons = get_filter_settings()
             available_filters_list_and_commons = list(available_filters_list_and_commons)
             available_filters_list_and_commons.append(',')
             available_filters_list_and_commons.append(' ')
@@ -142,7 +142,7 @@ class SequenceFilters(QtWidgets.QWidget):
 
     def available_filters_and_exposure_time(self):
         try:
-            filter_split_label = LabelFilters.get_filter_settings()
+            filter_split_label = get_filter_settings()
 
         except Exception as e:
             print("get_filter_settings() -> {}".format(e))

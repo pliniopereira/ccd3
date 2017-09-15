@@ -88,16 +88,16 @@ def save_png(img, newname, headers):
         # write_png(newname_png, imgarray)
 
         info = PngImagePlugin.PngInfo()
-        day = str(headers[15])
-        hour = str(headers[15])
-        day = day[7:]
-        hour = hour[:-6]
+        # day = str(headers[15])
+        # hour = str(headers[15])
+        # day = day[7:]
+        # hour = hour[:-6]
 
-        print("\n\n")
-        print("day hour")
-        print(day)
-        print(hour)
-        print("\n\n")
+        # print("\n\n")
+        # print("day hour")
+        # print(day)
+        # print(hour)
+        # print("\n\n")
 
         info.add_text('dpi', '001')
         info.add_text('Binning: ', str(headers[0][3]))

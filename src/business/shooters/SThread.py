@@ -4,14 +4,13 @@ from time import sleep
 
 from PyQt5 import QtCore
 
-from src.business.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
-    get_project_settings
 from src.business.models.image import Image
-from src.business.shooters import LabelFilters
+from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
+    get_project_settings, get_filter_settings
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
-from src.utils.camera.Image_Processing import save_png, save_tif, save_fit, get_date_hour, get_observatory
+from src.utils.camera.Image_Processing import save_png, save_tif, save_fit, get_date_hour
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
@@ -81,6 +80,20 @@ class SThread(QtCore.QThread):
             info_cam = get_camera_settings()
             info_image = get_image_settings()
 
+            # print("\n\n")
+            # print("AQUI")
+            # print("type(info_cam)")
+            # print(type(info_cam))
+            # print(str(info_cam))
+            #
+            # print(str(info_cam[0]))
+            # print(str(info_cam[1]))
+            # print(str(info_cam[2]))
+            # print("type(info_image)")
+            # print(type(info_image))
+            # print(str(info_image))
+            # print("\n\n")
+
             try:
                 self.dark_photo = int(info_cam[2])
             except Exception as e:
@@ -140,7 +153,7 @@ class SThread(QtCore.QThread):
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
             try:
-                self.filter_split_label = LabelFilters.get_filter_settings()
+                self.filter_split_label = get_filter_settings()
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -149,6 +162,7 @@ class SThread(QtCore.QThread):
 
     def run(self):
         self.set_config_take_image()
+        self.lock.set_acquire()
 
         my_list = get_wish_filters_settings()
 
@@ -157,13 +171,12 @@ class SThread(QtCore.QThread):
                 index_of_dic = str(my_list[self.count_aux])
                 aux = self.filter_split_label[str(index_of_dic)][0]
                 self.for_headers_list.append(aux)
+
                 # print("\n\n\n")
                 # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                 # print(index_of_dic)
                 # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-                # print("\n\n\n")
-                # print("\n\n\n")
-                # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                # print("\n")
                 # print(str(self.filter_split_label))
                 # print(str(self.count_aux))
                 # print(str(my_list[self.count_aux]))
@@ -175,8 +188,7 @@ class SThread(QtCore.QThread):
                 # print("\n\n\n")
                 # print("\n\n")
                 # print("---------------------------------------->")
-                # # print(len(self.filter_split_label))
-                # aux = list(aux)
+                # print(len(self.filter_split_label))
                 # print(aux)
                 # print(aux[0])
                 # print(aux[2])
@@ -185,8 +197,8 @@ class SThread(QtCore.QThread):
                 # print("---------------------------------------->")
                 # print("\n\n")
 
+                aux = list(aux)
                 self.prefix = str(aux[0])
-                self.for_headers_list.append(self.prefix)
 
                 self.exposure_time = float(aux[2])
                 if self.exposure_time <= 0.12:
@@ -196,10 +208,8 @@ class SThread(QtCore.QThread):
                 else:
                     self.exposure_time = float(aux[2]) * 100
                 self.exposure_time = int(self.exposure_time)
-                self.for_headers_list.append(self.exposure_time)
 
                 self.binning = int(aux[3])
-                self.for_headers_list.append(self.binning)
 
                 self.count_aux += 1
 
@@ -223,17 +233,17 @@ class SThread(QtCore.QThread):
                 index_of_dic = str(my_list[self.count_aux])
                 aux = self.filter_split_label[str(index_of_dic)][0]
 
-                print("\n\n")
-                print("---------------------------------------->")
-                print(str(self.count_aux))
-                print("---------------------------------------->")
-
-                print(aux)
-                print(aux[0])
-                print(aux[2])
-                print(aux[3])
-                print(aux[4])
-                print("\n\n")
+                # print("\n\n")
+                # print("---------------------------------------->")
+                # print(str(self.count_aux))
+                # print("---------------------------------------->")
+                #
+                # print(aux)
+                # print(aux[0])
+                # print(aux[2])
+                # print(aux[3])
+                # print(aux[4])
+                # print("\n\n")
 
                 self.prefix = str(aux[0])
                 self.exposure_time = float(aux[2])
@@ -255,21 +265,6 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
-        print("\n\n")
-        print("self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
-        print("self.prefix " + str(self.prefix) + " " + str(type(self.prefix)))
-        print("self.binning " + str(self.binning) + " " + str(type(self.binning)))
-        print("self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
-        print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
-        print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
-        print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
-        print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
-        print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
-        print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
-        print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
-        print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
-        print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
-        print("\n\n")
         self.for_headers_list.append(self.dark_photo)
         self.for_headers_list.append(self.get_level1)
         self.for_headers_list.append(self.get_level2)
@@ -281,52 +276,79 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(self.get_image_tif)
         self.for_headers_list.append(self.get_image_fit)
 
+        print("\n\n")
+        print("1 self.exposure_time " + str(self.exposure_time) + " " + str(type(self.exposure_time)))
+        print("1 self.binning " + str(self.binning) + " " + str(type(self.binning)))
+        print("1 self.dark_photo " + str(self.dark_photo) + " " + str(type(self.dark_photo)))
+        # print("self.prefix " + str(self.prefix) + " " + str(type(self.prefix)))
+        # print("self.get_level1 " + str(self.get_level1) + " " + str(type(self.get_level1)))
+        # print("self.get_level2 " + str(self.get_level2) + " " + str(type(self.get_level2)))
+        # print("self.get_axis_xi " + str(self.get_axis_xi) + " " + str(type(self.get_axis_xi)))
+        # print("self.get_axis_xf " + str(self.get_axis_xf) + " " + str(type(self.get_axis_xf)))
+        # print("self.get_axis_yi " + str(self.get_axis_yi) + " " + str(type(self.get_axis_yi)))
+        # print("self.get_axis_yf " + str(self.get_axis_yf) + " " + str(type(self.get_axis_yf)))
+        # print("self.get_ignore_crop " + str(self.get_ignore_crop) + " " + str(type(self.get_ignore_crop)))
+        # print("self.get_image_tif " + str(self.get_image_tif) + " " + str(type(self.get_image_tif)))
+        # print("self.get_image_fit " + str(self.get_image_fit) + " " + str(type(self.get_image_fit)))
+        # print("\n\n")
+
+        # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
+        #                                   self.get_level1, self.get_level2, self.get_axis_xi,
+        # self.get_axis_xf,
+        #                                   self.get_axis_yi, self.get_axis_yf,
+        #                                   self.get_ignore_crop,
+        #                                   self.get_image_tif, self.get_image_fit)
+        project_infos = get_project_settings()
+        print("\n\n")
+        print("project_infos = " + str(project_infos))
+        print("type(project_infos) = " + str(type(project_infos)))
+        print("\n\n")
+
+        name_observatory = project_infos[2][1]
+        print("name_observatory = " + str(name_observatory))
+
+        path, tempo = set_path()
+
+        image_name = path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
         try:
-            # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
-            #                                   self.get_level1, self.get_level2, self.get_axis_xi,
-            # self.get_axis_xf,
-            #                                   self.get_axis_yi, self.get_axis_yf,
-            #                                   self.get_ignore_crop,
-            #                                   self.get_image_tif, self.get_image_fit)
-            self.set_config_take_image()
-            self.lock.set_acquire()
-
-            project_infos = get_project_settings()
-            name_observatory = get_observatory(project_infos[3])
-
-            path, tempo = set_path()
-            image_name = path + str(self.prefix) + "_" + name_observatory + "_" + str(tempo)
-
             self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
-
-            if not os.path.isdir(path):
-                os.makedirs(path)
-
-            self.for_headers_list.append(path)
-            self.for_headers_list.append(tempo)
-            self.for_headers_list.append(image_name)
-            self.for_headers_list.append(name_observatory)
-            self.for_headers_list.append(project_infos)
-
-            print("\n\n")
-            print(self.for_headers_list)
-            print("len(self.for_headers_list) = " + str(len(self.for_headers_list)))
-            print("\n\n")
-            save_png(self.img, image_name, self.for_headers_list)
-            save_tif(self.img, image_name)
-            try:
-                save_fit(self.img, image_name)
-            except Exception as e:
-                print("Exception save_fit() -> {}".format(e))
-
-            try:
-                data, hora = get_date_hour(tempo)
-                self.info = path, self.img, data, hora
-                self.init_image()
-            except Exception as e:
-                print("run init_image() -> {}".format(e))
         except Exception as e:
-            print("run SbigDriver.photoshoot ERROR -> {}".format(e))
+            print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
+
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+        self.for_headers_list.append(tempo)
+        self.for_headers_list.append(project_infos)
+
+        print("\n\n")
+        print(self.for_headers_list)
+        print("len(self.for_headers_list) = " + str(len(self.for_headers_list)))
+        print("\n\n")
+
+        try:
+            save_png(self.img, image_name, self.for_headers_list)
+        except Exception as e:
+            print("Exception save_png() -> {}".format(e))
+        try:
+            save_tif(self.img, image_name)
+        except Exception as e:
+            print("Exception save_tif() -> {}".format(e))
+        save_tif(self.img, image_name)
+        try:
+            save_fit(self.img, image_name)
+        except Exception as e:
+            print("Exception save_fit() -> {}".format(e))
+
+        try:
+            data, hora = get_date_hour(tempo)
+            self.info = path, self.img, data, hora
+            self.init_image()
+        except Exception as e:
+            print("run init_image() -> {}".format(e))
+
+        except Exception as e:
+            print("run ERROR -> {}".format(e))
         finally:
             self.for_headers_list = []
             self.lock.set_release()
@@ -369,7 +391,16 @@ class SThread(QtCore.QThread):
             #                                   self.get_image_tif, self.get_image_fit)
             self.set_config_take_image()
             self.lock.set_acquire()
-            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
+            try:
+                print("\n\n")
+                print("self.exposure_time = " + str(self.exposure_time))
+                print("self.binning = " + str(self.binning))
+                print("self.dark_photo = " + str(self.dark_photo))
+                print("\n\n")
+
+                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
+            except Exception as e:
+                print(e)
 
             path, tempo = set_path()
 
