@@ -56,13 +56,13 @@ def save_tif(img, newname):
 
 def save_png(img, newname, headers):
     """
-    headers[0] = list of get_filter_settings()
-    headers[0][0] = Filter Label (prefix)
-    headers[0][1] = Wavelength (nm)
-    headers[0][2] = Exposure (s)
-    headers[0][3] = Binning
-    headers[0][4] = Filter Position
-    headers[1] = dark_photo
+    headers[0][0] = Set Temperature
+    headers[1] = list of get_filter_settings()
+    headers[1][0] = Filter Label (prefix)
+    headers[1][1] = Wavelength (nm)
+    headers[1][2] = Exposure (s)
+    headers[1][3] = Binning
+    headers[1][4] = Filter Position
     headers[2] = get_level1
     headers[3] = get_level2
     headers[4] = get_axis_xi
@@ -86,6 +86,38 @@ def save_png(img, newname, headers):
     headers[12][2][1] = Observatory
     headers[12][2][2] = Imager ID
     """
+    print("\n\n- HEADERS -")
+    print(headers[0][0])
+    print(headers[1])
+    print(headers[1][0])
+    print(headers[1][1])
+    print(headers[1][2])
+    print(headers[1][3])
+    print(headers[1][4])
+    print(headers[2])
+    print(headers[3])
+    print(headers[4])
+    print(headers[5])
+    print(headers[6])
+    print(headers[7])
+    print(headers[8])
+    print(headers[9])
+    print(headers[10])
+    print(headers[11])
+    print(headers[12][0][0])
+    print(headers[12][0][1])
+    print(headers[12][0][2])
+    print(headers[12][0][3])
+    print(headers[12][0][4])
+    print(headers[12][1][0])
+    print(headers[12][1][1])
+    print(headers[12][1][2])
+    print(headers[12][1][3])
+    print(headers[12][2][0])
+    print(headers[12][2][1])
+    print(headers[12][2][2])
+    print("\n\n")
+
     newname_png = newname + ".png"
     img_png = img
     print("Opening filename")
@@ -94,36 +126,34 @@ def save_png(img, newname, headers):
         imgarray = numpy.asarray(img_png, dtype=numpy.int32)
 
         info = PngImagePlugin.PngInfo()
-        day, hour = get_date_hour_image_for_headers(str(headers[11]))
+        day_hour = get_date_hour_image_for_headers(str(headers[11]))
 
         try:
             info.add_text('dpi', '001')
-            info.add_text('Day: ', str(day))
-            info.add_text('Hour', str(hour))
-            info.add_text('Binning: ', str(headers[0][3]))
+            info.add_text('Binning: ', str(headers[1][3]))
             info.add_text('Bit Depth: ', '003')
             info.add_text('CCD Gain: ', '004')
             info.add_text('CCD Temperature: ', '005')
-            info.add_text('CCD SET TEMP: ', '??')
+            info.add_text('CCD SET TEMP: ', str(headers[0][0]))
             info.add_text('CCD Type: ', str(headers[12][2][2]))
-            info.add_text('Exposure: ', str(headers[0][2]) + " seconds")
-            info.add_text('Filter Label: ', str(headers[0][0]))
-            info.add_text('Filter Position: ', str(headers[0][4]))
-            info.add_text('Filter Wavelength: ', str(headers[0][1]))
+            info.add_text('Exposure: ', str(headers[1][2]) + "000 ms")
+            info.add_text('Filter Label: ', str(headers[1][0]))
+            info.add_text('Filter Position: ', str(headers[1][4]))
+            info.add_text('Filter Wavelength: ', str(headers[1][1]) + "nm")
             info.add_text('Filter Wheel Temperature: ', '013')
             info.add_text('Image Type: ', 'PNG')
             info.add_text('Latitude: ',  str(headers[12][0][0]))
             info.add_text('Longitude: ',  str(headers[12][0][1]))
             info.add_text('Elevation(m): ',  str(headers[12][0][2]))
             info.add_text('Pressure(mb): ',  str(headers[12][0][3]))
-            info.add_text('Moon Elevation: ', str(headers[12][1][2]))
+            info.add_text('Moon Elevation: ', str(headers[12][1][2]) + "º")
             info.add_text('Moon Phase: ', str(headers[12][1][3]))
-            info.add_text('Readout Speed: ', '023')
+            info.add_text('Readout Speed: ', '023' + "MHz")
             info.add_text('Shutter CCD: ', '024')
             info.add_text('Shutter Lenz: ', '025')
             info.add_text('Site ID: ', str(headers[12][2][1]))
-            info.add_text('Start Time: ', '027')
-            info.add_text('Sun Elevation:', str(headers[12][1][0]))
+            info.add_text('Start Time: ', str(day_hour))
+            info.add_text('Sun Elevation:', str(headers[12][1][0]) + "º")
             info.add_text('Version: ', str(headers[12][2][0]))
         except Exception as e:
             print("info.add_text: " + e)
@@ -251,10 +281,10 @@ def get_date_hour_image(tempo):
 
 
 def get_date_hour_image_for_headers(tempo):
-    hora_img = tempo[-6:-4] + ":" + tempo[-4:-2] + ":" + tempo[-2:] + " UT"
-    data_img = tempo[:4] + "/" + tempo[4:6] + "/" + tempo[6:8]
+    date_hour_header = tempo[:4] + "-" + tempo[4:6] + "-" + tempo[6:8] + " " + tempo[-6:-4] + ":" + tempo[-4:-2] + ":"\
+                       + tempo[-2:]
 
-    return hora_img, data_img
+    return date_hour_header
 
 
 def get_filter_observatory(name):

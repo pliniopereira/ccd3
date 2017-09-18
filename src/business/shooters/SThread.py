@@ -59,6 +59,8 @@ class SThread(QtCore.QThread):
         """
         try:
             info_cam = get_camera_settings()
+            self.for_headers_list.append(info_cam)
+
             info_image = get_image_settings()
 
             try:
@@ -188,7 +190,6 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
-        self.for_headers_list.append(self.dark_photo)
         self.for_headers_list.append(self.get_level1)
         self.for_headers_list.append(self.get_level2)
         self.for_headers_list.append(self.get_axis_xi)
