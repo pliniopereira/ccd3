@@ -1,34 +1,48 @@
 import os
 import sys
-from datetime import datetime
 
 import numpy
 import pyfits as fits
 from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
-from numpngw import write_png, _write_text
-
-from src.utils.camera.Image_Headers import set_headers_png
 
 
-def save_fit(img_to_fit, newname):
+def save_fit(img_to_fit, newname, headers):
+    day_hour = get_date_hour_image_for_headers(str(headers[11]))
+
     img_fit = img_to_fit
     newname_fit = newname
     newname_fit += ".fit"
+
     # Criando o arquivo final
     try:
         # Abrindo o arquivo
         fits.writeto(newname_fit, img_fit)
-        fits_file = fits.open(newname_fit)
-        # Escrevendo o Header
-        # Can't get the temperature because have a locker locking shooter process
-        # fits_file[0].header["TEMP"] = tuple(get_temperature())[3]
-        fits_file[0].header["DATE"] = datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S')
-        print("Tricat of save_fit")
-        # Fechando e removendo o arquivo temporario
-        # fits_file.flush()
-        fits_file.close()
-    except OSError as e:
-        print(newname_fit)
+        with fits.open(newname_fit, mode='update') as fits_file:
+            fits_file[0].header["DATE"] = str(day_hour)
+            fits_file[0].header["DPI"] = "???"
+            fits_file[0].header["BINNING"] = str(headers[1][3])
+            fits_file[0].header["BIT-DEP"] = "???"
+            fits_file[0].header["CCD-TEMP"] = "???"
+            fits_file[0].header["CCDSTEMP"] = str(headers[0][0])
+            fits_file[0].header["CCDTYPE"] = str(headers[12][2][2])
+            fits_file[0].header["EXPOSURE"] = str(headers[1][2]) + "000 ms"
+            fits_file[0].header["FLT-NAME"] = str(headers[1][0])
+            fits_file[0].header["FLT-POS"] = str(headers[1][4])
+            fits_file[0].header["FLT-WAVE"] = str(headers[1][1]) + "nm"
+            fits_file[0].header["IMG-TYPE"] = "FIT"
+            fits_file[0].header["LATITUDE"] = str(headers[12][0][0])
+            fits_file[0].header["LONGITUD"] = str(headers[12][0][1])
+            fits_file[0].header["MO-ELE"] = str(headers[12][1][2])
+            fits_file[0].header["MO-PHASE"] = str(headers[12][1][3])
+            fits_file[0].header["SHTRCCD"] = "???"
+            fits_file[0].header["SHTRLENZ"] = "???"
+            fits_file[0].header["SITE-ID"] = str(headers[12][2][1])
+            fits_file[0].header["START-T"] = str(day_hour)
+            fits_file[0].header["SUN-ELEV"] = str(headers[12][1][0])
+            fits_file[0].header["VERS"] = str(headers[12][2][0])
+
+    except Exception as e:
+        # print(newname_fit)
         print("Exception save_fit ->" + str(e))
 
 
@@ -131,9 +145,8 @@ def save_png(img, newname, headers):
         try:
             info.add_text('dpi', '001')
             info.add_text('Binning: ', str(headers[1][3]))
-            info.add_text('Bit Depth: ', '003')
-            info.add_text('CCD Gain: ', '004')
-            info.add_text('CCD Temperature: ', '005')
+            info.add_text('Bit Depth: ', '???')
+            info.add_text('CCD Temperature: ', '???')
             info.add_text('CCD SET TEMP: ', str(headers[0][0]))
             info.add_text('CCD Type: ', str(headers[12][2][2]))
             info.add_text('Exposure: ', str(headers[1][2]) + "000 ms")
@@ -148,7 +161,6 @@ def save_png(img, newname, headers):
             info.add_text('Pressure(mb): ',  str(headers[12][0][3]))
             info.add_text('Moon Elevation: ', str(headers[12][1][2]) + "º")
             info.add_text('Moon Phase: ', str(headers[12][1][3]))
-            info.add_text('Readout Speed: ', '023' + "MHz")
             info.add_text('Shutter CCD: ', '024')
             info.add_text('Shutter Lenz: ', '025')
             info.add_text('Site ID: ', str(headers[12][2][1]))
