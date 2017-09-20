@@ -22,7 +22,7 @@ def save_fit(img_to_fit, newname, headers):
             fits_file[0].header["DPI"] = "???"
             fits_file[0].header["BINNING"] = str(headers[1][3])
             fits_file[0].header["BIT-DEP"] = "???"
-            fits_file[0].header["CCD-TEMP"] = "???"
+            fits_file[0].header["CCD-TEMP"] = str(headers[13])
             fits_file[0].header["CCDSTEMP"] = str(headers[0][0])
             fits_file[0].header["CCDTYPE"] = str(headers[12][2][2])
             fits_file[0].header["EXPOSURE"] = str(headers[1][2]) + "000 ms"
@@ -99,38 +99,11 @@ def save_png(img, newname, headers):
     headers[12][2][0] = Name
     headers[12][2][1] = Observatory
     headers[12][2][2] = Imager ID
+    headers[13] = CCD Temperature
     """
-    print("\n\n- HEADERS -")
-    print(headers[0][0])
-    print(headers[1])
-    print(headers[1][0])
-    print(headers[1][1])
-    print(headers[1][2])
-    print(headers[1][3])
-    print(headers[1][4])
-    print(headers[2])
-    print(headers[3])
-    print(headers[4])
-    print(headers[5])
-    print(headers[6])
-    print(headers[7])
-    print(headers[8])
-    print(headers[9])
-    print(headers[10])
-    print(headers[11])
-    print(headers[12][0][0])
-    print(headers[12][0][1])
-    print(headers[12][0][2])
-    print(headers[12][0][3])
-    print(headers[12][0][4])
-    print(headers[12][1][0])
-    print(headers[12][1][1])
-    print(headers[12][1][2])
-    print(headers[12][1][3])
-    print(headers[12][2][0])
-    print(headers[12][2][1])
-    print(headers[12][2][2])
-    print("\n\n")
+    # print("\n\n- HEADERS -")
+    # for x in enumerate(headers):
+    #     print(str(x))
 
     newname_png = newname + ".png"
     img_png = img
@@ -146,7 +119,7 @@ def save_png(img, newname, headers):
             info.add_text('dpi', '001')
             info.add_text('Binning: ', str(headers[1][3]))
             info.add_text('Bit Depth: ', '???')
-            info.add_text('CCD Temperature: ', '???')
+            info.add_text('CCD Temperature: ', str(headers[13]))
             info.add_text('CCD SET TEMP: ', str(headers[0][0]))
             info.add_text('CCD Type: ', str(headers[12][2][2]))
             info.add_text('Exposure: ', str(headers[1][2]) + "000 ms")
@@ -155,10 +128,10 @@ def save_png(img, newname, headers):
             info.add_text('Filter Wavelength: ', str(headers[1][1]) + "nm")
             info.add_text('Filter Wheel Temperature: ', '013')
             info.add_text('Image Type: ', 'PNG')
-            info.add_text('Latitude: ',  str(headers[12][0][0]))
-            info.add_text('Longitude: ',  str(headers[12][0][1]))
-            info.add_text('Elevation(m): ',  str(headers[12][0][2]))
-            info.add_text('Pressure(mb): ',  str(headers[12][0][3]))
+            info.add_text('Latitude: ', str(headers[12][0][0]))
+            info.add_text('Longitude: ', str(headers[12][0][1]))
+            info.add_text('Elevation(m): ', str(headers[12][0][2]))
+            info.add_text('Pressure(mb): ', str(headers[12][0][3]))
             info.add_text('Moon Elevation: ', str(headers[12][1][2]) + "º")
             info.add_text('Moon Phase: ', str(headers[12][1][3]))
             info.add_text('Shutter CCD: ', '024')
@@ -176,11 +149,11 @@ def save_png(img, newname, headers):
 
     except Exception as e:
         print("Exception save_png -> {}".format(e))
-    # finally:
-    #     try:
-    #         set_headers_png(newname_png)
-    #     except Exception as e:
-    #         print("Exception set_headers_png -> {}".format(e))
+        # finally:
+        #     try:
+        #         set_headers_png(newname_png)
+        #     except Exception as e:
+        #         print("Exception set_headers_png -> {}".format(e))
 
 
 def retorna_imagem(name_png):
@@ -293,7 +266,7 @@ def get_date_hour_image(tempo):
 
 
 def get_date_hour_image_for_headers(tempo):
-    date_hour_header = tempo[:4] + "-" + tempo[4:6] + "-" + tempo[6:8] + " " + tempo[-6:-4] + ":" + tempo[-4:-2] + ":"\
+    date_hour_header = tempo[:4] + "-" + tempo[4:6] + "-" + tempo[6:8] + " " + tempo[-6:-4] + ":" + tempo[-4:-2] + ":" \
                        + tempo[-2:]
 
     return date_hour_header

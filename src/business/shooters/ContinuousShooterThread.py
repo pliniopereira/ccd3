@@ -74,4 +74,3 @@ class ContinuousShooterThread(QtCore.QThread):
         # else:
         #     self.console.raise_text("Taking photo N: {}".format(self.count), 1)
         #     self.count += 1
-

@@ -7,6 +7,7 @@ from PyQt5 import QtCore
 from src.business.models.image import Image
 from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
     get_project_settings, get_filter_settings
+# from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
@@ -219,6 +220,12 @@ class SThread(QtCore.QThread):
 
         self.for_headers_list.append(tempo)
         self.for_headers_list.append(project_infos)
+        try:
+            self.temperatura = SbigDriver.get_temperature()
+            self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+            self.for_headers_list.append(self.temperatura)
+        except Exception as e:
+            print("Exception self.temperatura -> {}".format(e))
 
         print("\n\n")
         print("self.for_headers_list  = " + str(self.for_headers_list))
@@ -263,6 +270,9 @@ class SThread(QtCore.QThread):
 
     def get_image_info(self):
         return self.img
+
+    def set_temperature(self, temperature):
+        temperature = self.temperatura
 
     def filter_wheel_control(self, wish_filter_int):
         try:
