@@ -40,6 +40,7 @@ class SThread(QtCore.QThread):
 
         self.get_image_tif = None
         self.get_image_fit = None
+        self.get_image_png = None
 
         self.img = None
 
@@ -113,12 +114,18 @@ class SThread(QtCore.QThread):
                 self.get_ignore_crop = True
 
             try:
-                self.get_image_tif = info_image[7]
+                self.get_image_png = info_image[7]
+            except Exception as e:
+                print("self.get_image_png  = True -> {}".format(e))
+                self.get_image_png  = True
+
+            try:
+                self.get_image_tif = info_image[8]
             except Exception as e:
                 print("self.get_image_tif = True -> {}".format(e))
                 self.get_image_fit = True
             try:
-                self.get_image_fit = info_image[8]
+                self.get_image_fit = info_image[9]
             except Exception as e:
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
@@ -199,8 +206,8 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(self.get_axis_yi)
         self.for_headers_list.append(self.get_axis_yf)
         self.for_headers_list.append(self.get_ignore_crop)
-        self.for_headers_list.append(self.get_image_tif)
-        self.for_headers_list.append(self.get_image_fit)
+        # self.for_headers_list.append(self.get_image_tif)
+        # self.for_headers_list.append(self.get_image_fit)
 
         project_infos = get_project_settings()
 
@@ -231,18 +238,26 @@ class SThread(QtCore.QThread):
         print("self.for_headers_list  = " + str(self.for_headers_list))
         print("\n\n")
 
-        try:
-            save_png(self.img, image_name, self.for_headers_list)
-        except Exception as e:
-            print("Exception save_png() -> {}".format(e))
-        try:
-            save_tif(self.img, image_name)
-        except Exception as e:
-            print("Exception save_tif() -> {}".format(e))
-        try:
-            save_fit(self.img, image_name, self.for_headers_list)
-        except Exception as e:
-            print("Exception save_fit() -> {}".format(e))
+        if self.get_image_png:
+            try:
+                save_png(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_png() -> {}".format(e))
+        elif self.get_image_tif:
+            try:
+                save_tif(self.img, image_name)
+            except Exception as e:
+                print("Exception save_tif() -> {}".format(e))
+        elif self.get_image_tif:
+            try:
+                save_fit(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_fit() -> {}".format(e))
+        else:
+            try:
+                save_png(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_png() -> {}".format(e))
 
         try:
             data, hora = get_date_hour(tempo)

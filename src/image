@@ -6,5 +6,6 @@ crop_xf=
 crop_yi=
 crop_yf=
 ignore_crop=true
-image_tif=false
+image_tif=true
 image_fit=true
+image_png=true

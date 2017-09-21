@@ -16,7 +16,7 @@ class SettingsImage:
         self._settings.sync()
 
     def set_image_settings(self, get_level1, get_level2, crop_xi, crop_xf, crop_yi, crop_yf,
-                           ignore_crop, image_tif, image_fit):
+                           ignore_crop, image_png, image_tif, image_fit):
         """
         :param get_level1:
         :param get_level2:
@@ -25,6 +25,7 @@ class SettingsImage:
         :param crop_yi:
         :param crop_yf:
         :param ignore_crop:
+        :param image_png:
         :param image_tif:
         :param image_fit:
         :return:
@@ -36,6 +37,7 @@ class SettingsImage:
         self._settings.setValue(i.CROP_Y_AXIS_YI, crop_yi)
         self._settings.setValue(i.CROP_Y_AXIS_YF, crop_yf)
         self._settings.setValue(i.CHEBOX_IGNORE_CROP, ignore_crop)
+        self._settings.setValue(i.CHEBOX_IMAGE_PNG, image_png)
         self._settings.setValue(i.CHEBOX_IMAGE_TIF, image_tif)
         self._settings.setValue(i.CHEBOX_IMAGE_FIT, image_fit)
 
@@ -47,6 +49,7 @@ class SettingsImage:
                self._settings.value(i.CROP_Y_AXIS_YI), \
                self._settings.value(i.CROP_Y_AXIS_YF), \
                self._settings.value(i.CHEBOX_IGNORE_CROP, True, type=bool), \
+               self._settings.value(i.CHEBOX_IMAGE_PNG, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_TIF, True, type=bool), \
                self._settings.value(i.CHEBOX_IMAGE_FIT, True, type=bool)
 
