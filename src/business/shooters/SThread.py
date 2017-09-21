@@ -133,6 +133,7 @@ class SThread(QtCore.QThread):
                 self.get_image_fit = True
             try:
                 self.filter_split_label = get_filter_settings()
+
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -147,16 +148,19 @@ class SThread(QtCore.QThread):
 
         try:
             if self.count_aux < len(my_list):
+
                 index_of_dic = str(my_list[self.count_aux])
 
                 aux = self.filter_split_label[str(index_of_dic)][0]
                 self.for_headers_list.append(aux)
 
                 aux = list(aux)
-                # aux[0] = self.prefix
-                # aux[2] = self.exposure_time
-                # aux[3] = self.binning
-                # aux[4] = wish filter
+                '''
+                aux[0] = self.prefix
+                aux[2] = self.exposure_time
+                aux[3] = self.binning
+                aux[4] = wish filter
+                '''
 
                 self.prefix = str(aux[0])
 
@@ -244,7 +248,7 @@ class SThread(QtCore.QThread):
                 save_tif(self.img, image_name)
             except Exception as e:
                 print("Exception save_tif() -> {}".format(e))
-        elif self.get_image_tif:
+        elif self.get_image_fit:
             try:
                 save_fit(self.img, image_name, self.for_headers_list)
             except Exception as e:
