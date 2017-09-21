@@ -5,8 +5,8 @@ import comtypes.gen.INTEGMOTORINTERFACELib
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QGuiApplication
 
-from src.utils.rodafiltros import Leitura_portas
 from src.utils.Singleton import Singleton
+from src.utils.rodafiltros import Leitura_portas
 
 
 class FilterControl(metaclass=Singleton):

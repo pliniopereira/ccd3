@@ -1,10 +1,6 @@
-from PIL import Image
-from io import StringIO
-import io
-
 import os
-import sys
-import unicodedata
+
+from PIL import Image
 
 
 def str_to_raw(s):

@@ -9,10 +9,10 @@ from src.controller.cameraQThread import CameraQThread
 from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.mainWindow.status import Status
+from src.utils.Singleton import Singleton
 from src.utils.camera.SbigDriver import (ccdinfo, set_temperature, get_temperature,
                                          establishinglink, open_deviceusb, open_driver,
                                          close_device, close_driver, getlinkstatus)
-from src.utils.Singleton import Singleton
 
 
 class Camera(metaclass=Singleton):

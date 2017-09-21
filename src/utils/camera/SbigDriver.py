@@ -7,7 +7,6 @@ import numpy as np
 
 from src.utils.camera import SbigLib
 from src.utils.camera import SbigStructures
-from src.utils.camera.Image_Processing import get_date_hour
 
 """Faz a comunicação do software com a camera sbig, os comandos vem da classe camera.main."""
 

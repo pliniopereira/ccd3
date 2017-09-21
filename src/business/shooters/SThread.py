@@ -328,12 +328,26 @@ class SThread(QtCore.QThread):
 
             image_name = path + str(self.prefix) + "_" + str(tempo)
 
-            save_png(self.img, image_name)
-            save_tif(self.img, image_name)
-            try:
-                save_fit(self.img, image_name)
-            except Exception as e:
-                print("Exception save_fit() -> {}".format(e))
+            if self.get_image_png:
+                try:
+                    save_png(self.img, image_name, self.for_headers_list)
+                except Exception as e:
+                    print("Exception save_png() -> {}".format(e))
+            elif self.get_image_tif:
+                try:
+                    save_tif(self.img, image_name)
+                except Exception as e:
+                    print("Exception save_tif() -> {}".format(e))
+            elif self.get_image_fit:
+                try:
+                    save_fit(self.img, image_name, self.for_headers_list)
+                except Exception as e:
+                    print("Exception save_fit() -> {}".format(e))
+            else:
+                try:
+                    save_png(self.img, image_name, self.for_headers_list)
+                except Exception as e:
+                    print("Exception save_png() -> {}".format(e))
 
             self.info = self.img
             try:

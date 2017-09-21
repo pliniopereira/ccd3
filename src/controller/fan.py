@@ -2,8 +2,8 @@ from threading import Thread
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.controller.commons.Locker import Locker
-from src.utils.camera import SbigDriver
 from src.utils.Singleton import Singleton
+from src.utils.camera import SbigDriver
 
 
 class Fan(metaclass=Singleton):

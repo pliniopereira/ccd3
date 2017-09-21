@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 
-from src.business.filters.constants import filters as f
 from src.business.consoleThreadOutput import ConsoleThreadOutput
+from src.business.filters.constants import filters as f
 
 
 class SettingsFilters:
