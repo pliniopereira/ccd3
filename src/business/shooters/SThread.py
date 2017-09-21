@@ -42,6 +42,8 @@ class SThread(QtCore.QThread):
         self.get_image_fit = None
         self.get_image_png = None
 
+        self.temperatura = None
+
         self.img = None
 
         self.for_headers_list = []
@@ -206,8 +208,6 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(self.get_axis_yi)
         self.for_headers_list.append(self.get_axis_yf)
         self.for_headers_list.append(self.get_ignore_crop)
-        # self.for_headers_list.append(self.get_image_tif)
-        # self.for_headers_list.append(self.get_image_fit)
 
         project_infos = get_project_settings()
 
@@ -233,10 +233,6 @@ class SThread(QtCore.QThread):
             self.for_headers_list.append(self.temperatura)
         except Exception as e:
             print("Exception self.temperatura -> {}".format(e))
-
-        print("\n\n")
-        print("self.for_headers_list  = " + str(self.for_headers_list))
-        print("\n\n")
 
         if self.get_image_png:
             try:
@@ -285,9 +281,6 @@ class SThread(QtCore.QThread):
 
     def get_image_info(self):
         return self.img
-
-    def set_temperature(self, temperature):
-        temperature = self.temperatura
 
     def filter_wheel_control(self, wish_filter_int):
         try:
