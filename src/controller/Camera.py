@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import sleep
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
@@ -227,6 +228,7 @@ class Camera(metaclass=Singleton):
         try:
             if getlinkstatus() is True:
                 self.shooter_mode()
+                self.start_dark_sthread()
                 self.continuousShooterThread.start_continuous_shooter()
                 self.continuousShooterThread.start()
             else:
@@ -235,10 +237,15 @@ class Camera(metaclass=Singleton):
             self.console.raise_text("Error start_taking_photo! {}".format(e), 3)
 
     def stop_taking_photo(self):
-        if getlinkstatus() is True:
-            self.continuousShooterThread.stop_continuous_shooter()
-        else:
-            self.console.raise_text("The camera is not connected!", 3)
+        try:
+            self.start_dark_sthread()
+        except Exception as e:
+            self.console.raise_text("Error stop_taking_photo(start_dark_sthread)! {}".format(e), 3)
+        finally:
+            if getlinkstatus() is True:
+                self.continuousShooterThread.stop_continuous_shooter()
+            else:
+                self.console.raise_text("The camera is not connected!", 3)
 
     def start_ephemeris_shooter(self):
         if getlinkstatus() is True:
@@ -312,3 +319,13 @@ class Camera(metaclass=Singleton):
 
     def eita(self):
         self.console.raise_text(self.commands.text, 1)
+
+    def start_dark_sthread(self):
+        try:
+            self.console.raise_text("Taking dark photo N: {}".format(self.count_dark), 1)
+            self.dark_sthread.start()
+            while self.dark_sthread.isRunning():
+                sleep(1)
+        except Exception as e:
+            print("Error start_dark_sthread! {}".format(e))
+            self.console.raise_text("Error start_dark_sthread! {}".format(e), 3)
