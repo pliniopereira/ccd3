@@ -4,6 +4,7 @@ from PyQt5 import QtCore
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.SThread import SThread
+from src.business.shooters.Dark_SThread import Dark_SThread
 
 
 class ContinuousShooterThread(QtCore.QThread):
@@ -19,6 +20,9 @@ class ContinuousShooterThread(QtCore.QThread):
         # SThread manda para o Sbigdriver as informações para se tirar a foto em si.
 
         self.ss = SThread()
+        self.dark_sthread = Dark_SThread()
+        self.dark_sthread.started.connect(self.dark_thread_iniciada)
+
         self.ss.started.connect(self.thread_iniciada)
         self.console = ConsoleThreadOutput()
         self.count = 0
@@ -29,18 +33,29 @@ class ContinuousShooterThread(QtCore.QThread):
 
     def run(self):
         self.count = 1
-        while self.continuous:
-            try:
-                self.signal_temp.emit()
-                if self.wait_temperature:
-                    self.ss.start()
-                    while self.ss.isRunning():
-                        time.sleep(1)
-            except Exception as e:
-                print(e)
-
-            time.sleep(1)
-            self.signalAfterShooting.emit()
+        try:
+            self.dark_sthread.start()
+            while self.dark_sthread.isRunning():
+                time.sleep(1)
+            else:
+                self.count = 1
+                while self.continuous:
+                    try:
+                        self.signal_temp.emit()
+                        if self.wait_temperature:
+                            self.ss.start()
+                            while self.ss.isRunning():
+                                time.sleep(1)
+                    except Exception as e:
+                        print(e)
+                    finally:
+                        self.dark_sthread.start()
+                        while self.dark_sthread.isRunning():
+                            time.sleep(1)
+                    time.sleep(1)
+                    self.signalAfterShooting.emit()
+        except Exception as e:
+            print("Exception dark_sthread ->" + str(e))
 
     def start_continuous_shooter(self):
         self.continuous = True
@@ -63,14 +78,7 @@ class ContinuousShooterThread(QtCore.QThread):
     def thread_iniciada(self):
         self.console.raise_text("Taking photo N: {}".format(self.count), 1)
         self.count += 1
-        # if self.one_photo:
-        #     self.console.raise_text("Taking photo", 1)
-        #     self.stop_one_photo()
-        # elif not self.one_photo:
-        #     self.console.raise_text("Taking dark photo", 1)
-        #     self.ss.take_dark()
-        #     self.count += 1
-        #     self.not_two_dark = False
-        # else:
-        #     self.console.raise_text("Taking photo N: {}".format(self.count), 1)
-        #     self.count += 1
+
+    def dark_thread_iniciada(self):
+        self.console.raise_text("Taking dark photo N: {}".format(self.count), 1)
+        self.count += 1

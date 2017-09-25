@@ -10,6 +10,8 @@ from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.mainWindow.status import Status
 from src.utils.Singleton import Singleton
+from src.business.shooters.Dark_SThread import Dark_SThread
+
 from src.utils.camera.SbigDriver import (ccdinfo, set_temperature, get_temperature,
                                          establishinglink, open_deviceusb, open_driver,
                                          close_device, close_driver, getlinkstatus)
@@ -41,6 +43,8 @@ class Camera(metaclass=Singleton):
         self.ephemerisShooterThread = EphemerisShooter()  # executa o modo automatico ephemerisShooterThread
 
         self.sthread = SThread()
+
+        self.dark_sthread = Dark_SThread()
 
         self.commands = CameraQThread(self)
         self.shooting = False

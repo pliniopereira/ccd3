@@ -101,9 +101,9 @@ def save_png(img, newname, headers):
     headers[10][2][2] = Imager ID
     headers[11] = CCD Temperature
     """
-    # print("\n\n- HEADERS -")
-    # for x in enumerate(headers):
-    #     print(str(x))
+    print("\n\n- HEADERS -")
+    for x in enumerate(headers):
+        print(str(x))
 
     newname_png = newname + ".png"
     img_png = img
@@ -126,7 +126,7 @@ def save_png(img, newname, headers):
             info.add_text('Filter Label: ', str(headers[1][0]))
             info.add_text('Filter Position: ', str(headers[1][4]))
             info.add_text('Filter Wavelength: ', str(headers[1][1]) + "nm")
-            info.add_text('Filter Wheel Temperature: ', '013')
+            info.add_text('Filter Wheel Temperature: ', '???')
             info.add_text('Image Type: ', 'PNG')
             info.add_text('Latitude: ', str(headers[10][0][0]))
             info.add_text('Longitude: ', str(headers[10][0][1]))

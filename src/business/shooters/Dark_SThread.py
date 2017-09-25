@@ -1,5 +1,4 @@
 import os
-import time
 from time import sleep
 
 from PyQt5 import QtCore
@@ -7,7 +6,6 @@ from PyQt5 import QtCore
 from src.business.models.image import Image
 from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
     get_project_settings, get_filter_settings
-# from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
@@ -15,7 +13,7 @@ from src.utils.camera.Image_Processing import save_png, save_tif, save_fit, get_
 from src.utils.rodafiltros.FilterControl import FilterControl
 
 
-class SThread(QtCore.QThread):
+class Dark_SThread(QtCore.QThread):
     """
     Threads são fluxos de programas que executam em paralelo dentro de uma aplicação, isto é,\
     uma ramificação de uma parte da aplicação que é executada de forma independente e\
@@ -24,7 +22,7 @@ class SThread(QtCore.QThread):
     """
 
     def __init__(self):
-        super(SThread, self).__init__()
+        super(Dark_SThread, self).__init__()
         self.prefix = None
         self.exposure_time = None
         self.binning = None
@@ -145,6 +143,8 @@ class SThread(QtCore.QThread):
         self.lock.set_acquire()
 
         my_list = get_wish_filters_settings()  # list of schedule
+        my_list = set(my_list)
+        my_list = sorted(my_list)
 
         try:
             if self.count_aux < len(my_list):
@@ -152,15 +152,7 @@ class SThread(QtCore.QThread):
                 index_of_dic = str(my_list[self.count_aux])
 
                 aux = self.filter_split_label[str(index_of_dic)][0]
-                print("\n\n")
-                print("aux")
-                print(aux)
-                print("\n\n")
-
-                try:
-                    self.for_headers_list.append(aux)
-                except Exception as e:
-                    print("Try append(aux) -> {}".format(e))
+                self.for_headers_list.append(aux)
 
                 aux = list(aux)
                 '''
@@ -187,29 +179,6 @@ class SThread(QtCore.QThread):
 
                 self.filter_wheel_control(int(aux[4]))
 
-            else:
-                self.count_aux = 1
-                index_of_dic = str(my_list[self.count_aux])
-                aux = self.filter_split_label[str(index_of_dic)][0]
-                self.for_headers_list.append(aux)
-
-                self.prefix = str(aux[0])
-                self.exposure_time = float(aux[2])
-                self.binning = int(aux[3])
-
-                self.exposure_time = float(aux[2])
-                if self.exposure_time <= 0.12:
-                    self.exposure_time = 0.12 * 100
-                elif self.exposure_time >= 3600:
-                    self.exposure_time = 3600 * 100
-                else:
-                    self.exposure_time = float(aux[2]) * 100
-                self.exposure_time = int(self.exposure_time)
-
-                self.filter_wheel_control(aux[4])
-
-                self.count_aux += 1
-
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
@@ -227,10 +196,10 @@ class SThread(QtCore.QThread):
 
         path, tempo = set_path()
 
-        image_name = path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
+        image_name = path + "DARK-" + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
 
         try:
-            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
+            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
         except Exception as e:
             print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
@@ -303,67 +272,3 @@ class SThread(QtCore.QThread):
         except Exception as e:
             self.roda_filtros.home_reset()
             print(e)
-
-    # def take_dark(self):
-    #     """
-    #     Manda instrução para o SbigDriver para tirar uma foto dark(shooter fechado)\
-    #     com os valores na info[]
-    #     """
-    #     try:
-    #         # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
-    #         #                                   self.get_level1, self.get_level2, self.get_axis_xi,
-    #         # self.get_axis_xf,
-    #         #                                   self.get_axis_yi, self.get_axis_yf,
-    #         #                                   self.get_ignore_crop,
-    #         #                                   self.get_image_tif, self.get_image_fit)
-    #         self.set_config_take_image()
-    #         self.lock.set_acquire()
-    #         try:
-    #             print("\n\n")
-    #             print("self.exposure_time = " + str(self.exposure_time))
-    #             print("self.binning = " + str(self.binning))
-    #             print("self.dark_photo = " + str(self.dark_photo))
-    #             print("\n\n")
-    #
-    #             self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
-    #         except Exception as e:
-    #             print(e)
-    #
-    #         path, tempo = set_path()
-    #
-    #         if not os.path.isdir(path):
-    #             os.makedirs(path)
-    #
-    #         image_name = path + str(self.prefix) + "_" + str(tempo)
-    #
-    #         if self.get_image_png:
-    #             try:
-    #                 save_png(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_png() -> {}".format(e))
-    #         elif self.get_image_tif:
-    #             try:
-    #                 save_tif(self.img, image_name)
-    #             except Exception as e:
-    #                 print("Exception save_tif() -> {}".format(e))
-    #         elif self.get_image_fit:
-    #             try:
-    #                 save_fit(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_fit() -> {}".format(e))
-    #         else:
-    #             try:
-    #                 save_png(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_png() -> {}".format(e))
-    #
-    #         self.info = self.img
-    #         try:
-    #             self.init_image()
-    #         except Exception as e:
-    #             print("run init_image() -> {}".format(e))
-    #     except Exception as e:
-    #         print("run take_dark ERROR -> {}".format(e))
-    #     finally:
-    #         time.sleep(1)
-    #         self.lock.set_release()
