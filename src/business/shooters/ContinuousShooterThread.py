@@ -21,6 +21,8 @@ class ContinuousShooterThread(QtCore.QThread):
 
         self.ss = SThread()
 
+        self.dark_sthread = Dark_SThread()
+
         self.ss.started.connect(self.thread_iniciada)
         self.console = ConsoleThreadOutput()
         self.count = 0
@@ -36,6 +38,9 @@ class ContinuousShooterThread(QtCore.QThread):
                 try:
                     self.signal_temp.emit()
                     if self.wait_temperature:
+                        if self.count <= 1:
+                            self.console.raise_text("Taking dark photo", 1)
+                            self.start_dark_sthread()
                         self.ss.start()
                         while self.ss.isRunning():
                             time.sleep(1)
@@ -50,12 +55,11 @@ class ContinuousShooterThread(QtCore.QThread):
         self.continuous = True
 
     def stop_continuous_shooter(self):
+        self.start_dark_sthread()
         self.wait_temperature = False
         self.continuous = False
         self.not_two_dark = False
         # self.console.raise_text("Taking dark photo", 1)
-        # self.ss.take_dark()
-        time.sleep(1)
         self.count = 1
 
     def stop_one_photo(self):
@@ -67,3 +71,13 @@ class ContinuousShooterThread(QtCore.QThread):
     def thread_iniciada(self):
         self.console.raise_text("Taking photo N: {}".format(self.count), 1)
         self.count += 1
+
+    def start_dark_sthread(self):
+        try:
+            self.console.raise_text("Taking dark photo")
+            self.dark_sthread.start()
+            while self.dark_sthread.isRunning():
+                time.sleep(1)
+        except Exception as e:
+            print("Error start_dark_sthread! {}".format(e))
+            self.console.raise_text("Error start_dark_sthread! {}".format(e), 3)
