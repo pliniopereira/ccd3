@@ -263,6 +263,7 @@ class Dark_SThread(QtCore.QThread):
         try:
             sleep(1)
             wish_filter_int = int(wish_filter_int)
+            self.roda_filtros.close_shutter()
             self.roda_filtros.filter_wheel_control(wish_filter_int)
             sleep(1)
         except Exception as e:

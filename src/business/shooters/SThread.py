@@ -141,6 +141,7 @@ class SThread(QtCore.QThread):
             print("Try ini definitive -> {}".format(e))
 
     def run(self):
+        self.roda_filtros.open_shutter()
         self.set_config_take_image()
         self.lock.set_acquire()
 
@@ -152,10 +153,6 @@ class SThread(QtCore.QThread):
                 index_of_dic = str(my_list[self.count_aux])
 
                 aux = self.filter_split_label[str(index_of_dic)][0]
-                print("\n\n")
-                print("aux")
-                print(aux)
-                print("\n\n")
 
                 try:
                     self.for_headers_list.append(aux)
@@ -303,67 +300,3 @@ class SThread(QtCore.QThread):
         except Exception as e:
             self.roda_filtros.home_reset()
             print(e)
-
-    # def take_dark(self):
-    #     """
-    #     Manda instrução para o SbigDriver para tirar uma foto dark(shooter fechado)\
-    #     com os valores na info[]
-    #     """
-    #     try:
-    #         # self.info = SbigDriver.photoshoot(self.exposure_time, self.prefix, self.binning, self.dark_photo,
-    #         #                                   self.get_level1, self.get_level2, self.get_axis_xi,
-    #         # self.get_axis_xf,
-    #         #                                   self.get_axis_yi, self.get_axis_yf,
-    #         #                                   self.get_ignore_crop,
-    #         #                                   self.get_image_tif, self.get_image_fit)
-    #         self.set_config_take_image()
-    #         self.lock.set_acquire()
-    #         try:
-    #             print("\n\n")
-    #             print("self.exposure_time = " + str(self.exposure_time))
-    #             print("self.binning = " + str(self.binning))
-    #             print("self.dark_photo = " + str(self.dark_photo))
-    #             print("\n\n")
-    #
-    #             self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
-    #         except Exception as e:
-    #             print(e)
-    #
-    #         path, tempo = set_path()
-    #
-    #         if not os.path.isdir(path):
-    #             os.makedirs(path)
-    #
-    #         image_name = path + str(self.prefix) + "_" + str(tempo)
-    #
-    #         if self.get_image_png:
-    #             try:
-    #                 save_png(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_png() -> {}".format(e))
-    #         elif self.get_image_tif:
-    #             try:
-    #                 save_tif(self.img, image_name)
-    #             except Exception as e:
-    #                 print("Exception save_tif() -> {}".format(e))
-    #         elif self.get_image_fit:
-    #             try:
-    #                 save_fit(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_fit() -> {}".format(e))
-    #         else:
-    #             try:
-    #                 save_png(self.img, image_name, self.for_headers_list)
-    #             except Exception as e:
-    #                 print("Exception save_png() -> {}".format(e))
-    #
-    #         self.info = self.img
-    #         try:
-    #             self.init_image()
-    #         except Exception as e:
-    #             print("run init_image() -> {}".format(e))
-    #     except Exception as e:
-    #         print("run take_dark ERROR -> {}".format(e))
-    #     finally:
-    #         time.sleep(1)
-    #         self.lock.set_release()

@@ -83,7 +83,7 @@ class SettingsImageWindow(QtWidgets.QWidget):
         try:
             ret = tuple(ccdinfo())
         except Exception as e:
-            self.console.raise_text("Failed to get camera information.\n{}".format(e))
+            print("Failed to get camera information.\n{}".format(e))
         finally:
             self.lock.set_release()
 

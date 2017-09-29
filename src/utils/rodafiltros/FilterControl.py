@@ -45,6 +45,10 @@ class FilterControl(metaclass=Singleton):
                     self.connect_state = True
                     self.motor_door = serial_list[count]
 
+                    print("Close Shutter")
+                    self.close_shutter()
+                    self.shutter_open = False
+
                     print("Home Reset")
                     self.home_reset()
 
@@ -54,17 +58,21 @@ class FilterControl(metaclass=Singleton):
 
     def open_shutter(self):
         try:
-            self.CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
-            sleep(1)
-            self.shutter_open = True
+            if not self.shutter_open:
+                print("1")
+                self.CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
+                sleep(1)
+                self.shutter_open = True
         except Exception as e:
             print("Open Shutter ERROR -> {}".format(e))
 
     def close_shutter(self):
         try:
-            self.CommInterface.WriteCommand("UB=0")
-            sleep(1)
-            self.shutter_open = False
+            if self.shutter_open:
+                print("2")
+                self.CommInterface.WriteCommand("UB=0")
+                sleep(1)
+                self.shutter_open = False
         except Exception as e:
             print("Close Shutter ERROR -> {}".format(e))
 
@@ -74,6 +82,8 @@ class FilterControl(metaclass=Singleton):
         self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
         # Make an SMIMotor object
         motor = self.CommInterface.GetMotor(1)
+
+        self.close_shutter()
 
         # GOSUB5 - SMARTMOTOR
         try:

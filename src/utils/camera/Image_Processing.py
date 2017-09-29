@@ -101,9 +101,9 @@ def save_png(img, newname, headers):
     headers[10][2][2] = Imager ID
     headers[11] = CCD Temperature
     """
-    print("\n\n- HEADERS -")
-    for x in enumerate(headers):
-        print(str(x))
+    # print("\n\n- HEADERS -")
+    # for x in enumerate(headers):
+    #     print(str(x))
 
     newname_png = newname + ".png"
     img_png = img
