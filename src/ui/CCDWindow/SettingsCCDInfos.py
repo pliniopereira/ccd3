@@ -77,9 +77,14 @@ class SettingsCCDInfos(QWidget):
         self.lock = Locker()
 
         try:
-            self.firmware, self.model, self.y_pixels, self.x_pixels = \
-                self.cam.get_firmware_and_model_and_pixels()
+            if getlinkstatus() is True:
+                self.firmware, self.model, self.y_pixels, self.x_pixels = \
+                    self.cam.get_firmware_and_model_and_pixels()
+            else:
+                self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
+                                                                          "????", "????"
         except Exception as e:
+            print("CCDInfos get_firmware_and_model_and_pixels -> {}".format(e))
             self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
                                                                       "????", "????"
 

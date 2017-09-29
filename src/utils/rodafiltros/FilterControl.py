@@ -47,7 +47,6 @@ class FilterControl(metaclass=Singleton):
 
                     print("Close Shutter")
                     self.close_shutter()
-                    self.shutter_open = False
 
                     print("Home Reset")
                     self.home_reset()
@@ -59,7 +58,6 @@ class FilterControl(metaclass=Singleton):
     def open_shutter(self):
         try:
             if not self.shutter_open:
-                print("1")
                 self.CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
                 sleep(1)
                 self.shutter_open = True
@@ -69,7 +67,6 @@ class FilterControl(metaclass=Singleton):
     def close_shutter(self):
         try:
             if self.shutter_open:
-                print("2")
                 self.CommInterface.WriteCommand("UB=0")
                 sleep(1)
                 self.shutter_open = False
