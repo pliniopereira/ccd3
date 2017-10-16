@@ -185,7 +185,7 @@ class SThread(QtCore.QThread):
                 self.filter_wheel_control(int(aux[4]))
 
             else:
-                self.count_aux = 1
+                self.count_aux = 0
                 index_of_dic = str(my_list[self.count_aux])
                 aux = self.filter_split_label[str(index_of_dic)][0]
                 self.for_headers_list.append(aux)
@@ -237,8 +237,9 @@ class SThread(QtCore.QThread):
         self.for_headers_list.append(tempo)
         self.for_headers_list.append(project_infos)
         try:
-            self.temperatura = SbigDriver.get_temperature()
-            self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+            # self.temperatura = SbigDriver.get_temperature()
+            # self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+            self.temperatura = "25"
             self.for_headers_list.append(self.temperatura)
         except Exception as e:
             print("Exception self.temperatura -> {}".format(e))

@@ -5,12 +5,14 @@ import comtypes.gen.INTEGMOTORINTERFACELib
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QGuiApplication
 
+# from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.utils.Singleton import Singleton
 from src.utils.rodafiltros import Leitura_portas
 
 
 class FilterControl(metaclass=Singleton):
     def __init__(self):
+        # self.console = ConsoleThreadOutput()
         self.smi = None
         self.CommInterface = None
         self.motor_door = None
@@ -41,14 +43,16 @@ class FilterControl(metaclass=Singleton):
                 answer = self.CommInterface.ReadResponse()
                 if answer == 'SHTR:???':
                     print(serial_list[count] + " - Established a link to Motors!\n")
+                    # self.console.raise_text(str(serial_list[count]) + " - Established a link to Motors!\n", 1)
+
                     self.smi.QueryInterface(comtypes.gen.INTEGMOTORINTERFACELib.ISMIComm)
                     self.connect_state = True
                     self.motor_door = serial_list[count]
 
-                    print("Close Shutter")
+                    print("Shutter has been closed.")
+                    # self.console.raise_text("Shutter has been closed.", 1)
                     self.close_shutter()
 
-                    print("Home Reset")
                     self.home_reset()
 
                     break
@@ -58,6 +62,7 @@ class FilterControl(metaclass=Singleton):
     def open_shutter(self):
         try:
             if not self.shutter_open:
+                # self.console.raise_text("Shutter has been opened.", 1)
                 self.CommInterface.WriteCommand("UB=1")  # Make sure shutter is in the closed state
                 sleep(1)
                 self.shutter_open = True
@@ -66,6 +71,7 @@ class FilterControl(metaclass=Singleton):
 
     def close_shutter(self):
         try:
+            # self.console.raise_text("Shutter has been closed.", 1)
             if self.shutter_open:
                 self.CommInterface.WriteCommand("UB=0")
                 sleep(1)
@@ -74,13 +80,15 @@ class FilterControl(metaclass=Singleton):
             print("Close Shutter ERROR -> {}".format(e))
 
     def home_reset(self):
+        self.close_shutter()
+
+        # self.console.raise_text("Instrument has been reset. Waiting for HOME position", 1)
+
         QGuiApplication.setOverrideCursor(Qt.WaitCursor)
 
         self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
         # Make an SMIMotor object
         motor = self.CommInterface.GetMotor(1)
-
-        self.close_shutter()
 
         # GOSUB5 - SMARTMOTOR
         try:
@@ -159,7 +167,7 @@ class FilterControl(metaclass=Singleton):
             print("Home reset ERROR -> {}".format(e))
         finally:
             QGuiApplication.restoreOverrideCursor()
-            print("Filter position: " + str(h_position))
+            # self.console.raise_text("Instrument HOME position has been found.", 1)
 
     def get_current_filter(self):
         if self.connect_state:
@@ -181,6 +189,7 @@ class FilterControl(metaclass=Singleton):
         self.CommInterface.ClosePort()
 
     def filter_wheel_control(self, filter_number):
+        # self.console.raise_text("Changing to filter #" + str(filter_number), 1)
         QGuiApplication.setOverrideCursor(Qt.WaitCursor)
 
         self.CommInterface.AddressMotorChain()  # Address SmartMotors in the RS232 daisy chain
@@ -250,7 +259,7 @@ class FilterControl(metaclass=Singleton):
         self.CommInterface.WriteCommand("O=h*3333")  # And reset the present origin
         self.CommInterface.WriteCommand("END")
 
-        print("Filter position: " + str(filter_number))
+        # self.console.raise_text("Filter position #" + str(filter_number), 1)
 
         QGuiApplication.restoreOverrideCursor()
 

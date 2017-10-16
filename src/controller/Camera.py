@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from time import sleep
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.ContinuousShooterThread import ContinuousShooterThread
+from src.business.shooters.Dark_SThread import Dark_SThread
 from src.business.shooters.EphemerisShooter import EphemerisShooter
 from src.business.shooters.SThread import SThread
 from src.controller.cameraQThread import CameraQThread
@@ -11,11 +11,10 @@ from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.mainWindow.status import Status
 from src.utils.Singleton import Singleton
-from src.business.shooters.Dark_SThread import Dark_SThread
-
 from src.utils.camera.SbigDriver import (ccdinfo, set_temperature, get_temperature,
                                          establishinglink, open_deviceusb, open_driver,
                                          close_device, close_driver, getlinkstatus)
+# from src.utils.rodafiltros.FilterControl import FilterControl
 
 
 class Camera(metaclass=Singleton):
@@ -64,6 +63,8 @@ class Camera(metaclass=Singleton):
         self.temp = 0
         self.temp_contador = 0
         self.temp_contador_manual = 0
+
+        # self.roda_filtros = FilterControl()
 
     def init_slots(self):
         # Ephemeris Shooter Slots
@@ -205,6 +206,7 @@ class Camera(metaclass=Singleton):
     def standby_mode(self):
         self.set_temperature(15.00)
         self.fan.set_fan_off()
+        # self.roda_filtros.home_reset()
 
     def shooter_mode(self):
         info_ini = self.get_camera_settings_ini()
@@ -215,7 +217,6 @@ class Camera(metaclass=Singleton):
 
     # Shooters
     def start_one_photo(self):
-
         try:
             self.continuousShooterThread.one_photo = True
             self.continuousShooterThread.wait_temperature = True
@@ -278,7 +279,6 @@ class Camera(metaclass=Singleton):
         self.temp_contador_manual = 0
         self.shooting = False
 
-
     # Commands Slots
     def check_temp_manual(self):
         # funcao que espera temperatura setada ou tempo pre-determinado
@@ -306,7 +306,6 @@ class Camera(metaclass=Singleton):
             if self.temp <= int(self.aux_temperature) or now >= self.now_plus_10:
                 self.ephemerisShooterThread.wait_temperature = True
                 self.ephemerisShooterThread.continuousShooterThread.wait_temperature = True
-
                 self.temp_contador = 0
         except Exception as e:
             print(e)

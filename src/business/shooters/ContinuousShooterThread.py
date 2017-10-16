@@ -74,7 +74,6 @@ class ContinuousShooterThread(QtCore.QThread):
 
     def start_dark_sthread(self):
         try:
-            self.console.raise_text("Taking dark photo")
             self.dark_sthread.start()
             while self.dark_sthread.isRunning():
                 time.sleep(1)

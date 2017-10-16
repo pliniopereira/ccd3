@@ -1,13 +1,13 @@
 [General]
-label_filter1=1O6
+label_filter1=O6
 wavelength_filter1="OI 630,0 nm  "
 exposure_filter1=9
 binning_filter1=1
-label_filter2=2OH
+label_filter2=OH
 wavelength_filter2=OH NIR 840 nm
-exposure_filter2=1
+exposure_filter2=5
 binning_filter2=1
-label_filter3=3O5
+label_filter3=O5
 wavelength_filter3="OI 557,7 nm"
 exposure_filter3=9
 binning_filter3=1

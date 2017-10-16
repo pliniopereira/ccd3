@@ -204,8 +204,9 @@ class Dark_SThread(QtCore.QThread):
             self.for_headers_list.append(tempo)
             self.for_headers_list.append(project_infos)
             try:
-                self.temperatura = SbigDriver.get_temperature()
-                self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+                # self.temperatura = SbigDriver.get_temperature()
+                # self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+                self.temperatura = "25"
                 self.for_headers_list.append(self.temperatura)
             except Exception as e:
                 print("Exception self.temperatura -> {}".format(e))
