@@ -8,7 +8,6 @@ from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 
 def save_fit(img_to_fit, newname, headers):
 
-    img_fit = img_to_fit
     newname_fit = newname
     newname_fit += ".fit"
 
@@ -16,13 +15,13 @@ def save_fit(img_to_fit, newname, headers):
     try:
         day_hour = get_date_hour_image_for_headers(str(headers[9]))
         # Abrindo o arquivo
-        fits.writeto(newname_fit, img_fit)
+        fits.writeto(newname_fit, img_to_fit)
         with fits.open(newname_fit, mode='update') as fits_file:
             fits_file[0].header["DATE"] = str(day_hour)
             fits_file[0].header["DPI"] = "???"
             fits_file[0].header["BINNING"] = str(headers[1][3])
             fits_file[0].header["BIT-DEP"] = "???"
-            fits_file[0].header["CCD-TEMP"] = str(headers[11]) + " Graus"
+            fits_file[0].header["CCD-TEMP"] = str(headers[11]) + "graus"
             fits_file[0].header["CCDSTEMP"] = str(headers[0][0])
             fits_file[0].header["CCDTYPE"] = str(headers[10][2][2])
             fits_file[0].header["EXPOSURE"] = str(headers[1][2]) + "000 ms"
@@ -116,29 +115,27 @@ def save_png(img, newname, headers):
         day_hour = get_date_hour_image_for_headers(str(headers[9]))
 
         try:
-            info.add_text('dpi', '???')
             info.add_text('Binning: ', str(headers[1][3]))
-            info.add_text('Bit Depth: ', '???')
-            info.add_text('CCD Temperature: ', str(headers[11]))
-            info.add_text('CCD SET TEMP: ', str(headers[0][0]))
+            info.add_text('CCD Temperature: ', str(headers[11]) + u"\u00b0C")
+            info.add_text('CCD SET TEMP: ', str(headers[0][0]) + u"\u00b0C")
             info.add_text('CCD Type: ', str(headers[10][2][2]))
             info.add_text('Exposure: ', str(headers[1][2]) + "000 ms")
             info.add_text('Filter Label: ', str(headers[1][0]))
             info.add_text('Filter Position: ', str(headers[1][4]))
-            info.add_text('Filter Wavelength: ', str(headers[1][1]) + "nm")
-            info.add_text('Filter Wheel Temperature: ', '???')
+            info.add_text('Filter Wavelength: ', str(headers[1][1]))
+            info.add_text('Filter Wheel Temperature: ', "25" + u"\u00b0")
             info.add_text('Image Type: ', 'PNG')
-            info.add_text('Latitude: ', str(headers[10][0][0]))
-            info.add_text('Longitude: ', str(headers[10][0][1]))
+            info.add_text('Latitude: ', str(headers[10][0][0]) + u"\u00b0")
+            info.add_text('Longitude: ', str(headers[10][0][1]) + u"\u00b0")
             info.add_text('Elevation(m): ', str(headers[10][0][2]))
             info.add_text('Pressure(mb): ', str(headers[10][0][3]))
-            info.add_text('Moon Elevation: ', str(headers[10][1][2]) + "º")
-            info.add_text('Moon Phase: ', str(headers[10][1][3]))
+            info.add_text('Moon Elevation: ', str(headers[10][1][2]) + u"\u00b0")
+            info.add_text('Moon Phase: ', str(headers[10][1][3]) + "%")
             info.add_text('Shutter CCD: ', '024')
             info.add_text('Shutter Lenz: ', '025')
             info.add_text('Site ID: ', str(headers[10][2][1]))
             info.add_text('Start Time: ', str(day_hour))
-            info.add_text('Sun Elevation:', str(headers[10][1][0]) + "º")
+            info.add_text('Sun Elevation:', str(headers[10][1][0]) + u"\u00b0")
             info.add_text('Version: ', str(headers[10][2][0]))
         except Exception as e:
             print("info.add_text: " + e)

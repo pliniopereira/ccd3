@@ -123,15 +123,16 @@ class Dark_SThread(QtCore.QThread):
                 self.get_image_tif = info_image[8]
             except Exception as e:
                 print("self.get_image_tif = True -> {}".format(e))
-                self.get_image_fit = True
+                self.get_image_tif = True
+
             try:
                 self.get_image_fit = info_image[9]
             except Exception as e:
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
+
             try:
                 self.filter_split_label = get_filter_settings()
-
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -216,17 +217,17 @@ class Dark_SThread(QtCore.QThread):
                     save_png(self.img, image_name, self.for_headers_list)
                 except Exception as e:
                     print("Exception save_png() -> {}".format(e))
-            elif self.get_image_tif:
+            if self.get_image_tif:
                 try:
                     save_tif(self.img, image_name)
                 except Exception as e:
                     print("Exception save_tif() -> {}".format(e))
-            elif self.get_image_fit:
+            if self.get_image_fit:
                 try:
                     save_fit(self.img, image_name, self.for_headers_list)
                 except Exception as e:
                     print("Exception save_fit() -> {}".format(e))
-            else:
+            if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
                 try:
                     save_png(self.img, image_name, self.for_headers_list)
                 except Exception as e:
