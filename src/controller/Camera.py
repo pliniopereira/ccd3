@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.ContinuousShooterThread import ContinuousShooterThread
-from src.business.shooters.Dark_SThread import Dark_SThread
 from src.business.shooters.EphemerisShooter import EphemerisShooter
 from src.business.shooters.SThread import SThread
 from src.controller.cameraQThread import CameraQThread
@@ -43,8 +42,6 @@ class Camera(metaclass=Singleton):
         self.ephemerisShooterThread = EphemerisShooter()  # executa o modo automatico ephemerisShooterThread
 
         self.sthread = SThread()
-
-        self.dark_sthread = Dark_SThread()
 
         self.commands = CameraQThread(self)
         self.shooting = False

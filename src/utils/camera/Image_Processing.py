@@ -18,7 +18,7 @@ def save_fit(img_to_fit, newname, headers):
         print("Binning Type Error ->" + str(e))
         binning_fit = "???"
 
-    if str(headers[12]) == "DARK":
+    if str(headers[12]) == 1:
         shutter_fit = "CLOSED"
     else:
         shutter_fit = "OPEN"
@@ -129,7 +129,7 @@ def save_png(img, newname, headers):
         info = PngImagePlugin.PngInfo()
         day_hour = get_date_hour_image_for_headers(str(headers[9]))
 
-        if str(headers[12]) == "DARK":
+        if str(headers[12]) == 1:
             shutter_png = "CLOSED"
         else:
             shutter_png = "OPEN"

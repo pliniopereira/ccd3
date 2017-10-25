@@ -4,7 +4,6 @@ from PyQt5 import QtCore
 
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.SThread import SThread
-from src.business.shooters.Dark_SThread import Dark_SThread
 
 
 class ContinuousShooterThread(QtCore.QThread):
@@ -21,7 +20,7 @@ class ContinuousShooterThread(QtCore.QThread):
 
         self.ss = SThread()
 
-        self.dark_sthread = Dark_SThread()
+        self.photo_type = self.ss.recebe_argumento
 
         self.ss.started.connect(self.thread_iniciada)
         self.console = ConsoleThreadOutput()
@@ -41,6 +40,7 @@ class ContinuousShooterThread(QtCore.QThread):
                         if self.count <= 1:
                             self.console.raise_text("Taking dark photo", 1)
                             self.start_dark_sthread()
+                        self.ss.recebe_argumento(0)
                         self.ss.start()
                         while self.ss.isRunning():
                             time.sleep(1)
@@ -74,8 +74,9 @@ class ContinuousShooterThread(QtCore.QThread):
 
     def start_dark_sthread(self):
         try:
-            self.dark_sthread.start()
-            while self.dark_sthread.isRunning():
+            self.ss.start()
+            self.ss.recebe_argumento(1)
+            while self.ss.isRunning():
                 time.sleep(1)
         except Exception as e:
             print("Error start_dark_sthread! {}".format(e))

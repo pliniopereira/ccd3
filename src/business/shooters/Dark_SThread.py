@@ -40,6 +40,12 @@ class Dark_SThread(QtCore.QThread):
         self.get_image_fit = None
         self.get_image_png = None
 
+        self.kwargs = None
+
+        self.args = None
+        print("\n\nARGS = >>>>>>>>>>>>>>>>>>>>")
+        print(self.args)
+
         self.temperatura = None
 
         self.img = None
@@ -138,6 +144,11 @@ class Dark_SThread(QtCore.QThread):
 
         except Exception as e:
             print("Try ini definitive -> {}".format(e))
+
+    def recebe_argumento(self, kwargs):
+        self.kwargs = kwargs
+        print("\n\nARGS = >>>>>>>>>>>>>>>>>>>>")
+        print(self.kwargs)
 
     def run(self):
         my_list = get_wish_filters_settings()  # list of schedule
@@ -247,7 +258,7 @@ class Dark_SThread(QtCore.QThread):
 
             self.for_headers_list = []
             self.lock.set_release()
-        self.count_aux = 0
+        self.count_aux = 1
 
     def init_image(self):
         try:
