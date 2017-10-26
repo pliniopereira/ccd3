@@ -311,13 +311,10 @@ class SThread(QtCore.QThread):
         count_aux = 0
 
         while count_aux < len(my_list):
-            print("\n\ncount_aux = " + str(count_aux))
-            print("\n\nlen(my_list) = " + str(len(my_list)))
-
             self.set_config_take_image()
             self.lock.set_acquire()
 
-            index_of_dic = str(my_list[self.count_aux])
+            index_of_dic = str(my_list[count_aux])
 
             aux = self.filter_split_label[str(index_of_dic)][0]
             self.for_headers_list.append(aux)
@@ -342,7 +339,6 @@ class SThread(QtCore.QThread):
             self.exposure_time = int(self.exposure_time)
 
             self.binning = int(aux[3])
-
 
             self.filter_wheel_control(int(aux[4]))
 
@@ -416,7 +412,7 @@ class SThread(QtCore.QThread):
             self.for_headers_list = []
             count_aux += 1
             self.lock.set_release()
-        self.count_aux = 0
+        count_aux = 0
 
     def init_image(self):
         try:

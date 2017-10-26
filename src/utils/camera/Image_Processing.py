@@ -115,9 +115,9 @@ def save_png(img, newname, headers):
         print("Binning Type Error ->" + str(e))
         binning = " ??? "
 
-    print("\n\n- HEADERS -")
-    for x in enumerate(headers):
-        print(str(x))
+    # print("\n\n- HEADERS -")
+    # for x in enumerate(headers):
+    #     print(str(x))
 
     newname_png = newname + ".png"
     img_png = img
