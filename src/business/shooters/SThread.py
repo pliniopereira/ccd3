@@ -246,19 +246,6 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
-        if not os.path.isdir(path):
-            os.makedirs(path)
-
-        self.for_headers_list.append(tempo)
-        self.for_headers_list.append(project_infos)
-        try:
-            self.temperatura = SbigDriver.get_temperature()
-            self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
-            # self.temperatura = "25"
-            self.for_headers_list.append(self.temperatura)
-        except Exception as e:
-            print("Exception self.temperatura -> {}".format(e))
-
         self.for_headers_list.append("OPEN")
 
         self.save_image_format(image_name, path, tempo)
@@ -326,22 +313,9 @@ class SThread(QtCore.QThread):
             except Exception as e:
                 print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
-            if not os.path.isdir(path):
-                os.makedirs(path)
-
-            self.for_headers_list.append(tempo)
-            self.for_headers_list.append(project_infos)
-            try:
-                self.temperatura = SbigDriver.get_temperature()
-                self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
-                # self.temperatura = "25"
-                self.for_headers_list.append(self.temperatura)
-            except Exception as e:
-                print("Exception self.temperatura -> {}".format(e))
-
             self.for_headers_list.append("DARK")
 
-            self.save_image_format(image_name, path, tempo)
+            self.save_image_format(image_name)
 
             self.for_headers_list = []
             count_aux += 1
@@ -372,6 +346,20 @@ class SThread(QtCore.QThread):
             print(e)
 
     def save_image_format(self, image_name, path, tempo):
+        project_infos = get_project_settings()
+
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+        self.for_headers_list.append(tempo)
+        self.for_headers_list.append(project_infos)
+        try:
+            self.temperatura = SbigDriver.get_temperature()
+            self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
+            # self.temperatura = "25"
+            self.for_headers_list.append(self.temperatura)
+        except Exception as e:
+            print("Exception self.temperatura -> {}".format(e))
         if self.get_image_png:
             try:
                 save_png(self.img, image_name, self.for_headers_list)
