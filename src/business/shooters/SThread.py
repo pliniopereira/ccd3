@@ -1,5 +1,4 @@
 import os
-import time
 from time import sleep
 
 from PyQt5 import QtCore
@@ -262,39 +261,10 @@ class SThread(QtCore.QThread):
 
         self.for_headers_list.append("OPEN")
 
-        if self.get_image_png:
-            try:
-                save_png(self.img, image_name, self.for_headers_list)
-            except Exception as e:
-                print("Exception save_png() -> {}".format(e))
-        if self.get_image_tif:
-            try:
-                save_tif(self.img, image_name)
-            except Exception as e:
-                print("Exception save_tif() -> {}".format(e))
-        if self.get_image_fit:
-            try:
-                save_fit(self.img, image_name, self.for_headers_list)
-            except Exception as e:
-                print("Exception save_fit() -> {}".format(e))
-        if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
-            try:
-                save_png(self.img, image_name, self.for_headers_list)
-            except Exception as e:
-                print("Exception save_png() -> {}".format(e))
+        self.save_image_format(image_name, path, tempo)
 
-        try:
-            data, hora = get_date_hour(tempo)
-            self.info = path, self.img, data, hora
-            self.init_image()
-        except Exception as e:
-            print("run init_image() -> {}".format(e))
-
-        except Exception as e:
-            print("run ERROR -> {}".format(e))
-        finally:
-            self.for_headers_list = []
-            self.lock.set_release()
+        self.for_headers_list = []
+        self.lock.set_release()
 
     def create_image_close(self):
         my_list = get_wish_filters_settings()  # list of schedule
@@ -313,12 +283,12 @@ class SThread(QtCore.QThread):
             self.for_headers_list.append(aux)
 
             aux = list(aux)
-            '''
+            """
             aux[0] = self.prefix
             aux[2] = self.exposure_time
             aux[3] = self.binning
             aux[4] = wish filter
-            '''
+            """
 
             self.prefix = str(aux[0])
 
@@ -371,41 +341,11 @@ class SThread(QtCore.QThread):
 
             self.for_headers_list.append("DARK")
 
-            if self.get_image_png:
-                try:
-                    save_png(self.img, image_name, self.for_headers_list)
-                except Exception as e:
-                    print("Exception save_png() -> {}".format(e))
-            if self.get_image_tif:
-                try:
-                    save_tif(self.img, image_name)
-                except Exception as e:
-                    print("Exception save_tif() -> {}".format(e))
-            if self.get_image_fit:
-                try:
-                    save_fit(self.img, image_name, self.for_headers_list)
-                except Exception as e:
-                    print("Exception save_fit() -> {}".format(e))
-            if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
-                try:
-                    save_png(self.img, image_name, self.for_headers_list)
-                except Exception as e:
-                    print("Exception save_png() -> {}".format(e))
-
-            try:
-                data, hora = get_date_hour(tempo)
-                self.info = path, self.img, data, hora
-                self.init_image()
-            except Exception as e:
-                print("run init_image() -> {}".format(e))
-
-            except Exception as e:
-                print("run ERROR -> {}".format(e))
+            self.save_image_format(image_name, path, tempo)
 
             self.for_headers_list = []
             count_aux += 1
             self.lock.set_release()
-        count_aux = 0
 
     def init_image(self):
         try:
@@ -430,3 +370,32 @@ class SThread(QtCore.QThread):
         except Exception as e:
             self.roda_filtros.home_reset()
             print(e)
+
+    def save_image_format(self, image_name, path, tempo):
+        if self.get_image_png:
+            try:
+                save_png(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_png() -> {}".format(e))
+        if self.get_image_tif:
+            try:
+                save_tif(self.img, image_name)
+            except Exception as e:
+                print("Exception save_tif() -> {}".format(e))
+        if self.get_image_fit:
+            try:
+                save_fit(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_fit() -> {}".format(e))
+        if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
+            try:
+                save_png(self.img, image_name, self.for_headers_list)
+            except Exception as e:
+                print("Exception save_png() -> {}".format(e))
+
+        try:
+            data, hora = get_date_hour(tempo)
+            self.info = path, self.img, data, hora
+            self.init_image()
+        except Exception as e:
+            print("run init_image() -> {}".format(e))
