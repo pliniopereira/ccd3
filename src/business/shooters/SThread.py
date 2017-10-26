@@ -164,74 +164,20 @@ class SThread(QtCore.QThread):
 
         try:
             if self.count_aux < len(my_list):
-
                 index_of_dic = str(my_list[self.count_aux])
-
-                aux = self.filter_split_label[str(index_of_dic)][0]
-
-                try:
-                    self.for_headers_list.append(aux)
-                except Exception as e:
-                    print("Try append(aux) -> {}".format(e))
-
-                aux = list(aux)
-                '''
-                aux[0] = self.prefix
-                aux[2] = self.exposure_time
-                aux[3] = self.binning
-                aux[4] = wish filter
-                '''
-
-                self.prefix = str(aux[0])
-
-                self.exposure_time = float(aux[2])
-                if self.exposure_time <= 0.12:
-                    self.exposure_time = 0.12 * 100
-                elif self.exposure_time >= 3600:
-                    self.exposure_time = 3600 * 100
-                else:
-                    self.exposure_time = float(aux[2]) * 100
-                self.exposure_time = int(self.exposure_time)
-
-                self.binning = int(aux[3])
-
+                self.valores_principais_wish_filter(index_of_dic)
                 self.count_aux += 1
-
-                self.filter_wheel_control(int(aux[4]))
 
             else:
                 self.count_aux = 0
                 index_of_dic = str(my_list[self.count_aux])
-                aux = self.filter_split_label[str(index_of_dic)][0]
-                self.for_headers_list.append(aux)
-
-                self.prefix = str(aux[0])
-                self.exposure_time = float(aux[2])
-                self.binning = int(aux[3])
-
-                self.exposure_time = float(aux[2])
-                if self.exposure_time <= 0.12:
-                    self.exposure_time = 0.12 * 100
-                elif self.exposure_time >= 3600:
-                    self.exposure_time = 3600 * 100
-                else:
-                    self.exposure_time = float(aux[2]) * 100
-                self.exposure_time = int(self.exposure_time)
-
-                self.filter_wheel_control(aux[4])
-
+                self.valores_principais_wish_filter(index_of_dic)
                 self.count_aux += 1
 
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
-        self.for_headers_list.append(self.get_level1)
-        self.for_headers_list.append(self.get_level2)
-        self.for_headers_list.append(self.get_axis_xi)
-        self.for_headers_list.append(self.get_axis_xf)
-        self.for_headers_list.append(self.get_axis_yi)
-        self.for_headers_list.append(self.get_axis_yf)
-        self.for_headers_list.append(self.get_ignore_crop)
+        self.append_camera_settings()
 
         project_infos = get_project_settings()
 
@@ -265,40 +211,9 @@ class SThread(QtCore.QThread):
             self.lock.set_acquire()
 
             index_of_dic = str(my_list[count_aux])
+            self.valores_principais_wish_filter(index_of_dic)
 
-            aux = self.filter_split_label[str(index_of_dic)][0]
-            self.for_headers_list.append(aux)
-
-            aux = list(aux)
-            """
-            aux[0] = self.prefix
-            aux[2] = self.exposure_time
-            aux[3] = self.binning
-            aux[4] = wish filter
-            """
-
-            self.prefix = str(aux[0])
-
-            self.exposure_time = float(aux[2])
-            if self.exposure_time <= 0.12:
-                self.exposure_time = 0.12 * 100
-            elif self.exposure_time >= 3600:
-                self.exposure_time = 3600 * 100
-            else:
-                self.exposure_time = float(aux[2]) * 100
-            self.exposure_time = int(self.exposure_time)
-
-            self.binning = int(aux[3])
-
-            self.filter_wheel_control(int(aux[4]))
-
-            self.for_headers_list.append(self.get_level1)
-            self.for_headers_list.append(self.get_level2)
-            self.for_headers_list.append(self.get_axis_xi)
-            self.for_headers_list.append(self.get_axis_xf)
-            self.for_headers_list.append(self.get_axis_yi)
-            self.for_headers_list.append(self.get_axis_yf)
-            self.for_headers_list.append(self.get_ignore_crop)
+            self.append_camera_settings()
 
             project_infos = get_project_settings()
 
@@ -387,3 +302,40 @@ class SThread(QtCore.QThread):
             self.init_image()
         except Exception as e:
             print("run init_image() -> {}".format(e))
+
+    def valores_principais_wish_filter(self, index_of_dic):
+        aux = self.filter_split_label[str(index_of_dic)][0]
+
+        self.for_headers_list.append(aux)
+
+        aux = list(aux)
+        '''
+        aux[0] = self.prefix
+        aux[2] = self.exposure_time
+        aux[3] = self.binning
+        aux[4] = wish filter
+        '''
+
+        self.prefix = str(aux[0])
+
+        self.exposure_time = float(aux[2])
+        if self.exposure_time <= 0.12:
+            self.exposure_time = 0.12 * 100
+        elif self.exposure_time >= 3600:
+            self.exposure_time = 3600 * 100
+        else:
+            self.exposure_time = float(aux[2]) * 100
+        self.exposure_time = int(self.exposure_time)
+
+        self.binning = int(aux[3])
+
+        self.filter_wheel_control(int(aux[4]))
+
+    def append_camera_settings(self):
+        self.for_headers_list.append(self.get_level1)
+        self.for_headers_list.append(self.get_level2)
+        self.for_headers_list.append(self.get_axis_xi)
+        self.for_headers_list.append(self.get_axis_xf)
+        self.for_headers_list.append(self.get_axis_yi)
+        self.for_headers_list.append(self.get_axis_yf)
+        self.for_headers_list.append(self.get_ignore_crop)
