@@ -58,8 +58,6 @@ class ContinuousShooterThread(QtCore.QThread):
         self.continuous = True
 
     def stop_continuous_shooter(self):
-        self.console.raise_text("Taking dark photo", 1)
-        self.start_dark_sthread()
         self.wait_temperature = False
         self.continuous = False
         self.not_two_dark = False
@@ -85,3 +83,5 @@ class ContinuousShooterThread(QtCore.QThread):
         except Exception as e:
             print("Error start_dark_sthread! {}".format(e))
             self.console.raise_text("Error start_dark_sthread! {}".format(e), 3)
+        finally:
+            self.count = 1

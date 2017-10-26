@@ -7,7 +7,6 @@ from PyQt5 import QtCore
 from src.business.models.image import Image
 from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
     get_project_settings, get_filter_settings
-# from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.utils.camera import SbigDriver
 from src.utils.camera.Image_Path import set_path
@@ -118,28 +117,24 @@ class SThread(QtCore.QThread):
 
             try:
                 self.get_image_png = info_image[7]
-                print(self.get_image_png)
             except Exception as e:
                 print("self.get_image_png  = True -> {}".format(e))
                 self.get_image_png = True
 
             try:
                 self.get_image_tif = info_image[8]
-                print(self.get_image_tif)
             except Exception as e:
                 print("self.get_image_tif = True -> {}".format(e))
                 self.get_image_tif = True
 
             try:
                 self.get_image_fit = info_image[9]
-                print(self.get_image_fit)
             except Exception as e:
                 print("self.get_image_fit = True -> {}".format(e))
                 self.get_image_fit = True
 
             try:
                 self.filter_split_label = get_filter_settings()
-
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
@@ -148,7 +143,6 @@ class SThread(QtCore.QThread):
 
     def recebe_argumento(self, kwargs):
         self.kwargs = kwargs
-        print("\n\nself.kwargs = >>>>>>>>>>>>>>>>>>>> " + str(self.kwargs))
 
     def run(self):
         if self.kwargs == 0:
@@ -168,7 +162,6 @@ class SThread(QtCore.QThread):
         self.lock.set_acquire()
 
         my_list = get_wish_filters_settings()  # list of schedule
-        print("my_list = " + str(my_list))
 
         try:
             if self.count_aux < len(my_list):
