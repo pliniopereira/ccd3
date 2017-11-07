@@ -42,9 +42,12 @@ class SThread(QtCore.QThread):
 
         self.temperatura = None
 
+        self.path = None
+        self.tempo = None
+
         self.img = None
 
-        self.for_headers_list = []
+        self.for_headers_dic = {}
 
         self.lock = Locker()
         self.info = []
@@ -62,7 +65,8 @@ class SThread(QtCore.QThread):
         """
         try:
             info_cam = get_camera_settings()
-            self.for_headers_list.append(info_cam)
+            self.for_headers_dic['Set Temperature'] = info_cam[0]
+            self.for_headers_dic['????Tempo de espera'] = info_cam[1]
 
             info_image = get_image_settings()
 
@@ -137,6 +141,11 @@ class SThread(QtCore.QThread):
             except Exception as e:
                 print("get_filter_settings() -> {}".format(e))
 
+            try:
+                self.append_camera_settings()
+            except Exception as e:
+                print("self.append_camera_settings() in set_config_take_image -> {}".format(e))
+
         except Exception as e:
             print("Try ini definitive -> {}".format(e))
 
@@ -177,29 +186,29 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("Try filter ini -> {}".format(e))
 
-        self.append_camera_settings()
-
         project_infos = get_project_settings()
 
         name_observatory = project_infos[2][1]
 
-        path, tempo = set_path()
+        self.path, self.tempo = set_path()
 
-        image_name = path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
+        image_name = self.path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
 
         try:
             self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
         except Exception as e:
             print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
-        self.for_headers_list.append("OPEN")
+        self.for_headers_dic['Open or close shutter'] = "OPEN"
 
-        self.save_image_format(image_name, path, tempo)
+        self.save_image_format(image_name)
 
-        self.for_headers_list = []
+        self.for_headers_dic = {}
         self.lock.set_release()
 
     def create_image_close(self):
+        self.roda_filtros.close_shutter()
+
         my_list = get_wish_filters_settings()  # list of schedule
         my_list = set(my_list)
         my_list = sorted(my_list)
@@ -213,26 +222,24 @@ class SThread(QtCore.QThread):
             index_of_dic = str(my_list[count_aux])
             self.valores_principais_wish_filter(index_of_dic)
 
-            self.append_camera_settings()
-
             project_infos = get_project_settings()
 
             name_observatory = project_infos[2][1]
 
-            path, tempo = set_path()
+            self.path, self.tempo = set_path()
 
-            image_name = path + "DARK-" + str(self.prefix) + "_" + str(name_observatory) + "_" + str(tempo)
+            image_name = self.path + "DARK-" + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
 
             try:
                 self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
             except Exception as e:
                 print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
-            self.for_headers_list.append("DARK")
+            self.for_headers_dic['Open or close shutter'] = "CLOSED"
 
             self.save_image_format(image_name)
 
-            self.for_headers_list = []
+            self.for_headers_dic = {}
             count_aux += 1
             self.lock.set_release()
 
@@ -260,24 +267,22 @@ class SThread(QtCore.QThread):
             self.roda_filtros.home_reset()
             print(e)
 
-    def save_image_format(self, image_name, path, tempo):
-        project_infos = get_project_settings()
+    def save_image_format(self, image_name):
+        if not os.path.isdir(self.path):
+            os.makedirs(self.path)
 
-        if not os.path.isdir(path):
-            os.makedirs(path)
+        self.for_headers_dic['Start Time'] = self.tempo
 
-        self.for_headers_list.append(tempo)
-        self.for_headers_list.append(project_infos)
         try:
             self.temperatura = SbigDriver.get_temperature()
             self.temperatura = "{0:.2f}".format(float(self.temperatura[3]))
             # self.temperatura = "25"
-            self.for_headers_list.append(self.temperatura)
+            self.for_headers_dic['Temperature'] = self.temperatura
         except Exception as e:
             print("Exception self.temperatura -> {}".format(e))
         if self.get_image_png:
             try:
-                save_png(self.img, image_name, self.for_headers_list)
+                save_png(self.img, image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
         if self.get_image_tif:
@@ -287,26 +292,24 @@ class SThread(QtCore.QThread):
                 print("Exception save_tif() -> {}".format(e))
         if self.get_image_fit:
             try:
-                save_fit(self.img, image_name, self.for_headers_list)
+                save_fit(self.img, image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_fit() -> {}".format(e))
         if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
             try:
-                save_png(self.img, image_name, self.for_headers_list)
+                save_png(self.img, image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
 
         try:
-            data, hora = get_date_hour(tempo)
-            self.info = path, self.img, data, hora
+            data, hora = get_date_hour(self.tempo)
+            self.info = self.path, self.img, data, hora
             self.init_image()
         except Exception as e:
             print("run init_image() -> {}".format(e))
 
     def valores_principais_wish_filter(self, index_of_dic):
         aux = self.filter_split_label[str(index_of_dic)][0]
-
-        self.for_headers_list.append(aux)
 
         aux = list(aux)
         '''
@@ -331,11 +334,39 @@ class SThread(QtCore.QThread):
 
         self.filter_wheel_control(int(aux[4]))
 
+        self.append_filters_settings(aux)
+
     def append_camera_settings(self):
-        self.for_headers_list.append(self.get_level1)
-        self.for_headers_list.append(self.get_level2)
-        self.for_headers_list.append(self.get_axis_xi)
-        self.for_headers_list.append(self.get_axis_xf)
-        self.for_headers_list.append(self.get_axis_yi)
-        self.for_headers_list.append(self.get_axis_yf)
-        self.for_headers_list.append(self.get_ignore_crop)
+        try:
+            project_infos = get_project_settings()
+
+            self.for_headers_dic['Latitude'] = str(project_infos[0][0])
+            self.for_headers_dic['Longitude'] = str(project_infos[0][1])
+            self.for_headers_dic['Elevation(m)'] = str(project_infos[0][2])
+            self.for_headers_dic['Pressure(mb)'] = str(project_infos[0][3])
+            self.for_headers_dic['Sun Elevation'] = str(project_infos[1][0])
+            self.for_headers_dic['Ignore Lunar Position'] = str(project_infos[1][1])
+            self.for_headers_dic['Moon Elevation'] = str(project_infos[1][2])
+            self.for_headers_dic['Moon Phase'] = str(project_infos[1][3])
+            self.for_headers_dic['Name'] = str(project_infos[2][0])
+            self.for_headers_dic['Observatory'] = str(project_infos[2][1])
+            self.for_headers_dic['Imager ID'] = str(project_infos[2][2])
+            self.for_headers_dic['get_level1'] = str(self.get_level1)
+            self.for_headers_dic['get_level2'] = str(self.get_level2)
+            self.for_headers_dic['get_axis_xi'] = str(self.get_axis_xi)
+            self.for_headers_dic['get_axis_xf'] = str(self.get_axis_xf)
+            self.for_headers_dic['get_axis_yi'] = str(self.get_axis_yi)
+            self.for_headers_dic['get_axis_yf'] = str(self.get_axis_yf)
+            self.for_headers_dic['get_ignore_crop'] = str(self.get_ignore_crop)
+        except Exception as e:
+            print("run append_camera_settings() -> {}".format(e))
+
+    def append_filters_settings(self, aux):
+        try:
+            self.for_headers_dic['Filter Label'] = str(aux[0])
+            self.for_headers_dic['Filter Wavelength'] = str(aux[1])
+            self.for_headers_dic['Exposure'] = str(self.exposure_time)
+            self.for_headers_dic['Binning'] = str(aux[3])
+            self.for_headers_dic['Filter Position'] = str(aux[4])
+        except Exception as e:
+            print("run append_filters_settings() -> {}".format(e))

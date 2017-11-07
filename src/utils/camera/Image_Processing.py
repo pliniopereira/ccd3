@@ -12,42 +12,37 @@ def save_fit(img_to_fit, newname, headers):
     newname_fit += ".fit"
 
     try:
-        binning_fit = int(headers[1][3])
+        binning_fit = int(headers['Binning'])
         binning_fit += 1
     except Exception as e:
         print("Binning Type Error ->" + str(e))
         binning_fit = "???"
 
-    if str(headers[12]) == 1:
-        shutter_fit = "CLOSED"
-    else:
-        shutter_fit = "OPEN"
-
     # Criando o arquivo final
     try:
-        day_hour = get_date_hour_image_for_headers(str(headers[9]))
+        day_hour = get_date_hour_image_for_headers(str(headers['Start Time']))
         # Abrindo o arquivo
         fits.writeto(newname_fit, img_to_fit)
         with fits.open(newname_fit, mode='update') as fits_file:
             fits_file[0].header["BINNING"] = str(binning_fit) + "x" + str(binning_fit)
-            fits_file[0].header["CCD-TEMP"] = str(headers[11]) + " Celsius degrees"
-            fits_file[0].header["CCDSTEMP"] = str(headers[0][0]) + " Celsius degrees"
-            fits_file[0].header["CCDTYPE"] = str(headers[10][2][2])
-            fits_file[0].header["EXPOSURE"] = str(headers[1][2]) + "000 ms"
-            fits_file[0].header["FLT-LBL"] = str(headers[1][0])
-            fits_file[0].header["FLT-POS"] = str(headers[1][4])
-            fits_file[0].header["FLT-WAVE"] = str(headers[1][1])
+            fits_file[0].header["CCD-TEMP"] = str(headers['Set Temperature']) + " Celsius degrees"
+            fits_file[0].header["CCDSTEMP"] = str(headers['Temperature']) + " Celsius degrees"
+            fits_file[0].header["CCDTYPE"] = str(headers['Name'])
+            fits_file[0].header["EXPOSURE"] = str(headers['Exposure'] + "000 ms")
+            fits_file[0].header["FLT-LBL"] = str(headers['Filter Label'])
+            fits_file[0].header["FLT-POS"] = str(headers['Filter Position'])
+            fits_file[0].header["FLT-WAVE"] = str(headers['Filter Wavelength'])
             fits_file[0].header["IMG-TYPE"] = "FIT"
-            fits_file[0].header["LATITUDE"] = str(headers[10][0][0]) + " degrees"
-            fits_file[0].header["LONGITUD"] = str(headers[10][0][1]) + " degrees"
-            fits_file[0].header["MO-ELE"] = str(headers[10][1][2]) + " degrees"
-            fits_file[0].header["MO-PHASE"] = str(headers[10][1][3]) + " %"
-            fits_file[0].header["SHTRCCD"] = str(shutter_fit)
-            fits_file[0].header["SHTRLENZ"] = str(shutter_fit)
-            fits_file[0].header["SITE-ID"] = str(headers[10][2][1])
+            fits_file[0].header["LATITUDE"] = str(headers['Latitude']) + " degrees"
+            fits_file[0].header["LONGITUD"] = str(headers['Longitude']) + " degrees"
+            fits_file[0].header["MO-ELE"] = str(headers['Moon Elevation']) + " degrees"
+            fits_file[0].header["MO-PHASE"] = str(headers['Moon Phase']) + " %"
+            fits_file[0].header["SHTRCCD"] = str(headers['Open or close shutter'])
+            fits_file[0].header["SHTRLENZ"] = str(headers['Open or close shutter'])
+            fits_file[0].header["SITE-ID"] = str(headers['Observatory'])
             fits_file[0].header["START-T"] = str(day_hour) + " UTC"
-            fits_file[0].header["SUN-ELEV"] = str(headers[10][1][0]) + " degrees"
-            fits_file[0].header["VERS"] = str(headers[10][2][0])
+            fits_file[0].header["SUN-ELEV"] = str(headers['Sun Elevation']) + " degrees"
+            fits_file[0].header["VERS"] = str(headers['Imager ID'])
 
     except Exception as e:
         # print(newname_fit)
@@ -77,84 +72,53 @@ def save_tif(img, newname):
 
 
 def save_png(img, newname, headers):
-    """
-    headers[0][0] = Set Temperature
-    headers[1] = list of get_filter_settings()
-    headers[1][0] = Filter Label (prefix)
-    headers[1][1] = Wavelength (nm)
-    headers[1][2] = Exposure (s)
-    headers[1][3] = Binning
-    headers[1][4] = Filter Position
-    headers[2] = get_level1
-    headers[3] = get_level2
-    headers[4] = get_axis_xi
-    headers[5] = get_axis_xf
-    headers[6] = get_axis_yi
-    headers[7] = get_axis_yf
-    headers[8] = get_ignore_crop
-    headers[9] = data_hora
-    headers[10][0][0] = Latitude
-    headers[10][0][1] = Longitude
-    headers[10][0][2] = Elevation(m)
-    headers[10][0][3] = Pressure(mb)
-    headers[10][0][4] = Temperature(?)
-    headers[10][1][0] = Solar Elevation
-    headers[10][1][1] = Ignore Lunar Position
-    headers[10][1][2] = Lunar Elevation
-    headers[10][1][3] = Lunar Phase
-    headers[10][2][0] = Name
-    headers[10][2][1] = Observatory
-    headers[10][2][2] = Imager ID
-    headers[11] = CCD Temperature
-    """
+    # print(type(headers))
+    # print("\n\n- HEADERS -")
+    # print(type(headers))
+    # for keys, values in headers.items():
+    #     print(str(keys))
+    #     print(str(values) + "\n")
+    # print("- END HEADERS -\n\n")
 
     try:
-        binning = int(headers[1][3])
+        binning = int(headers['Binning'])
         binning += 1
     except Exception as e:
         print("Binning Type Error ->" + str(e))
         binning = " ??? "
 
-    # print("\n\n- HEADERS -")
-    # for x in enumerate(headers):
-    #     print(str(x))
-
     newname_png = newname + ".png"
     img_png = img
+
     print("Opening filename")
     try:
         print("Tricat of save_png")
         imgarray = numpy.asarray(img_png, dtype=numpy.int32)
 
         info = PngImagePlugin.PngInfo()
-        day_hour = get_date_hour_image_for_headers(str(headers[9]))
-
-        if str(headers[12]) == 1:
-            shutter_png = "CLOSED"
-        else:
-            shutter_png = "OPEN"
+        day_hour = get_date_hour_image_for_headers(str(headers['Start Time']))
 
         try:
             info.add_text('Binning: ', str(binning) + "x" + str(binning))
-            info.add_text('CCD SET TEMP: ', str(headers[0][0]) + u"\u00b0C")
-            info.add_text('CCD Temperature: ', str(headers[11]) + u"\u00b0C")
-            info.add_text('CCD Type: ', str(headers[10][2][2]))
-            info.add_text('Exposure: ', str(headers[1][2]) + "000 ms")
-            info.add_text('Filter Label: ', str(headers[1][0]))
-            info.add_text('Filter Position: ', str(headers[1][4]))
-            info.add_text('Filter Wavelength: ', str(headers[1][1]))
+            info.add_text('CCD SET TEMP: ', str(headers['Set Temperature']) + u"\u00b0C")
+            info.add_text('CCD Temperature: ', str(headers['Temperature']) + u"\u00b0C")
+            info.add_text('CCD Type: ', str(headers['Imager ID']))
+            info.add_text('Exposure: ', str(headers['Exposure']) + "000 ms")
+            info.add_text('Filter Label: ', str(headers['Filter Label']))
+            info.add_text('Filter Position: ', str(headers['Filter Position']))
+            info.add_text('Filter Wavelength: ', str(headers['Filter Wavelength']))
             info.add_text('Filter Wheel Temperature: ', "25" + u"\u00b0C")
             info.add_text('Image Type: ', 'PNG')
-            info.add_text('Latitude: ', str(headers[10][0][0]) + u"\u00b0")
-            info.add_text('Longitude: ', str(headers[10][0][1]) + u"\u00b0")
-            info.add_text('Moon Elevation: ', str(headers[10][1][2]) + u"\u00b0")
-            info.add_text('Moon Phase: ', str(headers[10][1][3]) + " %")
-            info.add_text('Shutter CCD: ', str(shutter_png))
-            info.add_text('Shutter Lenz: ', str(shutter_png))
-            info.add_text('Site ID: ', str(headers[10][2][1]))
+            info.add_text('Latitude: ', str(headers['Latitude']) + u"\u00b0")
+            info.add_text('Longitude: ', str(headers['Longitude']) + u"\u00b0")
+            info.add_text('Moon Elevation: ', str(headers['Moon Elevation']) + u"\u00b0")
+            info.add_text('Moon Phase: ', str(headers['Moon Phase']) + " %")
+            info.add_text('Shutter CCD: ', str(headers['Open or close shutter']))
+            info.add_text('Shutter Lenz: ', str(headers['Open or close shutter']))
+            info.add_text('Site ID: ', str(headers['Observatory']))
             info.add_text('Start Time: ', str(day_hour) + " UTC")
-            info.add_text('Sun Elevation:', str(headers[10][1][0]) + u"\u00b0")
-            info.add_text('Version: ', str(headers[10][2][0]))
+            info.add_text('Sun Elevation:', str(headers['Sun Elevation']) + u"\u00b0")
+            info.add_text('Version: ', str(headers['Name']))
         except Exception as e:
             print("info.add_text: " + e)
 
