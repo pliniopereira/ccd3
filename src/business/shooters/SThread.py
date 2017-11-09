@@ -1,8 +1,12 @@
+import math
 import os
+from datetime import datetime
 from time import sleep
 
+import ephem
 from PyQt5 import QtCore
 
+from src.business.EphemObserverFactory import EphemObserverFactory
 from src.business.models.image import Image
 from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
     get_project_settings, get_filter_settings
@@ -41,6 +45,9 @@ class SThread(QtCore.QThread):
         self.get_image_png = None
 
         self.temperatura = None
+
+        self.eof = EphemObserverFactory()
+        self.obs = None
 
         self.path = None
         self.tempo = None
@@ -280,6 +287,8 @@ class SThread(QtCore.QThread):
             self.for_headers_dic['Temperature'] = self.temperatura
         except Exception as e:
             print("Exception self.temperatura -> {}".format(e))
+            self.for_headers_dic['Temperature'] = "???"
+
         if self.get_image_png:
             try:
                 save_png(self.img, image_name, self.for_headers_dic)
@@ -340,14 +349,36 @@ class SThread(QtCore.QThread):
         try:
             project_infos = get_project_settings()
 
+            try:
+                self.obs = self.eof.create_observer(longitude=project_infos[0][1],
+                                                    latitude=project_infos[0][0],
+                                                    elevation=project_infos[1][0])
+
+                now_datetime = datetime.utcnow()
+                self.obs.date = ephem.date(now_datetime)
+
+                sun = ephem.Sun(self.obs)
+
+                moon = ephem.Moon(self.obs)
+                frac = moon.moon_phase
+
+                sun_alt = ephem.degrees(sun.alt)
+                moon_alt = ephem.degrees(moon.alt)
+
+                sun_elevation = "{:.2f}".format(float(math.degrees(sun_alt)))
+                moon_elevation = "{:.2f}".format(float(math.degrees(moon_alt)))
+                moon_phase = "{0:.2f}".format(frac * 100)
+            except Exception as e:
+                print("ephem update -> {}".format(e))
+
             self.for_headers_dic['Latitude'] = str(project_infos[0][0])
             self.for_headers_dic['Longitude'] = str(project_infos[0][1])
             self.for_headers_dic['Elevation(m)'] = str(project_infos[0][2])
             self.for_headers_dic['Pressure(mb)'] = str(project_infos[0][3])
-            self.for_headers_dic['Sun Elevation'] = str(project_infos[1][0])
+            self.for_headers_dic['Sun Elevation'] = str(sun_elevation)
             self.for_headers_dic['Ignore Lunar Position'] = str(project_infos[1][1])
-            self.for_headers_dic['Moon Elevation'] = str(project_infos[1][2])
-            self.for_headers_dic['Moon Phase'] = str(project_infos[1][3])
+            self.for_headers_dic['Moon Elevation'] = str(moon_elevation)
+            self.for_headers_dic['Moon Phase'] = str(moon_phase)
             self.for_headers_dic['Name'] = str(project_infos[2][0])
             self.for_headers_dic['Observatory'] = str(project_infos[2][1])
             self.for_headers_dic['Imager ID'] = str(project_infos[2][2])

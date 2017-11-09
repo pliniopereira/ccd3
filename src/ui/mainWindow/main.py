@@ -63,7 +63,8 @@ class Main(QtWidgets.QMainWindow):
 
     def init_window_geometry(self):
         self.setGeometry(300, 100, 800, 780)
-        self.setWindowTitle("CCD Controller 3")
+        software_version = "CCD Controller 3 - V 0.9"
+        self.setWindowTitle(software_version)
         self.show()
 
     def closeEvent(self, event):

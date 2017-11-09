@@ -5,6 +5,8 @@ import numpy
 import pyfits as fits
 from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 
+software_version = "CCD Controller 3 - V 0.9"
+
 
 def save_fit(img_to_fit, newname, headers):
 
@@ -28,7 +30,7 @@ def save_fit(img_to_fit, newname, headers):
             fits_file[0].header["CCD-TEMP"] = str(headers['Set Temperature']) + " Celsius degrees"
             fits_file[0].header["CCDSTEMP"] = str(headers['Temperature']) + " Celsius degrees"
             fits_file[0].header["CCDTYPE"] = str(headers['Name'])
-            fits_file[0].header["EXPOSURE"] = str(headers['Exposure'] + "000 ms")
+            fits_file[0].header["EXPOSURE"] = str(headers['Exposure'] + "0 ms")
             fits_file[0].header["FLT-LBL"] = str(headers['Filter Label'])
             fits_file[0].header["FLT-POS"] = str(headers['Filter Position'])
             fits_file[0].header["FLT-WAVE"] = str(headers['Filter Wavelength'])
@@ -42,7 +44,7 @@ def save_fit(img_to_fit, newname, headers):
             fits_file[0].header["SITE-ID"] = str(headers['Observatory'])
             fits_file[0].header["START-T"] = str(day_hour) + " UTC"
             fits_file[0].header["SUN-ELEV"] = str(headers['Sun Elevation']) + " degrees"
-            fits_file[0].header["VERS"] = str(headers['Imager ID'])
+            fits_file[0].header["VERS"] = str(software_version)
 
     except Exception as e:
         # print(newname_fit)
@@ -103,7 +105,7 @@ def save_png(img, newname, headers):
             info.add_text('CCD SET TEMP: ', str(headers['Set Temperature']) + u"\u00b0C")
             info.add_text('CCD Temperature: ', str(headers['Temperature']) + u"\u00b0C")
             info.add_text('CCD Type: ', str(headers['Imager ID']))
-            info.add_text('Exposure: ', str(headers['Exposure']) + "000 ms")
+            info.add_text('Exposure: ', str(headers['Exposure']) + "0 ms")
             info.add_text('Filter Label: ', str(headers['Filter Label']))
             info.add_text('Filter Position: ', str(headers['Filter Position']))
             info.add_text('Filter Wavelength: ', str(headers['Filter Wavelength']))
@@ -118,7 +120,7 @@ def save_png(img, newname, headers):
             info.add_text('Site ID: ', str(headers['Observatory']))
             info.add_text('Start Time: ', str(day_hour) + " UTC")
             info.add_text('Sun Elevation:', str(headers['Sun Elevation']) + u"\u00b0")
-            info.add_text('Version: ', str(headers['Name']))
+            info.add_text('Version: ', str(software_version))
         except Exception as e:
             print("info.add_text: " + e)
 
