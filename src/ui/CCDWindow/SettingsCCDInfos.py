@@ -3,10 +3,11 @@ from time import sleep
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import (QGridLayout, QGroupBox, QPushButton, QWidget)
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QPushButton, QWidget
 
 from src.business.configuration.settingsCamera import SettingsCamera
 from src.business.consoleThreadOutput import ConsoleThreadOutput
+from src.business.shooters.InfosForSThread import get_filter_settings
 from src.business.shooters.SThread import SThread
 from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
@@ -59,6 +60,9 @@ class SettingsCCDInfos(QWidget):
         self.saveButton = None
         self.cancelButton = None
         self.clearButton = None
+
+        self.select_filter_manual = 1
+        self.select_filter_shutter = "Closed"
 
         self.imager_window = parent
 
@@ -144,8 +148,13 @@ class SettingsCCDInfos(QWidget):
         self.close_open_filter_wheel.setMaximumWidth(100)
         self.fill_combo_close_open_filter_wheel_shutter()
 
+        filter_position = self.roda_filtros.get_current_filter()
+
+        if filter_position == "None":
+            filter_position = "1"
+
         self.get_filter_l = QtWidgets.QLabel('Current filter:', self)
-        self.filter_position = QtWidgets.QLabel(self.roda_filtros.get_current_filter())
+        self.filter_position = QtWidgets.QLabel(filter_position)
         self.filter_position.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.filter_position.setMinimumWidth(60)
 
@@ -262,15 +271,19 @@ class SettingsCCDInfos(QWidget):
         self.close_open.addItem("Close", 1)
 
     def fill_combo_close_open_filter_wheel_shutter(self):
-        self.close_open_filter_wheel.addItem("Open", 1)
-        self.close_open_filter_wheel.addItem("Close", 2)
+        self.close_open_filter_wheel.addItem("Closed", 2)
+        self.close_open_filter_wheel.addItem("Opened", 1)
         self.close_open_filter_wheel.currentIndexChanged[str].connect(self.my_slot_close_open_shutter)
 
     def my_slot_close_open_shutter(self, item):
         if item == "Close":
             self.roda_filtros.close_shutter()
+            self.select_filter_shutter = 1
+            self.console.raise_text("Shutter Filter Wheel Closed", 1)
         else:
             self.roda_filtros.open_shutter()
+            self.select_filter_shutter = 0
+            self.console.raise_text("Shutter Filter Wheel Opened ", 1)
 
     def fill_combo_filter_position(self):
         self.set_filter_position.addItem("1", 1)
@@ -281,21 +294,43 @@ class SettingsCCDInfos(QWidget):
         self.set_filter_position.addItem("6", 6)
 
     def func_filter_position(self):
+        available_filters_list_and_commons = get_filter_settings()
+        available_filters_list_and_commons = list(available_filters_list_and_commons)
+
+        permited_filters = ''
+
+        for x in available_filters_list_and_commons:
+            permited_filters += str(x)
+
         try:
             if self.roda_filtros.connect_state:
                 sleep(1)
                 wish_filter_int = self.set_filter_position.currentIndex() + 1
-                self.roda_filtros.filter_wheel_control(int(wish_filter_int))
+                aux = 1
+                for x in permited_filters:
+                    if int(wish_filter_int) == int(x):
+                        aux = 0
+
+                if aux == 0:
+                    self.roda_filtros.filter_wheel_control(int(wish_filter_int))
+                else:
+                    self.console.raise_text("There is no filter on slot number " + str(wish_filter_int) + "!", 3)
+                    self.console.raise_text("Please include a new filter on the Filters Settings Menu!", 3)
+
                 sleep(1)
         except Exception as e:
-            print(e)
+            print("def func_filter_position(self): -> " + str(e))
+
         finally:
-            if self.roda_filtros.connect_state:
-                self.filter_position.setText(str(wish_filter_int))
-                self.console.raise_text("Filter Position: {}".format(str(wish_filter_int)), 2)
-            else:
-                self.filter_position.setText("?")
-                self.console.raise_text("Filter Wheel is not connect!", 3)
+            if aux == 0:
+                if self.roda_filtros.connect_state:
+                    self.select_filter_manual = wish_filter_int
+
+                    self.filter_position.setText(str(wish_filter_int))
+                    self.console.raise_text("Filter Position: {}".format(str(wish_filter_int)), 2)
+                else:
+                    self.filter_position.setText("?")
+                    self.console.raise_text("Filter Wheel is not connect!", 3)
 
     def button_settings(self):
         self.btn_set_filter.clicked.connect(self.func_filter_position)
@@ -355,13 +390,13 @@ class SettingsCCDInfos(QWidget):
 
     def take_one_photo(self):
         try:
-            info = self.var_save_ini_camera.get_camera_settings()
-            print(info)
-            if int(info[2]) == 1:
+            if self.select_filter_shutter == "Closed":
                 self.console.raise_text("Taking dark photo", 1)
+                self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
                 self.one_photo.start()
             else:
                 self.console.raise_text("Taking photo", 1)
+                self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
                 self.one_photo.start()
         except Exception as e:
             self.console.raise_text("Not possible taking photo -> {}".format(e), 1)

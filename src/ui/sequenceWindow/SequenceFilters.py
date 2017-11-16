@@ -101,7 +101,6 @@ class SequenceFilters(QtWidgets.QWidget):
             available_filters_list_and_commons.append(',')
             available_filters_list_and_commons.append(' ')
 
-
             # Percorre a string que está na box e testa caracter por caracter, permitindo somente numeros de filtors
             # disponiveis e ','.
             for x in self.wish_sequence_filters_l.text():

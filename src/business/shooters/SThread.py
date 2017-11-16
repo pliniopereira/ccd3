@@ -54,6 +54,10 @@ class SThread(QtCore.QThread):
 
         self.img = None
 
+        self.selected_filter = None
+        self.dark_or_open = "Closed"
+        self.one_photo = None
+
         self.for_headers_dic = {}
 
         self.lock = Locker()
@@ -159,6 +163,15 @@ class SThread(QtCore.QThread):
     def recebe_argumento(self, kwargs):
         self.kwargs = kwargs
 
+    def args_one_photo(self, filter_args, kwargs):
+        self.selected_filter = filter_args
+        self.kwargs = kwargs
+        self.one_photo = True
+        print("\n\nargs_one_photo: ")
+        print("self.selected_filter = " + str(self.selected_filter))
+        print("self.dark_or_open = " + str(self.dark_or_open))
+        print("self.one_photo = " + str(self.one_photo))
+
     def run(self):
         if self.kwargs == 0:
             try:
@@ -180,13 +193,19 @@ class SThread(QtCore.QThread):
 
         try:
             if self.count_aux < len(my_list):
-                index_of_dic = str(my_list[self.count_aux])
+                if self.one_photo:
+                    index_of_dic = self.selected_filter
+                else:
+                    index_of_dic = str(my_list[self.count_aux])
                 self.valores_principais_wish_filter(index_of_dic)
                 self.count_aux += 1
 
             else:
                 self.count_aux = 0
-                index_of_dic = str(my_list[self.count_aux])
+                if self.one_photo:
+                    index_of_dic = self.selected_filter
+                else:
+                    index_of_dic = str(my_list[self.count_aux])
                 self.valores_principais_wish_filter(index_of_dic)
                 self.count_aux += 1
 
@@ -211,6 +230,7 @@ class SThread(QtCore.QThread):
         self.save_image_format(image_name)
 
         self.for_headers_dic = {}
+        self.one_photo = False
         self.lock.set_release()
 
     def create_image_close(self):
@@ -226,7 +246,12 @@ class SThread(QtCore.QThread):
             self.set_config_take_image()
             self.lock.set_acquire()
 
-            index_of_dic = str(my_list[count_aux])
+            if self.one_photo:
+                index_of_dic = self.selected_filter
+                count_aux = 10
+            else:
+                index_of_dic = str(my_list[self.count_aux])
+
             self.valores_principais_wish_filter(index_of_dic)
 
             project_infos = get_project_settings()
@@ -248,6 +273,7 @@ class SThread(QtCore.QThread):
 
             self.for_headers_dic = {}
             count_aux += 1
+            self.one_photo = False
             self.lock.set_release()
 
     def init_image(self):
