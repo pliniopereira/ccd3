@@ -80,17 +80,10 @@ class SettingsCCDInfos(QWidget):
 
         self.lock = Locker()
 
-        try:
-            if getlinkstatus() is True:
-                self.firmware, self.model, self.y_pixels, self.x_pixels = \
-                    self.cam.get_firmware_and_model_and_pixels()
-            else:
-                self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
-                                                                          "????", "????"
-        except Exception as e:
-            print("CCDInfos get_firmware_and_model_and_pixels -> {}".format(e))
-            self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
-                                                                      "????", "????"
+        self.firmware = "????"
+        self.model = "????"
+        self.y_pixels = "????"
+        self.x_pixels = "????"
 
         grid = QGridLayout()
         grid.addWidget(self.create_filter_wheel_info_group(), 0, 0)
@@ -104,6 +97,7 @@ class SettingsCCDInfos(QWidget):
 
         self.setWindowTitle("Imager Box")
         self.resize(500, 340)
+        self.info_cam()
 
     def create_filter_wheel_info_group(self):
         group_box = QGroupBox("&Filter Wheel Info")
@@ -201,9 +195,8 @@ class SettingsCCDInfos(QWidget):
 
         self.shutter_l = QtWidgets.QLabel("Shutter:", self)
         self.shutter_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        self.close_open = QtWidgets.QComboBox(self)
-        self.close_open.setMaximumWidth(100)
-        self.fill_combo_close_open_ccd_shutter()
+        self.close_open = QtWidgets.QLabel("Closed")
+        self.close_open.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
         self.temp_set_point_l = QtWidgets.QLabel("CCD Temp Set Point (°C):", self)
         self.temp_set_point_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -266,24 +259,23 @@ class SettingsCCDInfos(QWidget):
             self.lock.set_release()
         return ret
 
-    def fill_combo_close_open_ccd_shutter(self):
-        self.close_open.addItem("Open", 0)
-        self.close_open.addItem("Close", 1)
-
     def fill_combo_close_open_filter_wheel_shutter(self):
         self.close_open_filter_wheel.addItem("Closed", 2)
         self.close_open_filter_wheel.addItem("Opened", 1)
         self.close_open_filter_wheel.currentIndexChanged[str].connect(self.my_slot_close_open_shutter)
 
     def my_slot_close_open_shutter(self, item):
-        if item == "Close":
+        if item == "Closed":
             self.roda_filtros.close_shutter()
             self.select_filter_shutter = 1
             self.console.raise_text("Shutter Filter Wheel Closed", 1)
+            self.close_open.setText("Closed")
+
         else:
             self.roda_filtros.open_shutter()
             self.select_filter_shutter = 0
             self.console.raise_text("Shutter Filter Wheel Opened ", 1)
+            self.close_open.setText("Opened")
 
     def fill_combo_filter_position(self):
         self.set_filter_position.addItem("1", 1)
@@ -322,6 +314,7 @@ class SettingsCCDInfos(QWidget):
             print("def func_filter_position(self): -> " + str(e))
 
         finally:
+            self.info_cam()
             if aux == 0:
                 if self.roda_filtros.connect_state:
                     self.select_filter_manual = wish_filter_int
@@ -337,6 +330,7 @@ class SettingsCCDInfos(QWidget):
         self.btn_home_position_filter.clicked.connect(self.func_home_position)
 
     def func_home_position(self):
+        self.info_cam()
         try:
             if self.roda_filtros.connect_state:
                 sleep(0.5)
@@ -358,22 +352,16 @@ class SettingsCCDInfos(QWidget):
 
     def setting_values(self):
         info = self.get_values()
-        self.set_values(info[0], info[1], info[2])
+        self.set_values(info[0], info[1])
 
-    def set_values(self, temperature_camera, temp_init_f, dark_photo):
+    def set_values(self, temperature_camera, temp_init_f):
         self.temp_set_point_f.setText(temperature_camera)
-        try:
-            open_or_close = int(dark_photo)
-        except TypeError:
-            open_or_close = 0
         self.temp_init_f.setText(temp_init_f)
-        self.close_open.setCurrentIndex(open_or_close)
 
     def button_ok_func(self):
         try:
             self.var_save_ini_camera.set_camera_settings(self.temp_set_point_f.text(),
-                                                         self.temp_init_f.text(),
-                                                         self.close_open.currentIndex())
+                                                         self.temp_init_f.text())
 
             self.var_save_ini_camera.save_settings()
             self.console.raise_text("Camera settings successfully saved!", 1)
@@ -426,3 +414,21 @@ class SettingsCCDInfos(QWidget):
                     self.cam.set_temperature(float(20.0))
         except Exception as e:
             print("Exception -> {}".format(e))
+
+    def info_cam(self):
+        try:
+            if getlinkstatus() is True:
+                self.firmware, self.model, self.y_pixels, self.x_pixels = \
+                    self.cam.get_firmware_and_model_and_pixels()
+            else:
+                self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
+                                                                          "????", "????"
+
+            self.info_port_ccd_f.setText(self.firmware)
+            self.info_camera_model_f.setText(self.model)
+            self.info_pixel_array_f.setText(str(self.y_pixels) + " x " + str(self.x_pixels))
+
+        except Exception as e:
+            print("CCDInfos get_firmware_and_model_and_pixels -> {}".format(e))
+            self.firmware, self.model, self.y_pixels, self.x_pixels = "????", "????", \
+                                                                      "????", "????"

@@ -167,10 +167,6 @@ class SThread(QtCore.QThread):
         self.selected_filter = filter_args
         self.kwargs = kwargs
         self.one_photo = True
-        print("\n\nargs_one_photo: ")
-        print("self.selected_filter = " + str(self.selected_filter))
-        print("self.dark_or_open = " + str(self.dark_or_open))
-        print("self.one_photo = " + str(self.one_photo))
 
     def run(self):
         if self.kwargs == 0:
@@ -250,7 +246,7 @@ class SThread(QtCore.QThread):
                 index_of_dic = self.selected_filter
                 count_aux = 10
             else:
-                index_of_dic = str(my_list[self.count_aux])
+                index_of_dic = str(my_list[count_aux])
 
             self.valores_principais_wish_filter(index_of_dic)
 
@@ -304,6 +300,9 @@ class SThread(QtCore.QThread):
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
 
+        if self.one_photo:
+            print(self.path)
+
         self.for_headers_dic['Start Time'] = self.tempo
 
         try:
@@ -318,21 +317,29 @@ class SThread(QtCore.QThread):
         if self.get_image_png:
             try:
                 save_png(self.img, image_name, self.for_headers_dic)
+                if self.one_photo:
+                    print(image_name)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
         if self.get_image_tif:
             try:
                 save_tif(self.img, image_name)
+                if self.one_photo:
+                    print(image_name)
             except Exception as e:
                 print("Exception save_tif() -> {}".format(e))
         if self.get_image_fit:
             try:
                 save_fit(self.img, image_name, self.for_headers_dic)
+                if self.one_photo:
+                    print(image_name)
             except Exception as e:
                 print("Exception save_fit() -> {}".format(e))
         if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
             try:
                 save_png(self.img, image_name, self.for_headers_dic)
+                if self.one_photo:
+                    print(image_name)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
 
