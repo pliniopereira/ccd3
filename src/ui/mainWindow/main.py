@@ -167,9 +167,13 @@ class Main(QtWidgets.QMainWindow):
     def open_settings_CCD(self):
         setCCD = QtWidgets.QAction('Imager Settings', self)
 
-        setCCD.triggered.connect(self.CCD_menu.show)
+        setCCD.triggered.connect(self.funcao_teste)
 
         return setCCD, "&Options"
+
+    def funcao_teste(self):
+        self.CCD_menu.show()
+        self.CCD_menu.show_camera_infos()
 
     def action_connect_disconnect(self):
         setAC = QtWidgets.QAction('Connect', self)
@@ -212,7 +216,6 @@ class Main(QtWidgets.QMainWindow):
         self.manualAction.setCheckable(True)
         self.manualAction.setChecked(False)
         '''
-
         self.stopAction = QAction(QIcon('icons/Stop.png'), 'Stop', self)
         try:
             if self.cam.start_taking_photo:

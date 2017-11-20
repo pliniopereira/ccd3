@@ -9,8 +9,16 @@ class Main(QtWidgets.QMainWindow):
         super(Main, self).__init__(parent)
 
         self.ima = SettingsCCDInfos(self)
+
         self.setCentralWidget(self.ima)
 
         self.setWindowTitle("Imager Settings")
 
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+
+    def show_camera_infos(self):
+        try:
+            self.ima.info_cam()
+        except Exception as e:
+            print("show_camera_infos on menu -> {}".format(e))
+

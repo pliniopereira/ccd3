@@ -74,6 +74,7 @@ def save_tif(img, newname):
 
 
 def save_png(img, newname, headers):
+    mantenha_variavel_name(newname)
     # print(type(headers))
     # print("\n\n- HEADERS -")
     # print(type(headers))
@@ -267,3 +268,8 @@ def get_observatory(name):
     name_aux = name_aux.replace(" ", "")
 
     return name_aux
+
+def mantenha_variavel_name(newname):
+    variavel = newname
+    return variavel_name
+

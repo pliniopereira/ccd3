@@ -314,7 +314,6 @@ class SettingsCCDInfos(QWidget):
             print("def func_filter_position(self): -> " + str(e))
 
         finally:
-            self.info_cam()
             if aux == 0:
                 if self.roda_filtros.connect_state:
                     self.select_filter_manual = wish_filter_int
@@ -330,7 +329,6 @@ class SettingsCCDInfos(QWidget):
         self.btn_home_position_filter.clicked.connect(self.func_home_position)
 
     def func_home_position(self):
-        self.info_cam()
         try:
             if self.roda_filtros.connect_state:
                 sleep(0.5)
@@ -384,6 +382,9 @@ class SettingsCCDInfos(QWidget):
                 self.one_photo.start()
             else:
                 self.console.raise_text("Taking photo", 1)
+                variavel = self.get_information()
+                self.console.raise_text(variavel, 1)
+
                 self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
                 self.one_photo.start()
         except Exception as e:
