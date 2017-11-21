@@ -7,6 +7,7 @@ import ephem
 from PyQt5 import QtCore
 
 from src.business.EphemObserverFactory import EphemObserverFactory
+from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.models.image import Image
 from src.business.shooters.InfosForSThread import get_wish_filters_settings, get_camera_settings, get_image_settings, \
     get_project_settings, get_filter_settings
@@ -40,6 +41,8 @@ class SThread(QtCore.QThread):
         self.get_axis_yf = None
         self.get_ignore_crop = None
 
+        self.console = ConsoleThreadOutput()
+
         self.get_image_tif = None
         self.get_image_fit = None
         self.get_image_png = None
@@ -67,6 +70,8 @@ class SThread(QtCore.QThread):
 
         self.count_aux = 0
         self.kwargs = None
+
+        self.message_console_one_photo = None
 
         self.roda_filtros = FilterControl()
 
@@ -317,8 +322,6 @@ class SThread(QtCore.QThread):
         if self.get_image_png:
             try:
                 save_png(self.img, image_name, self.for_headers_dic)
-                if self.one_photo:
-                    print(image_name)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
         if self.get_image_tif:
@@ -331,15 +334,11 @@ class SThread(QtCore.QThread):
         if self.get_image_fit:
             try:
                 save_fit(self.img, image_name, self.for_headers_dic)
-                if self.one_photo:
-                    print(image_name)
             except Exception as e:
                 print("Exception save_fit() -> {}".format(e))
         if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
             try:
                 save_png(self.img, image_name, self.for_headers_dic)
-                if self.one_photo:
-                    print(image_name)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
 
@@ -349,6 +348,9 @@ class SThread(QtCore.QThread):
             self.init_image()
         except Exception as e:
             print("run init_image() -> {}".format(e))
+
+        if self.one_photo:
+            self.get_image_name(image_name)
 
     def valores_principais_wish_filter(self, index_of_dic):
         aux = self.filter_split_label[str(index_of_dic)][0]
@@ -434,3 +436,6 @@ class SThread(QtCore.QThread):
             self.for_headers_dic['Filter Position'] = str(aux[4])
         except Exception as e:
             print("run append_filters_settings() -> {}".format(e))
+
+    def get_image_name(self, local_name_image):
+        self.console.raise_text("Image saved in " + str(local_name_image) + ".png", 1)

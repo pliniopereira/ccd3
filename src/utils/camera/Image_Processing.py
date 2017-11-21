@@ -269,7 +269,8 @@ def get_observatory(name):
 
     return name_aux
 
+
 def mantenha_variavel_name(newname):
     variavel = newname
-    return variavel_name
+    return 0
 

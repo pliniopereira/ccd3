@@ -32,6 +32,8 @@ class SettingsCCDInfos(QWidget):
         # Instance attributes create_filter_wheel_group
         self.shutter_l = None
         self.close_open_filter_wheel = None
+        self.close_open_filter_wheel_info = None
+        self.btn_set_shutter = None
         self.get_filter_l = None
         self.filter_position = None
         self.btn_set_filter = None
@@ -134,10 +136,12 @@ class SettingsCCDInfos(QWidget):
         group_box = QGroupBox("&Filter Wheel Control")
         group_box.setCheckable(True)
         group_box.setChecked(False)
-
         self.shutter_l = QtWidgets.QLabel("Shutter:", self)
         self.shutter_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.close_open_filter_wheel_info = QtWidgets.QLabel("Closed")
+        self.close_open_filter_wheel_info.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
+        self.btn_set_shutter = QtWidgets.QPushButton('Set shutter', self)
         self.close_open_filter_wheel = QtWidgets.QComboBox(self)
         self.close_open_filter_wheel.setMaximumWidth(100)
         self.fill_combo_close_open_filter_wheel_shutter()
@@ -159,7 +163,8 @@ class SettingsCCDInfos(QWidget):
 
         self.btn_home_position_filter = QtWidgets.QPushButton('Home Reset', self)
 
-        group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel),
+        group_box.setLayout(set_lvbox(set_hbox(self.shutter_l, self.close_open_filter_wheel_info),
+                                      set_hbox(self.btn_set_shutter, self.close_open_filter_wheel),
                                       set_hbox(self.get_filter_l, self.filter_position, stretch2=1),
                                       set_hbox(self.btn_set_filter, self.set_filter_position),
                                       set_hbox(self.btn_home_position_filter)))
@@ -262,20 +267,25 @@ class SettingsCCDInfos(QWidget):
     def fill_combo_close_open_filter_wheel_shutter(self):
         self.close_open_filter_wheel.addItem("Closed", 2)
         self.close_open_filter_wheel.addItem("Opened", 1)
-        self.close_open_filter_wheel.currentIndexChanged[str].connect(self.my_slot_close_open_shutter)
 
-    def my_slot_close_open_shutter(self, item):
-        if item == "Closed":
+    def func_close_open_shutter(self):
+        my_slot_close_open_shutter = self.close_open_filter_wheel.currentIndex()
+        print("\n\n")
+        print("my_slot_close_open_shutter -> " + str(my_slot_close_open_shutter))
+        print("\n\n")
+
+        if my_slot_close_open_shutter == 0:
             self.roda_filtros.close_shutter()
             self.select_filter_shutter = 1
             self.console.raise_text("Shutter Filter Wheel Closed", 1)
             self.close_open.setText("Closed")
-
+            self.close_open_filter_wheel_info.setText("Closed")
         else:
             self.roda_filtros.open_shutter()
             self.select_filter_shutter = 0
             self.console.raise_text("Shutter Filter Wheel Opened ", 1)
             self.close_open.setText("Opened")
+            self.close_open_filter_wheel_info.setText("Opened")
 
     def fill_combo_filter_position(self):
         self.set_filter_position.addItem("1", 1)
@@ -325,6 +335,7 @@ class SettingsCCDInfos(QWidget):
                     self.console.raise_text("Filter Wheel is not connect!", 3)
 
     def button_settings(self):
+        self.btn_set_shutter.clicked.connect(self.func_close_open_shutter)
         self.btn_set_filter.clicked.connect(self.func_filter_position)
         self.btn_home_position_filter.clicked.connect(self.func_home_position)
 
@@ -382,9 +393,6 @@ class SettingsCCDInfos(QWidget):
                 self.one_photo.start()
             else:
                 self.console.raise_text("Taking photo", 1)
-                variavel = self.get_information()
-                self.console.raise_text(variavel, 1)
-
                 self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
                 self.one_photo.start()
         except Exception as e:
