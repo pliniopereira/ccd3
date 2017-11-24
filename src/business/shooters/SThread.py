@@ -222,7 +222,7 @@ class SThread(QtCore.QThread):
         image_name = self.path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
 
         try:
-            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, self.dark_photo)
+            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 0)
         except Exception as e:
             print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
 
@@ -240,7 +240,6 @@ class SThread(QtCore.QThread):
         my_list = get_wish_filters_settings()  # list of schedule
         my_list = set(my_list)
         my_list = sorted(my_list)
-
         count_aux = 0
 
         while count_aux < len(my_list):

@@ -9,6 +9,7 @@ from src.business.EphemObserverFactory import EphemObserverFactory
 from src.business.configuration.configProject import ConfigProject
 from src.business.consoleThreadOutput import ConsoleThreadOutput
 from src.business.shooters.ContinuousShooterThread import ContinuousShooterThread
+from src.ui.mainWindow.StartEndTimeInfo import print_infos
 
 
 class EphemerisShooter(QtCore.QThread):
@@ -133,6 +134,7 @@ class EphemerisShooter(QtCore.QThread):
                     if self.shootOn:
                         # Finalizar as Observações
                         self.stop_taking_photo()
+                        print_infos()
                         c = 0
                         self.t = False
                         self.shootOn = False

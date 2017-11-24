@@ -13,6 +13,7 @@ from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.commons.layout import set_hbox, set_lvbox
+from src.ui.mainWindow.StartEndTimeInfo import print_infos
 from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 from src.utils.rodafiltros.FilterControl import FilterControl
 
@@ -136,7 +137,7 @@ class SettingsCCDInfos(QWidget):
         group_box = QGroupBox("&Filter Wheel Control")
         group_box.setCheckable(True)
         group_box.setChecked(False)
-        self.shutter_l = QtWidgets.QLabel("Shutter:", self)
+        self.shutter_l = QtWidgets.QLabel("Shutter status:", self)
         self.shutter_l.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.close_open_filter_wheel_info = QtWidgets.QLabel("Closed")
         self.close_open_filter_wheel_info.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -270,9 +271,6 @@ class SettingsCCDInfos(QWidget):
 
     def func_close_open_shutter(self):
         my_slot_close_open_shutter = self.close_open_filter_wheel.currentIndex()
-        print("\n\n")
-        print("my_slot_close_open_shutter -> " + str(my_slot_close_open_shutter))
-        print("\n\n")
 
         if my_slot_close_open_shutter == 0:
             self.roda_filtros.close_shutter()
@@ -352,6 +350,9 @@ class SettingsCCDInfos(QWidget):
             if self.roda_filtros.connect_state:
                 self.filter_position.setText("1")
                 self.console.raise_text("Filter Position: 1", 2)
+                self.console.raise_text("Shutter Filter Wheel Closed", 1)
+                self.close_open.setText("Closed")
+                self.close_open_filter_wheel_info.setText("Closed")
             else:
                 self.filter_position.setText("?")
                 self.console.raise_text("Filter Wheel is not connect!", 3)
@@ -425,6 +426,7 @@ class SettingsCCDInfos(QWidget):
             print("Exception -> {}".format(e))
 
     def info_cam(self):
+        print_infos()
         try:
             if getlinkstatus() is True:
                 self.firmware, self.model, self.y_pixels, self.x_pixels = \

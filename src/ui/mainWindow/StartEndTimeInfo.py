@@ -8,57 +8,70 @@ from src.business.configuration.configProject import ConfigProject
 
 
 def result():
-        config = ConfigProject()
+    config = ConfigProject()
 
-        info = config.get_geographic_settings()
-        infosun = config.get_moonsun_settings()
+    info = config.get_geographic_settings()
+    infosun = config.get_moonsun_settings()
 
-        max_solar_elevation = float(infosun[0])  # -12
-        max_lunar_elevation = float(infosun[2])  # 8
-        # max_lunar_phase = infosun[3]
+    max_solar_elevation = float(infosun[0])  # -12
+    max_lunar_elevation = float(infosun[2])  # 8
+    # max_lunar_phase = infosun[3]
 
-        now_datetime = datetime.datetime.utcnow().replace(hour=12).replace(minute=00).replace(second=0)
-        obs = ephem.Observer()
+    now_datetime = datetime.datetime.utcnow().replace(hour=12).replace(minute=00).replace(second=0)
+    obs = ephem.Observer()
 
-        obs.lat = info[0]
-        obs.lon = info[1]
-        obs.elevation = float(info[2])
+    obs.lat = info[0]
+    obs.lon = info[1]
+    obs.elevation = float(info[2])
+    obs.date = ephem.date(now_datetime)
+
+    sun = ephem.Sun()
+    sun.compute(obs)
+    moon = ephem.Moon()
+    moon.compute(obs)
+    j = 0
+    flag = 0
+    for i in range(1, 3000):
+
         obs.date = ephem.date(now_datetime)
-
         sun = ephem.Sun()
         sun.compute(obs)
+
         moon = ephem.Moon()
         moon.compute(obs)
-        j = 0
-        flag = 0
-        for i in range(1, 3000):
+        frac = moon.moon_phase
 
-            obs.date = ephem.date(now_datetime)
-            sun = ephem.Sun()
-            sun.compute(obs)
+        ag_s = float(repr(sun.alt))
+        s_ag = math.degrees(ag_s)
+        ag_m = float(repr(moon.alt))
+        m_ag = math.degrees(ag_m)
 
-            moon = ephem.Moon()
-            moon.compute(obs)
-            frac = moon.moon_phase
+        if float(s_ag) < max_solar_elevation and float(m_ag) < max_lunar_elevation:
+            if flag == 0:
+                flag = 1
+                start = now_datetime
+        elif (float(s_ag) > max_solar_elevation or float(m_ag) > max_lunar_elevation) and flag == 1:
+            flag = 0
+            end = now_datetime
+            break
 
-            ag_s = float(repr(sun.alt))
-            s_ag = math.degrees(ag_s)
-            ag_m = float(repr(moon.alt))
-            m_ag = math.degrees(ag_m)
+        now_datetime += timedelta(minutes=j)
 
-            if float(s_ag) < max_solar_elevation and float(m_ag) < max_lunar_elevation:
-                if flag == 0:
-                    flag = 1
-                    start = now_datetime
-            elif (float(s_ag) > max_solar_elevation or float(m_ag) > max_lunar_elevation) and flag == 1:
-                flag = 0
-                end = now_datetime
-                break
+        j += 1
 
-            now_datetime += timedelta(minutes=j)
+    obs_time = end - start
 
-            j += 1
+    return start, end, obs_time
 
-        obs_time = end - start
 
-        return start, end, obs_time
+def print_infos():
+    info_start_end = result()
+    start_time = str(info_start_end[0])
+    start_field = "Start: " + start_time[:-10] + " UTC"
+    end_time = str(info_start_end[1])
+    end_field = "End: " + end_time[:-10] + " UTC"
+    time_obs_time = str(info_start_end[2])
+    time_obs_field = "Total Obs. Time:" + time_obs_time[:-3] + " Hours"
+    print(start_field)
+    print(end_field)
+    print(time_obs_field)
