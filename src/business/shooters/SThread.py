@@ -31,7 +31,6 @@ class SThread(QtCore.QThread):
         self.prefix = None
         self.exposure_time = None
         self.binning = None
-        self.dark_photo = None
 
         self.get_level1 = None
         self.get_level2 = None
@@ -55,7 +54,10 @@ class SThread(QtCore.QThread):
         self.path = None
         self.tempo = None
 
+        self.info_matrix = None
         self.img = None
+
+        self.new_image_name = None
 
         self.selected_filter = None
         self.dark_or_open = "Closed"
@@ -64,7 +66,7 @@ class SThread(QtCore.QThread):
         self.for_headers_dic = {}
 
         self.lock = Locker()
-        self.info = []
+        self.info_matrix = []
 
         self.filter_split_label = None
 
@@ -85,12 +87,6 @@ class SThread(QtCore.QThread):
             self.for_headers_dic['????Tempo de espera'] = info_cam[1]
 
             info_image = get_image_settings()
-
-            try:
-                self.dark_photo = int(info_cam[2])
-            except Exception as e:
-                print("self.dark_photo = 0 -> {}".format(e))
-                self.dark_photo = 0
 
             try:
                 self.get_level1 = float(info_image[0])
@@ -219,19 +215,22 @@ class SThread(QtCore.QThread):
 
         self.path, self.tempo = set_path()
 
-        image_name = self.path + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
+        self.new_image_name = str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
+
+        new_image_name = self.path + str(self.new_image_name)
 
         try:
-            self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 0)
+            self.info_matrix = SbigDriver.photoshoot(self.exposure_time, self.binning, 0)
         except Exception as e:
-            print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
+            print("self.info_matrix = SbigDriver.photoshoot ERROR -> " + str(e))
 
         self.for_headers_dic['Open or close shutter'] = "OPEN"
 
-        self.save_image_format(image_name)
+        self.save_image_format(new_image_name)
 
         self.for_headers_dic = {}
         self.one_photo = False
+        self.init_image()
         self.lock.set_release()
 
     def create_image_close(self):
@@ -259,35 +258,25 @@ class SThread(QtCore.QThread):
             name_observatory = project_infos[2][1]
 
             self.path, self.tempo = set_path()
+            
+            self.new_image_name = "DARK-" + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
 
-            image_name = self.path + "DARK-" + str(self.prefix) + "_" + str(name_observatory) + "_" + str(self.tempo)
-
+            new_image_name = self.path + str(self.new_image_name)
+    
             try:
-                self.img = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
+                self.info_matrix = SbigDriver.photoshoot(self.exposure_time, self.binning, 1)
             except Exception as e:
-                print("self.img = SbigDriver.photoshoot ERROR -> " + str(e))
+                print("self.info_matrix = SbigDriver.photoshoot ERROR -> " + str(e))
 
             self.for_headers_dic['Open or close shutter'] = "CLOSED"
 
-            self.save_image_format(image_name)
+            self.save_image_format(new_image_name)
 
             self.for_headers_dic = {}
             count_aux += 1
             self.one_photo = False
+            self.init_image()
             self.lock.set_release()
-
-    def init_image(self):
-        try:
-            # for i in self.info:
-            #    print(i)
-            self.img = Image(self.info[0], self.info[1], self.info[2], self.info[3])
-        except Exception as e:
-            print("Image('', '', '', '') -> {}".format(e))
-            self.img = Image('', '', '', '')
-        return self.img
-
-    def get_image_info(self):
-        return self.img
 
     def filter_wheel_control(self, wish_filter_int):
         try:
@@ -299,7 +288,7 @@ class SThread(QtCore.QThread):
             self.roda_filtros.home_reset()
             print(e)
 
-    def save_image_format(self, image_name):
+    def save_image_format(self, new_image_name):
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
 
@@ -319,36 +308,29 @@ class SThread(QtCore.QThread):
 
         if self.get_image_png:
             try:
-                save_png(self.img, image_name, self.for_headers_dic)
+                save_png(self.info_matrix, new_image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
         if self.get_image_tif:
             try:
-                save_tif(self.img, image_name)
+                save_tif(self.info_matrix, new_image_name)
                 if self.one_photo:
-                    print(image_name)
+                    print(new_image_name)
             except Exception as e:
                 print("Exception save_tif() -> {}".format(e))
         if self.get_image_fit:
             try:
-                save_fit(self.img, image_name, self.for_headers_dic)
+                save_fit(self.info_matrix, new_image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_fit() -> {}".format(e))
         if not self.get_image_fit and not self.get_image_tif and not self.get_image_fit:
             try:
-                save_png(self.img, image_name, self.for_headers_dic)
+                save_png(self.info_matrix, new_image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
 
-        try:
-            data, hora = get_date_hour(self.tempo)
-            self.info = self.path, self.img, data, hora
-            self.init_image()
-        except Exception as e:
-            print("run init_image() -> {}".format(e))
-
         if self.one_photo:
-            self.get_image_name(image_name)
+            self.get_image_name(new_image_name)
 
     def valores_principais_wish_filter(self, index_of_dic):
         aux = self.filter_split_label[str(index_of_dic)][0]
@@ -435,5 +417,19 @@ class SThread(QtCore.QThread):
         except Exception as e:
             print("run append_filters_settings() -> {}".format(e))
 
-    def get_image_name(self, local_name_image):
+    def get_new_image_name(self, local_name_image):
         self.console.raise_text("Image saved in " + str(local_name_image) + ".png", 1)
+
+    def init_image(self):
+        try:
+            print("\nAAAAAAAAAAAAAAAAAAAAAA\n")
+            # for i in self.info_matrix:
+            #     print(i)
+            self.img = Image(self.path, self.new_image_name)
+        except Exception as e:
+            print("Image('', '') -> {}".format(e))
+            self.img = Image('', '')
+        return self.img
+
+    def get_image_info(self):
+        return self.img

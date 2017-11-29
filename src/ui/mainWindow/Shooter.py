@@ -1,6 +1,7 @@
 import os
 
 import skimage.io
+from PIL import Image
 from PIL.ImageQt import ImageQt
 from PyQt5 import QtCore
 from PyQt5 import QtGui
@@ -76,44 +77,60 @@ class Shooter(QtWidgets.QWidget):
 
     def auto_shoot(self):
         try:
-            self.cam.autoshoot(int(self.htext.text()), int(self.mtext.text()), int(self.tb.text()), self.pre.text(), int(self.combo.currentIndex()))
+            self.cam.autoshoot(int(self.htext.text()), int(self.mtext.text()), int(self.tb.text()), self.pre.text(),
+                               int(self.combo.currentIndex()))
         except Exception as e:
             print(e)
 
     def set_image(self, img):
         print("Setting Pixmap")
+        print("CCCCCCCCCCCCCCCCCCCCCCCCCCC")
         try:
-            path = img.path + img.name_image
-            # image = Image.open(path)
+            path = img.path + img.name_image + ".fit"
+            str_name_image = str(img.name_image + ".fit")
 
-            print(os.path.splitext(path)[1])
-            if os.path.splitext(path)[1] == '.fit':
-                img = getdata(path)
-            else:
-                img = skimage.io.imread(path)
+            # image = Image.open(path)]
+
+            try:
+                if os.path.splitext(path)[1] == '.fit':
+                    print("1111111111111111111")
+                    img = getdata(path)
+                else:
+                    print("222222222222222222222")
+                    img = skimage.io.imread(path)
+
+                print("\n\n>>>>>>>>>>>>>>>>>>>>>>")
+                print(img)
+
+            except Exception as e:
+                print("Exception os.path.splitext -> {}".format(e))
 
             file_name = path
 
-            try:
-                image = img
 
-                get_level1 = 0.00
+            image = img
 
-                get_level2 = 0.99
+            get_level1 = 0.00
 
-                variavel = Image_Processing.get_level(image, get_level1, get_level2)
+            get_level2 = 0.99
 
-                im2 = Image_Processing.bytscl(image, variavel[1], variavel[0])
+            # variavel = Image_Processing.get_level(image, get_level1, get_level2)
+            #
+            # im2 = Image_Processing.bytscl(image, variavel[1], variavel[0])
 
-                im3 = toimage(im2)
+            im3 = toimage(image)
 
-                im4 = Image_Processing.resize_image_512x512(im3)
+            # im4 = Image_Processing.resize_image_512x512(im3)
 
-                im5 = Image_Processing.draw_image(im4, file_name)
+            im4 = im3.resize((int(512), int(512)))
+            im5 = Image_Processing.draw_image(im4, str_name_image)
 
-                # im5.show()
-            except Exception as e:
-                print("Exception image_processing... -> {}".format(e))
+            # try:
+            #     im5 = Image_Processing.draw_image(im4, str_name_image)
+            #
+            #     # im5.show()
+            # except Exception as e:
+            #     print("Exception image_processing... -> {}".format(e))
 
             try:
                 qim = ImageQt(im5)

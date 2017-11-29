@@ -9,7 +9,6 @@ software_version = "CCD Controller 3 - V 0.9"
 
 
 def save_fit(img_to_fit, newname, headers):
-
     newname_fit = newname
     newname_fit += ".fit"
 
@@ -143,21 +142,29 @@ def retorna_imagem(name_png):
     img2.show()
 
 
-def resize_image_512x512(name_png):
-    img = Image.open(name_png)
-    resized_img = img.resize((int(512), int(512)))
-    # resized_img = ImageOps.autocontrast(resized_img, 2)
-    resized_img.save(name_png)
+def resize_image_512x512(image_recebida):
+    try:
+        img = Image.open(image_recebida)
+        resized_img = img.resize((int(512), int(512)))
+        # resized_img = ImageOps.autocontrast(resized_img, 2)
+        # resized_img.save(image_recebida)
+    except Exception as e:
+        print("Exception resize_image_512x512 -> {}".format(e))
+
+    return resized_img
 
 
-def draw_image(name_png):
-    hora_img, data_img = get_date_hour_image(name_png)
-    filter_img, observatory_img = get_filter_observatory(name_png)
+def draw_image(name_png, str_path):
+    hora_img, data_img = get_date_hour_image(str_path)
+    filter_img, observatory_img = get_filter_observatory(str_path)
 
-    img = Image.open(name_png)
+    # img = Image.open(name_png)
+    img = name_png
+    # fontsFolder = '/usr/share/fonts/truetype'
+    # times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'Times_New_Roman_Bold.ttf'), 16)
 
-    fontsFolder = '/usr/share/fonts/truetype'
-    times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'Times_New_Roman_Bold.ttf'), 16)
+    fontsFolder = 'C:\\Windows\\Fonts\\'
+    times_nr_Font = ImageFont.truetype(os.path.join(fontsFolder, 'Arial.ttf'), 16)
 
     draw = ImageDraw.Draw(img)
     draw.text((10, 10), observatory_img, fill='white', font=times_nr_Font)
@@ -166,9 +173,12 @@ def draw_image(name_png):
     draw.text((10, 490), data_img, fill='white', font=times_nr_Font)
     del draw
 
-    img.save(name_png)
     # mostra imagem
     # img.show()
+
+    # img.save(name_png)
+
+    return img
 
 
 def bytscl(array, max=None, min=None, nan=0, top=255):
@@ -273,4 +283,3 @@ def get_observatory(name):
 def mantenha_variavel_name(newname):
     variavel = newname
     return 0
-
