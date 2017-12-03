@@ -1,7 +1,7 @@
 [General]
 label_filter1=O6
 wavelength_filter1="OI 630,0 nm  "
-exposure_filter1=90
+exposure_filter1=9
 binning_filter1=1
 label_filter2=OH
 wavelength_filter2=OH NIR 840 nm

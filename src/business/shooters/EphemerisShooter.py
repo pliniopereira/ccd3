@@ -134,7 +134,6 @@ class EphemerisShooter(QtCore.QThread):
                     if self.shootOn:
                         # Finalizar as Observações
                         self.stop_taking_photo()
-                        print_infos()
                         c = 0
                         self.t = False
                         self.shootOn = False

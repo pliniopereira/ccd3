@@ -279,8 +279,7 @@ class SThread(QtCore.QThread):
     def init_image(self):
         try:
             # for i in self.info:
-            #     print(i)
-
+            #    print(i)
             self.img = Image(self.info[0], self.info[1], self.info[2], self.info[3])
         except Exception as e:
             print("Image('', '', '', '') -> {}".format(e))

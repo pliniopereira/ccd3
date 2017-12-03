@@ -426,7 +426,6 @@ class SettingsCCDInfos(QWidget):
             print("Exception -> {}".format(e))
 
     def info_cam(self):
-        print_infos()
         try:
             if getlinkstatus() is True:
                 self.firmware, self.model, self.y_pixels, self.x_pixels = \
