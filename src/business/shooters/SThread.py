@@ -247,7 +247,7 @@ class SThread(QtCore.QThread):
 
             if self.one_photo:
                 index_of_dic = self.selected_filter
-                count_aux = 10
+                count_aux = 100
             else:
                 index_of_dic = str(my_list[count_aux])
 
@@ -274,9 +274,10 @@ class SThread(QtCore.QThread):
 
             self.for_headers_dic = {}
             count_aux += 1
-            self.one_photo = False
             self.init_image()
             self.lock.set_release()
+
+            self.one_photo = False
 
     def filter_wheel_control(self, wish_filter_int):
         try:
@@ -328,9 +329,6 @@ class SThread(QtCore.QThread):
                 save_png(self.info_matrix, new_image_name, self.for_headers_dic)
             except Exception as e:
                 print("Exception save_png() -> {}".format(e))
-
-        if self.one_photo:
-            self.get_image_name(new_image_name)
 
     def valores_principais_wish_filter(self, index_of_dic):
         aux = self.filter_split_label[str(index_of_dic)][0]

@@ -13,7 +13,6 @@ from src.controller.Camera import Camera
 from src.controller.commons.Locker import Locker
 from src.controller.fan import Fan
 from src.ui.commons.layout import set_hbox, set_lvbox
-from src.ui.mainWindow.StartEndTimeInfo import print_infos
 from src.utils.camera.SbigDriver import (ccdinfo, getlinkstatus)
 from src.utils.rodafiltros.FilterControl import FilterControl
 
@@ -389,11 +388,12 @@ class SettingsCCDInfos(QWidget):
     def take_one_photo(self):
         try:
             if self.select_filter_shutter == "Closed":
-                self.console.raise_text("Taking dark photo", 1)
-                self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
-                self.one_photo.start()
+                self.console.raise_text("AQUI dark photo", 1)
+                self.cam.start_one_photo(self.select_filter_manual, self.select_filter_shutter)
+                # self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
+                # self.one_photo.start()
             else:
-                self.console.raise_text("Taking photo", 1)
+                self.console.raise_text("AQUI photo", 1)
                 self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
                 self.one_photo.start()
         except Exception as e:

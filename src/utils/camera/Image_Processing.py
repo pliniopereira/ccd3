@@ -168,7 +168,10 @@ def draw_image(name_png, str_path):
 
     draw = ImageDraw.Draw(img)
     draw.text((10, 10), observatory_img, fill='white', font=times_nr_Font)
-    draw.text((470, 10), filter_img, fill='white', font=times_nr_Font)
+    if filter_img[:4] == "DARK":
+        draw.text((420, 10), filter_img, fill='white', font=times_nr_Font)
+    else:
+        draw.text((470, 10), filter_img, fill='white', font=times_nr_Font)
     draw.text((420, 490), hora_img, fill='white', font=times_nr_Font)
     draw.text((10, 490), data_img, fill='white', font=times_nr_Font)
     del draw

@@ -26,7 +26,7 @@ class SettingsCamera:
 
     def get_camera_settings(self):
         return self._settings.value(c.TEMPERATURE), \
-               self._settings.value(c.TIMECOOLING), \
+               self._settings.value(c.TIMECOOLING)
 
     def get_filepath(self):
         return self._settings.value(c.FILENAME)
