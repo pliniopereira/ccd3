@@ -273,13 +273,13 @@ class SettingsCCDInfos(QWidget):
 
         if my_slot_close_open_shutter == 0:
             self.roda_filtros.close_shutter()
-            self.select_filter_shutter = 1
+            self.select_filter_shutter = "Closed"
             self.console.raise_text("Shutter Filter Wheel Closed", 1)
             self.close_open.setText("Closed")
             self.close_open_filter_wheel_info.setText("Closed")
         else:
             self.roda_filtros.open_shutter()
-            self.select_filter_shutter = 0
+            self.select_filter_shutter = "Opened"
             self.console.raise_text("Shutter Filter Wheel Opened ", 1)
             self.close_open.setText("Opened")
             self.close_open_filter_wheel_info.setText("Opened")
@@ -394,8 +394,7 @@ class SettingsCCDInfos(QWidget):
                 # self.one_photo.start()
             else:
                 self.console.raise_text("AQUI photo", 1)
-                self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
-                self.one_photo.start()
+                self.cam.start_one_photo(self.select_filter_manual, self.select_filter_shutter)
         except Exception as e:
             self.console.raise_text("Not possible taking photo -> {}".format(e), 1)
 

@@ -166,7 +166,10 @@ class SThread(QtCore.QThread):
 
     def args_one_photo(self, filter_args, kwargs):
         self.selected_filter = filter_args
-        self.kwargs = kwargs
+        if kwargs == "Closed":
+            self.kwargs = 1
+        else:
+            self.kwargs = 0
         self.one_photo = True
 
     def run(self):

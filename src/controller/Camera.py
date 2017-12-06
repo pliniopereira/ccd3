@@ -215,15 +215,9 @@ class Camera(metaclass=Singleton):
     # Shooters
     def start_one_photo(self, select_filter_manual, select_filter_shutter):
         try:
-            print("\n-------------------")
-            print(select_filter_manual)
-            print(select_filter_shutter)
             self.continuousShooterThread.recebe_args(select_filter_manual, select_filter_shutter)
             self.continuousShooterThread.one_photo = True
             self.continuousShooterThread.wait_temperature = True
-            # self.one_photo.args_one_photo(self.select_filter_manual, self.select_filter_shutter)
-
-            # self.continuousShooterThread.start_continuous_shooter()
             self.continuousShooterThread.start()
         except Exception as e:
             print(e)

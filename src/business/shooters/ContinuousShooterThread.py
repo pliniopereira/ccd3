@@ -38,7 +38,11 @@ class ContinuousShooterThread(QtCore.QThread):
     def recebe_args(self, select_filter_manual, select_filter_shutter):
         self.select_filter_manual = select_filter_manual
         self.select_filter_shutter = select_filter_shutter
-        self.one_photo = True
+        print("\n\nself.select_filter_shutter")
+        print(self.select_filter_shutter)
+        print("\nself.select_filter_manual")
+        print(self.select_filter_manual)
+        print("\n\n")
 
     def run(self):
         try:
@@ -50,6 +54,10 @@ class ContinuousShooterThread(QtCore.QThread):
                         if self.count <= 1 and not self.one_photo:
                             self.console.raise_text("Taking dark photo", 1)
                             self.start_dark_sthread()
+
+                        print("\n\nself.select_filter_shutter")
+                        print(self.select_filter_shutter)
+                        print("\n\n")
 
                         if self.select_filter_shutter == "Closed" and self.one_photo:
                             self.ss.recebe_argumento(1)
@@ -64,10 +72,10 @@ class ContinuousShooterThread(QtCore.QThread):
                             break
                         while self.ss.isRunning():
                             time.sleep(1)
+                        self.signalAfterShooting.emit()
                 except Exception as e:
                     print(e)
                 time.sleep(1)
-                self.signalAfterShooting.emit()
         except Exception as e:
             print("Exception Run ContinuousShooterThread ->" + str(e))
         finally:
